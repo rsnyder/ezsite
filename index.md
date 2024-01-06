@@ -1,4 +1,5 @@
 ---
+title: EZ Does It
 baseurl: /ezdoesit
 ---
 # ezsite index.md
