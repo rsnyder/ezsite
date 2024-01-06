@@ -1,3 +1,3 @@
 # ezsite README.md
 
-[subfolder](./subfolder)
+[subfolder](subfolder)
