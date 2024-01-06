@@ -2,4 +2,4 @@
 
 - [subfolder](subfolder)
 - [subfolder](/subfolder)
-= [subfolder](./subfolder)
+- [subfolder](./subfolder)
