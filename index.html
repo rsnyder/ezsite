@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link href="{{ site.baseurl }}/juncture/favicon.ico" rel="icon" /> -->
+    {%- seo -%}
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="{{ site.baseurl }}/main.css"> -->
+
+    <script>window.config = { baseurl: '{{ site.baseurl }}' }</script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{{ site.baseurl }}/_ezsite/index.js" type="module"></script>
+
+  </head>
+  <body>
+    <main class="page-content" aria-label="Content">
+      {{ content }}
+    </main>
+  </body>
+</html>
