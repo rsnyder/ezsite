@@ -1,3 +1,3 @@
-# ezsite README.md
+# ezsite index.md
 
 [subfolder](subfolder)
