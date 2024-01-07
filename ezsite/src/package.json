@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "tailwindcss -i ./input.css -o ./tailwind.css && run-p type-check build-only",
     "preview": "vite preview",
-    "build-only": "vite build --base=/ezsite/",
+    "build-only": "vite build --base=/ezsite/ezsite/dist/",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "tailwind": "tailwindcss -i ./input.css -o ./tailwind.css --watch"
   },
