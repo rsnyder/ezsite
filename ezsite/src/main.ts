@@ -34,6 +34,6 @@ console.log(`ezsite: version=${process.env.version}`)
 console.log(config)
 console.log(window.config)
 
-//defineCustomElements()
+defineCustomElements()
 
-//structureContent()
+structureContent()
