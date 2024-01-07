@@ -181,10 +181,12 @@ async function getFooterHtml() {
 }
 
 async function getConfig() {
-  let resp = await fetch(`${window?.config.baseurl}/ezsite/config.yml`)
+  let resp = await fetch(`${window?.config?.baseurl || location.pathname.split('/')[1]}/ezsite/config.yml`)
+  let configExtras: any = resp.ok ? window.jsyaml.load(await resp.text()) : {}
+  console.log(configExtras)
   if (resp.ok) window.config = {
     ...window.config,
-    ...window.jsyaml.load(await resp.text()),
+    ...configExtras,
     meta: setMeta(),
     isGHP
   }
