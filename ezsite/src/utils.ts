@@ -248,7 +248,7 @@ function setMeta() {
   }
 
   if (meta && meta.getAttribute('ve-config') === null) meta.remove()
-  jldEl.innerText = JSON.stringify(seo)
+  if (jldEl) jldEl.innerText = JSON.stringify(seo)
 
   return({title, description, robots, seo})
 }
