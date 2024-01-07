@@ -37,6 +37,6 @@ loadDependencies(
 	{tag: 'script', src: 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', crossorigin: 'anonymous', referrerpolicy: 'no-referrer'}],
 	() => { 
 		console.log('loaded dependencies')
-		console.log(window.config)
 		structureContent()
+		console.log(window.config)
 })
