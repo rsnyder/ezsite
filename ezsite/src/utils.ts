@@ -180,7 +180,7 @@ async function getFooterHtml() {
   if (resp.ok) return await resp.text()
 }
 
-async function getConfig() {
+export async function getConfig() {
   let configExtras: any = {}
   let baseurl = window?.config?.baseurl || `/${location.pathname.split('/')[1]}`
   let configUrl = `${baseurl}/ezsite/config.yml`
@@ -261,7 +261,6 @@ export async function getHtml() {
       repo: string = '', 
       resp: Response
 
-  let config = await getConfig()
   owner = config.owner
   repo = config.repo
 
@@ -307,7 +306,6 @@ export async function getHtml() {
 }
 
 export async function convertToEzElements(el:HTMLElement) {
-  let config = await getConfig()
   el.querySelectorAll('a').forEach(anchorElem => {
     let link = new URL(anchorElem.href)
     let qargs = new URLSearchParams(link.search)
@@ -347,6 +345,7 @@ function computeDataId(el:HTMLElement) {
 }
 
 export function structureContent() {
+  console.log('structuring content')
   let main = document.querySelector('main')
   let restructured = document.createElement('main')
   let currentSection: HTMLElement = restructured;

@@ -24,7 +24,7 @@ function defineCustomElements() {
 	customElements.define('ez-trigger', defineCustomElement(Trigger))
 };
 
-import { loadDependencies, md2html, structureContent } from './utils'
+import { getConfig, loadDependencies, md2html, structureContent } from './utils'
 export { md2html }
 let window = (globalThis as any).window as any
 window.md2html = md2html
@@ -35,8 +35,9 @@ defineCustomElements()
 loadDependencies(
 	[{tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js'},
 	{tag: 'script', src: 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', crossorigin: 'anonymous', referrerpolicy: 'no-referrer'}],
-	() => { 
+	async () => {
 		console.log('loaded dependencies')
-		structureContent()
+		window.config = await getConfig()
 		console.log(window.config)
+		structureContent()
 })
