@@ -33,9 +33,7 @@ function getMenuItems() {
 
 const title = computed(() => props.title)
 const menuItems = ref<any[]>([])
-watch(menuItems, (items) => {
-  console.log('menuItems', items)
-})
+// watch(menuItems, (items) => { console.log('menuItems', toRaw(items)) })
 
 const props = defineProps({
   title: { type: String },

@@ -33,6 +33,7 @@ window.md2html = md2html
 console.log(`ezsite: version=${process.env.version}`)
 
 defineCustomElements()
+
 console.log(window.config)
 
 structureContent()
