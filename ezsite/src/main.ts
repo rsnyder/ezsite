@@ -24,16 +24,19 @@ function defineCustomElements() {
 	customElements.define('ez-trigger', defineCustomElement(Trigger))
 };
 
-import { md2html, structureContent } from './utils'
+import { loadDependencies, md2html, structureContent } from './utils'
 export { md2html }
 let window = (globalThis as any).window as any
 window.md2html = md2html
 
-// @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
-
 defineCustomElements()
 
-console.log(window.config)
-
-structureContent()
+loadDependencies(
+	[{tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.j'},
+	{tag: 'script', src: 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', crossorigin: 'anonymous', referrerpolicy: 'no-referrer'}],
+	() => { 
+		console.log('loaded dependencies')
+		console.log(window.config)
+		structureContent()
+})

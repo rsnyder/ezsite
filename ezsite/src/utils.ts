@@ -421,3 +421,20 @@ export function structureContent() {
   return main
 
 }
+
+export function loadDependencies(dependencies, callback, i) {
+  i = i || 0
+  // console.log(`loading ${dependencies[i].src || dependencies[i].href}`)
+  loadDependency(dependencies[i], () => {
+    if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
+    else if (callback) callback()
+  })
+}
+
+function loadDependency(dependency, callback) {
+  let e = document.createElement(dependency.tag)
+  Object.entries(dependency).forEach(([k, v]) => { if (k !== 'tag') e.setAttribute(k, v) })
+  e.addEventListener('load', callback)
+  if (dependency.tag === 'script') document.body.appendChild(e)
+  else document.head.appendChild(e)
+}

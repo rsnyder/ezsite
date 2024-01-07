@@ -1,4 +1,4 @@
 # ezsite index.md
 
 - [subfolder](subfolder)
-- [subfolder](./subfolder)
+- [Web components documentation](ezsite/dist)
