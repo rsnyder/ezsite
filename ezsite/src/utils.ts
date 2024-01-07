@@ -19,7 +19,7 @@ marked.use({
       let markedText = Array.from(paraText.matchAll(/==(.+?)==\{([^\}]+)/g))  // marked text
       if (fnRefs.length || markedText.length) {
         paraText = footnoteReferencesHandler(paraText)
-        // paraText = markedTextHandler(paraText)
+        paraText = markedTextHandler(paraText)
         return `<p>${paraText}</p>`
       }
 
@@ -46,6 +46,8 @@ marked.use({
 
   }
 })
+
+const isGHP = /\.github\.io$/.test(location.hostname)
 
 export function ezComponentHtml(el:HTMLElement) {
   let lines = el.textContent?.trim().split('\n') || []
@@ -164,46 +166,8 @@ function parseAttrsStr(s: string): any {
   return obj
 }
 
-export function setMeta(html:string) {
-  let el = new DOMParser().parseFromString(html, 'text/html').children[0].children[1]
-  let meta = el.querySelector('ez-meta')
-  let header = el.querySelector('ez-header')
-  let firstHeading = el.querySelector('h1, h2',)
-  let firstParagraph = el.querySelector('p')
-
-  let title = meta?.getAttribute('title')
-    ? meta.getAttribute('title')
-    : header?.getAttribute('title')
-      ? header.getAttribute('title')
-      : firstHeading
-        ? firstHeading.textContent
-        : ''
-
-  let description =  meta?.getAttribute('description')
-    ? meta.getAttribute('description')
-    : firstParagraph
-      ? firstParagraph.textContent
-      : ''
-
-  let robots =  meta?.getAttribute('robots') || ''
-
-  if (title) document.title = title
-  if (description) document.querySelector('meta[name="description"]')?.setAttribute('content', description)
-  if (robots) {
-    let robotsMeta = document.createElement('meta')
-    robotsMeta.setAttribute('name', 'robots')
-    robotsMeta.setAttribute('content', robots)
-    document.head.appendChild(robotsMeta)
-  }
-  if (meta) meta.remove()
-}
-
 export function md2html(markdown: string) {
   return marked.parse(markdown)
-}
-
-export function isGHP() {
-  return /\.github\.io$/.test(location.hostname)
 }
 
 async function getHeaderHtml() {
@@ -216,21 +180,70 @@ async function getFooterHtml() {
   if (resp.ok) return await resp.text()
 }
 
-let _config: any = (window as any).config
-export async function getConfig(): Promise<any> {
-  if (_config) return _config
-  _config = {}
-  let resp = await fetch('_config.yml')
-  if (resp.ok) {
-    let rawText = await resp.text()
-    if (rawText.indexOf('<!DOCTYPE html>') < 0) {
-      _config = rawText.split('\n').map(l => l.split(':')).reduce((acc:any, [k, v]) => {
-        acc[k.trim()] = v.trim()
-        return acc
-      }, {})
-    }
+async function getConfig() {
+  let resp = await fetch(`${window?.config.baseurl}/ezsite/config.yml`)
+  if (resp.ok) window.config = {
+    ...window.config,
+    ...window.jsyaml.load(await resp.text()),
+    meta: setMeta(),
+    isGHP
   }
-  return _config
+  if (isGHP) {
+    if (!window.config.owner) window.config.owner = location.hostname.split('.')[0]
+    if (!window.config.repo) window.config.repo = location.pathname.split('/')[1]
+  }
+  return window.config
+}
+
+function setMeta() {
+  let meta
+  let header
+  Array.from(document.getElementsByTagName('*')).forEach(el => {
+    if (!/^\w+-\w+/.test(el.tagName)) return
+    if (el.tagName.split('-')[1] === 'META') meta = el
+    else if (el.tagName.split('-')[1] === 'HEADER') header = el
+  })
+  if (!meta) meta = document.querySelector('param[ve-config]')
+
+  let firstHeading = (document.querySelector('h1, h2, h3') as HTMLElement)?.innerText.trim()
+  let firstParagraph = document.querySelector('p')?.innerText.trim()
+  
+  let jldEl = document.querySelector('script[type="application/ld+json"]') as HTMLElement
+  let seo = jldEl ? JSON.parse(jldEl.innerText) : {'@context':'https://schema.org', '@type':'WebSite', description:'', headline:'', name:'', url:''}
+  seo.url = location.href
+
+  let title = meta?.getAttribute('title')
+    ? meta.getAttribute('title')
+    : header?.getAttribute('title')
+      ? header.getAttribute('title')
+      : firstHeading || ''
+
+  let description =  meta?.getAttribute('description')
+    ? meta.getAttribute('description')
+    : firstParagraph || ''
+
+  let robots =  meta?.getAttribute('robots') || (location.hostname.indexOf('www') === 0 ? '' : 'noindex, nofollow')
+
+  if (title) {
+    document.title = title
+    seo.name = title
+    seo.headline = title
+  }
+  if (description) {
+    document.querySelector('meta[name="description"]')?.setAttribute('content', description)
+    seo.description = description
+  }
+  if (robots) {
+    let robotsMeta = document.createElement('meta')
+    robotsMeta.setAttribute('name', 'robots')
+    robotsMeta.setAttribute('content', robots)
+    document.head.appendChild(robotsMeta)
+  }
+
+  if (meta && meta.getAttribute('ve-config') === null) meta.remove()
+  jldEl.innerText = JSON.stringify(seo)
+
+  return({title, description, robots, seo})
 }
 
 export async function getHtml() {
@@ -290,13 +303,13 @@ export async function getHtml() {
 }
 
 export async function convertToEzElements(el:HTMLElement) {
-  let isGhp = isGHP()
   let config = await getConfig()
+  console.log(config)
   el.querySelectorAll('a').forEach(anchorElem => {
     let link = new URL(anchorElem.href)
     let qargs = new URLSearchParams(link.search)
     if (qargs.get('zoom')) anchorElem.setAttribute('rel', 'nofollow')
-    if (isGhp && link.origin === location.origin && link.pathname.indexOf(`/${config.repo}/`) !== 0) anchorElem.href = `/${config.repo}${link.pathname}`
+    if (isGHP && config.repo && link.origin === location.origin && link.pathname.indexOf(`/${config.repo}/`) !== 0) anchorElem.href = `/${config.repo}${link.pathname}`
   })
 
   Array.from(el.querySelectorAll('img'))
@@ -320,10 +333,10 @@ export async function convertToEzElements(el:HTMLElement) {
 function isNumeric(arg:any) { return !isNaN(arg) }
 
 function computeDataId(el:HTMLElement) {
-  let dataId = []
+  let dataId: number[] = []
   // if (!el.parentElement) dataId.push(1)
   while (el.parentElement) {
-    let siblings = Array.from(el.parentElement.children).filter(c => c.tagName === el.tagName)
+    let siblings: HTMLElement[] = Array.from(el.parentElement.children).filter(c => c.tagName === el.tagName) as HTMLElement[]
     dataId.push(siblings.indexOf(el) + 1)
     el = el.parentElement
   }
