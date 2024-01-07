@@ -184,8 +184,11 @@ async function getConfig() {
   let configExtras: any = {}
   let baseurl = window?.config?.baseurl || `/${location.pathname.split('/')[1]}`
   let configUrl = `${baseurl}/ezsite/config.yml`
+  console.log('configUrl', configUrl)
   let resp = await fetch(configUrl)
+  console.log(resp)
   if (resp.ok) configExtras = window.jsyaml.load(await resp.text())
+  console.log('configExtras', configExtras)
   if (resp.ok) window.config = {
     ...window.config,
     ...configExtras,
@@ -263,7 +266,6 @@ export async function getHtml() {
   repo = config.repo
 
   if (path.length === 0) path = ['README.md']
-  // console.log(`owner=${owner} repo=${repo} branch=${branch} path=${path}`)
 
   let contentUrl = location.hostname === 'localhost'
     ? `${location.origin}/${path}`
