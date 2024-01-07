@@ -33,7 +33,7 @@ console.log(`ezsite: version=${process.env.version}`)
 defineCustomElements()
 
 loadDependencies(
-	[{tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.j'},
+	[{tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js'},
 	{tag: 'script', src: 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', crossorigin: 'anonymous', referrerpolicy: 'no-referrer'}],
 	() => { 
 		console.log('loaded dependencies')
