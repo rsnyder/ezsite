@@ -14,9 +14,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 # H1 Title Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
 
-> ve-map 12.3,45.6 9 "Map Title"
-
-> ve-map 12.3,45.6 9 "Map Title"
+>ve-map 12.3,45.6 9 "Map Title"
 - Overlay 1
 - Overlay 2
 
