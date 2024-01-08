@@ -1,6 +1,6 @@
 # H1 Title <param name=value>
 
-## H2 Title <meta #id id=MyId .class class=MyClass style=value afasfasfasf "a phrase">
+## H2 Title <meta #id id=MyId .class class=MyClass style=value afasfasfasf>
 
 ### H3 Title <.class>
 
