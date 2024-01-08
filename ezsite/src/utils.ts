@@ -183,7 +183,7 @@ async function getFooterHtml() {
 export async function getConfig() {
   let configExtras: any = {}
   let baseurl = window?.config?.baseurl || `/${location.pathname.split('/')[1]}`
-  let configUrl = `${baseurl}/ezsite/config.yml`
+  let configUrl = location.hostname === 'localhost' ? 'http://localhost:8080/ezsite/config.yml' : `${baseurl}/ezsite/config.yml`
   let resp = await fetch(configUrl)
   if (resp.ok) configExtras = window.jsyaml.load(await resp.text())
   if (resp.ok) window.config = {
@@ -417,9 +417,7 @@ export function structureContent() {
 
 }
 
-export function loadDependencies(dependencies, callback, i) {
-  i = i || 0
-  // console.log(`loading ${dependencies[i].src || dependencies[i].href}`)
+export function loadDependencies(dependencies:any[], callback:any, i:number = 0) {
   loadDependency(dependencies[i], () => {
     if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
     else if (callback) callback()
