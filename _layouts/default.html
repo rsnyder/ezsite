@@ -7,7 +7,10 @@
     <link href="{{ site.baseurl }}/ezsite/dist/img/favicon.ico" rel="icon" />
     {%- seo -%}
 
-    <script>window.config = { baseurl: '{{ site.baseurl }}' }</script>
+    <script>
+      window.config = { baseurl: '{{ site.baseurl }}' }
+      console.log('layout.window.config', window.config)
+    </script>
     <script src="{{ site.baseurl }}/ezsite/dist/js/index.js" type="module"></script>
 
   </head>
