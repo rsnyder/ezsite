@@ -13,7 +13,7 @@ export default defineConfig(({mode})=> {
       template: {
         compilerOptions: {
           isCustomElement: (tag) => {
-            return tag.startsWith('ez-')
+            return tag.startsWith('ez-') || tag.startsWith('sl-')
           }
         }
       }

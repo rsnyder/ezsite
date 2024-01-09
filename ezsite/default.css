@@ -1,4 +1,4 @@
-@import url(//fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900);
+@import url(https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900);
 
 body {
   font-family: Roboto, sans-serif;
@@ -6,10 +6,9 @@ body {
   font-weight: 400;
   color: rgb(24, 24, 27);
   line-height: 1.5;
-  margin: 0;
   background-color: #f8f8f8;
   /* max-width: 1200px; */
-  margin: auto;
+  /* margin: auto; */
   animation: fadeInAnimation ease .3s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;

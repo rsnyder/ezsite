@@ -1,6 +1,11 @@
 import { defineCustomElement } from 'vue'
 import ('preline')
 
+import '@shoelace-style/shoelace/dist/components/button/button.js'
+import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js'
+import '@shoelace-style/shoelace/dist/components/menu/menu.js'
+import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js'
+
 import '@shoelace-style/shoelace/dist/themes/light.css'
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js'
 // setBasePath('https://juncture-digital.github.io/web-components/src')
@@ -10,6 +15,7 @@ setBasePath('node_modules/@shoelace-style/shoelace/dist');
 import Accordion from './components/Accordion.ce.vue'
 import Button from './components/Button.ce.vue'
 import Collapse from './components/Collapse.ce.vue'
+import Dropdown from './components/Dropdown.ce.vue'
 import EntityInfobox from './components/EntityInfobox.ce.vue'
 // import Header from './components/Header.ce.vue'
 // import Hero from './components/Hero.ce.vue'
@@ -26,6 +32,7 @@ function defineCustomElements() {
 	customElements.define('ez-accordion', defineCustomElement(Accordion))
 	customElements.define('ez-button', defineCustomElement(Button))
 	customElements.define('ez-collapse', defineCustomElement(Collapse))
+	customElements.define('ez-dropdown', defineCustomElement(Dropdown))
 	customElements.define('ez-entity-infobox', defineCustomElement(EntityInfobox))
 	// customElements.define('ez-header', defineCustomElement(Header))
 	// customElements.define('ez-hero', defineCustomElement(Hero))

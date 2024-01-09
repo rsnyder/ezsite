@@ -10,6 +10,9 @@
       html {
         font-family: Roboto, sans-serif;
       }
+      ez-dropdown ul {
+        display: none
+      }
     </style>
     <script type="module" crossorigin src="/ezsite/ezsite/dist/js/index.js"></script>
     <link rel="stylesheet" href="/ezsite/ezsite/dist/css/index.css">
@@ -17,6 +20,20 @@
   <body>
   
     <ez-button label="Button"></ez-button>
+
+    <ez-dropdown>
+      <ul>
+        <li>
+          <a href="/">
+            Home
+            <svg xmlns="http://www.w3.org/2000/svg" slot="prefix" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+          </a>
+        </li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </ez-dropdown>
     
     <!--
     <ez-header label="Plant Humanities Lab" logo="https://raw.githubusercontent.com/plant-humanities/media/main/images/phl-website-png-logo.png" background="gh:plant-humanities/media/images/header.jpg" subtitle="Explore the cultural histories of plants and their influence on human societies" auth="github" contact="ron.snyder@ithaka.org" url="/" sticky="" data-id="1.2" id="1.2" class="segment sticky">
