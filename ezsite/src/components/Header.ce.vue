@@ -1,76 +1,125 @@
+<template>
+
+    <div v-bind="$attrs"></div>
+    
+    <ez-hero v-if="backgroundImage"
+      :background="backgroundImage"
+      :options="props.options"
+      :position="props.position"
+      :sticky="props.sticky ? '' : null"
+      :height="height"
+      :top="props.sticky ? height - navbarHeight : 0"
+    ></ez-hero>
+
+    <ez-navbar ref="navbar"
+      class="sticky z-10"
+      :label="label"
+      :subtitle="props.subtitle"
+      :logo="props.logo"
+      :url="props.url"
+      :sticky="props.sticky ? '' : null"
+      :search-domain="props.searchDomain"
+      :search-cx="props.searchCx"
+      :search-key="props.searchKey"
+      :contact="props.contact"
+      :height="backgroundImage ? navbarHeight : height"
+      :background="backgroundColor"
+      :alpha="backgroundImage ? 0.2 : 0"
+      :offset="backgroundImage ? navbarHeight : 0"
+      :auth="props.auth"
+    >
+
+      <ul v-if="navEl" v-html="navEl.outerHTML"></ul>
+
+    </ez-navbar>
+
+</template>
+  
 <script setup lang="ts">
 
-import { computed, ref, toRaw, watch } from 'vue'
-
-const root = ref<HTMLElement | null>(null)
-const host = computed(() => (root.value?.getRootNode() as any)?.host)
-
-const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
-const header = computed(() => shadowRoot.value?.querySelector('header'))
-watch(header, (header) => { if (header) header.style.backgroundColor = props.color})
-
-watch(host, () => { getMenuItems() })
-
-function getMenuItems() {
+  import { computed, onMounted, onUpdated, ref, toRaw, watch } from 'vue'
+  import { isURL, getEntity } from '../utils'
   
-  let slot = host.value.parentElement.querySelector('ez-header')
+  const props = defineProps({
+    label: { type: String },
+    subtitle: { type: String },
+    logo: { type: String },
+    url: { type: String },
+    contact: { type: String },
+    searchDomain: { type: String },
+    searchCx: { type: String },
+    searchKey: { type: String },
+    entities: { type: String },
+    sticky: { type: Boolean },
+    background: { type: String },
+    options: { type: String },
+    height: { type: Number },
+    position: { type: String },
+    auth: { type: String }, // "github" or "netlify"
+  })
 
-  function parseSlot() {
-    menuItems.value = Array.from(slot.querySelectorAll('li'))
-      .map((li: any) => {
-        const a = li.querySelector('a')
-        return { label: a.innerText, href: a.href }
-      })
+  const navbarHeight = 100
+  const heroHeight = 400
+  const manifestShorthandRegex = /^\w+:/
+
+  const navbar = ref<HTMLElement | null>(null)
+  const host = computed(() => (navbar.value?.getRootNode() as any)?.host)
+  watch(host, () => { navEl.value = host.value.querySelector('ul') })
+
+  const label = ref<string>()
+  // const navEl = ref<string>()
+  const entities = ref<string[]>([])
+  const entity = ref<any>()
+  const backgroundColor = ref<string>('#444A1E')
+  const backgroundImage = ref<string>()
+
+  const navEl = ref<HTMLUListElement>()
+  // watch(navEl, () => { console.log(toRaw(navEl.value)) })
+
+  const height = ref(props.height || navbarHeight)
+
+  onMounted(() => applyProps() )
+  onUpdated(() => applyProps() )
+
+  function applyProps() {
+    // console.log('applyProps', toRaw(props))
+    entities.value = props.entities ? props.entities.split(/\s+/).filter(qid => qid) : []
+    if (props.background !== undefined && (isURL(props.background) || isManifestShorthand(props.background))) {
+      backgroundImage.value = props.background
+      height.value = props.height || heroHeight
+    } else {
+      backgroundColor.value = props.background || '#444'
     }
-    
-  parseSlot()
-  new MutationObserver(
-    (mutationsList:any) => {
-      for (let mutation of mutationsList) { if (mutation.type === 'childList') parseSlot() }      
+    if (props.label && props.label !== 'static') label.value = props.label
+    // if (navbar.value) navbar.value.style.height = `${props.height || navbarHeight}px`
+    if (props.sticky) host.value.classList.add('sticky')
+    // navEl.value = (host.value.querySelector('ul') as HTMLUListElement)?.innerHTML
+  }
+
+  watch(entities, async () => {
+    if (entities.value.length > 0 && !entity.value) {
+      entity.value = await getEntity(entities.value[0])
+      if (entity.value) {
+        label.value = entity.value.label
+        if (entity.value.pageBanner) {
+          backgroundImage.value = `https://iiif.juncture-digital.org/wc:${decodeURIComponent(entity.value.pageBanner.split('/Special:FilePath/').pop()).replace(/\s/,'_')}/manifest.json`
+          height.value = heroHeight
+        }
+      }
     }
-  ).observe(slot, { childList: true, subtree: true })
-}
+  })
 
-const title = computed(() => props.title)
-const menuItems = ref<any[]>([])
-// watch(menuItems, (items) => { console.log('menuItems', toRaw(items)) })
-
-const props = defineProps({
-  title: { type: String },
-  logo: { type: String },
-  color: { type: String, default: '#444' }
-})
+  function isManifestShorthand(s:string) {
+    return manifestShorthandRegex.test(s) 
+  }
 
 </script>
 
-<template>
-  
-  <header ref="root"
-    class="relative flex flex-wrap 2xl:justify-start 2xl:flex-nowrap z-30 w-full text-sm py-4 dark:bg-gray-800">
-    
-    <div class="max-w-[85rem] w-full mx-auto px-4 2xl:flex 2xl:items-center 2xl:justify-between" aria-label="Global">
-
-      <div class="flex items-center gap-3 justify-between">
-        <img v-if="logo" :src="logo" alt="Website Logo" class="h-[3em] max-w-none">
-        <div v-else></div>
-        <h1 v-if="title" v-html="title" class="text-3xl text-white font-semibold"></h1>
-        <div v-else></div>
-        <ez-menu v-if="menuItems.length">
-          <ul>
-            <li v-for="item in menuItems" :key="item.href">
-              <a :href="item.href">{{ item.label }}</a>
-            </li>
-          </ul>
-        </ez-menu>
-        <div v-else></div>
-      </div>
-  
-    </div>
-
-  </header>
-
-</template>
-
 <style>
   @import '../tailwind.css';
+
+  :host {
+  font-family: 'Playfair Display', serif;
+}
+
 </style>
