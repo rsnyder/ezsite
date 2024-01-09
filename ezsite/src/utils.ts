@@ -185,7 +185,6 @@ async function getFooterHtml() {
 }
 
 export async function getConfig() {
-  console.log('window.config', window.config)
   let configExtras: any = {}
   let baseurl = window?.config?.baseurl || `/${location.pathname.split('/')[1]}`
   console.log('baseurl', baseurl)
@@ -202,7 +201,8 @@ export async function getConfig() {
     ...window.config,
     ...configExtras,
     meta: setMeta(),
-    isGHP
+    isGHP, 
+    baseurl
   }
   if (isGHP) {
     if (!window.config.owner) window.config.owner = location.hostname.split('.')[0]
