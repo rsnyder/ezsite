@@ -1,4 +1,5 @@
-stylesheet: default.css
+stylesheets: 
+  - default.css
 nav:
   - label: Home
     href: /

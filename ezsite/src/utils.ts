@@ -183,10 +183,16 @@ async function getFooterHtml() {
 export async function getConfig() {
   let configExtras: any = {}
   let baseurl = window?.config?.baseurl || `/${location.pathname.split('/')[1]}`
-  let configUrl = location.hostname === 'localhost' ? 'http://localhost:8080/ezsite/config.yml' : `${baseurl}/ezsite/config.yml`
-  let resp = await fetch(configUrl)
-  if (resp.ok) configExtras = window.jsyaml.load(await resp.text())
-  if (resp.ok) window.config = {
+  const configUrls = [
+    location.hostname === 'localhost' ? 'http://localhost:8080/config.yml' : `${baseurl}/config.yml`,
+    location.hostname === 'localhost' ? 'http://localhost:8080/ezsite/default_config.yml' : `${baseurl}/ezsite/default_config.yml`
+  ]
+  for (const configUrl of configUrls) {
+    let resp = await fetch(configUrl)
+    if (resp.ok) configExtras = window.jsyaml.load(await resp.text())
+    if (resp.ok) break
+  }
+  window.config = {
     ...window.config,
     ...configExtras,
     meta: setMeta(),

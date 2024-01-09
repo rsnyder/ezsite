@@ -40,6 +40,6 @@ loadDependencies([
 	async () => {
 		window.config = await getConfig()
 		console.log(window.config)
-    if (window.config.stylesheet) loadDependencies([{tag: 'link', href: window.config.stylesheet, rel: 'stylesheet'}], () => {structureContent()})
-		else structureContent()
+    if (window.config.stylesheets) loadDependencies(window.config.stylesheets.map(ss => ({tag: 'link', href: ss, rel: 'stylesheet'})), () => {structureContent()})
+	else structureContent()
 })
