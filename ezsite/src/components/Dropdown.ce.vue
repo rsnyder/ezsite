@@ -7,10 +7,10 @@
       </svg>
     </sl-button>
     <sl-menu>
-      <sl-menu-item v-for="item in menuItems">
+      <sl-menu-item v-for="item in menuItems" @click="menuItemSelected(item, $event)">
         <span v-html="item.label"></span>
         <svg v-if="item.icon" slot="prefix" v-html="item.icon.outerHTML"></svg>
-        <span v-else slot="prefix" style="width:1em;margin-right: 0.5em;"></span>
+        <span v-else slot="prefix" style="width:1em;margin-right: 1em;"></span>
       </sl-menu-item>
     </sl-menu>
   </sl-dropdown>
@@ -19,7 +19,7 @@
   
 <script setup lang="ts">
 
-  import { computed, ref, toRaw, watch } from 'vue'
+  import { computed, onMounted, ref, toRaw, watch } from 'vue'
 
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
@@ -47,6 +47,24 @@
     ).observe(host.value, { childList: true, subtree: true })
   }
 
+  function menuItemSelected(item: any, evt:Event) {
+    console.log('menuItemSelected', item, evt)
+    let action = item.href.split('/').filter((x:string) => x).pop().toLowerCase()
+    action = location.host === action ? 'home' : action
+    if (action === 'search') window.open(item.href, '_blank');
+    else {
+      let href = new URL(item.href)
+      if (href.origin === location.origin) {
+        let baseurl = ((window as any)?.config || {})?.baseurl || '/'
+        let path = href.pathname
+        if (path.indexOf(baseurl) === -1) path = `${baseurl}${path.slice(1)}`
+        location.pathname = path
+      } else {
+        location.href = item.href
+      }
+    }
+  }
+
 </script>
 
 <style>
@@ -54,6 +72,6 @@
     width: 1em;
     height: 1em;
     vertical-align: middle;
-    margin-right: 0.5em;
+    margin-right: 1em;
   }
 </style>

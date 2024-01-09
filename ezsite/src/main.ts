@@ -53,7 +53,6 @@ window.md2html = md2html
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
 
-defineCustomElements()
 
 loadDependencies([
   {tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js'},
@@ -66,7 +65,9 @@ loadDependencies([
 			window.config.stylesheets.map(ss => {
 				return {tag: 'link', href: ss[0] == '/' ? ss : `${window.config.baseurl || 'http://localhost:8080'}/${ss}`, rel: 'stylesheet'}
 			}), 
-			() => {structureContent()}
+			() => {
+				structureContent()
+				defineCustomElements()}
 		)
 	} else structureContent()
 })
