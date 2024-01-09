@@ -435,7 +435,8 @@ export function structureContent() {
 
 }
 
-export function loadDependencies(dependencies:any[], callback:any, i:number = 0) {
+export function loadDependencies(dependencies:any[], callback:any = null, i:number = 0) {
+  console.log(dependencies[i])
   loadDependency(dependencies[i], () => {
     if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
     else if (callback) callback()

@@ -1,4 +1,3 @@
-// import './tailwind.css'
 import { defineCustomElement } from 'vue'
 import ('preline')
 
@@ -12,6 +11,7 @@ import Meta from './components/Meta.ce.vue'
 import Modal from './components/Modal.ce.vue'
 import Trigger from './components/Trigger.ce.vue'
 
+
 function defineCustomElements() {
 	customElements.define('ez-accordion', defineCustomElement(Accordion))
 	customElements.define('ez-collapse', defineCustomElement(Collapse))
@@ -22,7 +22,7 @@ function defineCustomElements() {
 	customElements.define('ez-meta', defineCustomElement(Meta))
 	customElements.define('ez-modal', defineCustomElement(Modal))
 	customElements.define('ez-trigger', defineCustomElement(Trigger))
-};
+}
 
 import { getConfig, loadDependencies, md2html, structureContent } from './utils'
 export { md2html }
@@ -31,13 +31,15 @@ window.md2html = md2html
 
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
+
 defineCustomElements()
 
-loadDependencies(
-	[{tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js'},
+loadDependencies([
+  {tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js'},
 	{tag: 'script', src: 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', crossorigin: 'anonymous', referrerpolicy: 'no-referrer'}],
 	async () => {
 		window.config = await getConfig()
 		console.log(window.config)
-		structureContent()
+    if (window.config.stylesheet) loadDependencies([{tag: 'link', href: window.config.stylesheet, rel: 'stylesheet'}], () => {structureContent()})
+		else structureContent()
 })

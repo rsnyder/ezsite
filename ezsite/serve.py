@@ -156,13 +156,15 @@ async def serve(path: Optional[str] = None):
   path = [pe for pe in path.split('/') if pe != ''] if path else []
   ext = path[-1].split('.')[-1].lower() if len(path) > 0 and '.' in path[-1] else None
   local_file_path = f'{BASEDIR}/{"/".join(path)}' if ext else f'{BASEDIR}/{"/".join(path)}/README.md'
+  logger.info(f'path: {path} ext: {ext} local_file_path: {local_file_path}')
   if os.path.exists(local_file_path):
     pass
-  else:
+  elif os.path.exists(f'{BASEDIR}/{"/".join(path)}.md'):
+    local_file_path = f'{BASEDIR}/{"/".join(path)}.md'
+  elif os.path.exists(f'{BASEDIR}/{"/".join(path)}/index.html'):
     local_file_path = f'{BASEDIR}/{"/".join(path)}/index.html'
-    if os.path.exists(local_file_path):
-      ext = 'html'
-    else:
+    ext = 'html'
+  else:
       return Response(status_code=404, content=not_found_page, media_type='text/html')
   if ext == 'ico':
     content = favicon
