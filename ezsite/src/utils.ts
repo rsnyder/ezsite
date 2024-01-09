@@ -355,10 +355,15 @@ function computeDataId(el:HTMLElement) {
 }
 
 export function structureContent() {
-  let main = document.querySelector('main')
+  let main = document.querySelector('main') as HTMLElement
   let restructured = document.createElement('main')
   let currentSection: HTMLElement = restructured;
   let sectionParam: HTMLElement | null
+
+  // Converts empty headings (changed to paragraphs by markdown converter) to headings with the correct level
+  (Array.from(main.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLElement[])
+  .filter(p => /^#{1,6}$/.test(p.textContent || ''))
+  .forEach(p => p.replaceWith(document.createElement(`h${p.textContent?.length}`)));
 
   (Array.from(main?.children || []) as HTMLElement[]).forEach((el:HTMLElement) => {
     if (el.tagName[0] === 'H' && isNumeric(el.tagName.slice(1))) {
