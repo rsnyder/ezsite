@@ -180,17 +180,43 @@ async function getFooterHtml() {
   if (resp.ok) return await resp.text()
 }
 
+async function getGhFile(acct, repo, path, branch='main') {
+  console.log(`getGhFile: acct=${acct}, repo=${repo}, path=${path}, branch=${branch}`)
+  let resp = await fetch(`https://api.github.com/repos/${acct}/${repo}/contents/${path}?ref=${branch}`)
+  if (resp.ok) {
+    resp = await resp.json()
+    return decodeURIComponent(escape(atob(resp.content)))
+  } else{
+    // console.log(`Github API failed: status=${resp.status}, retrying with raw.githubusercontent.com`)
+    resp = await fetch(`https://raw.githubusercontent.com/${acct}/${repo}/${branch}/${path}`)
+    if (resp.ok) return await resp.text()
+  }
+}
+
 export async function getConfig() {
   let configExtras: any = {}
-  let baseurl = window?.config?.baseurl || `/${location.pathname.split('/')[1]}`
-  const configUrls = [
-    location.hostname === 'localhost' ? 'http://localhost:8080/config.yml' : `${baseurl}/config.yml`,
-    location.hostname === 'localhost' ? 'http://localhost:8080/ezsite/default_config.yml' : `${baseurl}/ezsite/default_config.yml`
-  ]
-  for (const configUrl of configUrls) {
-    let resp = await fetch(configUrl)
-    if (resp.ok) configExtras = window.jsyaml.load(await resp.text())
-    if (resp.ok) break
+  if (isGHP) {
+    let acct = location.hostname.split('.')[0]
+    let repo = location.pathname.split('/')[1]
+    const configPaths = ['config.yml', 'ezsite/default_config.yml']
+    for (let path of configPaths) {
+      let resp = await getGhFile(acct, repo, path)
+      if (resp) {
+        configExtras = window.jsyaml.load(resp)
+        break
+      }
+    }
+  } else {
+    let baseurl = window?.config?.baseurl || `/${location.pathname.split('/')[1]}`
+    const configUrls = [
+      location.hostname === 'localhost' ? 'http://localhost:8080/config.yml' : `${baseurl}/config.yml`,
+      location.hostname === 'localhost' ? 'http://localhost:8080/ezsite/default_config.yml' : `${baseurl}/ezsite/default_config.yml`
+    ]
+    for (const configUrl of configUrls) {
+      let resp = await fetch(configUrl)
+      if (resp.ok) configExtras = window.jsyaml.load(await resp.text())
+      if (resp.ok) break
+    }
   }
   window.config = {
     ...window.config,
@@ -438,11 +464,9 @@ export function structureContent() {
   main?.replaceWith(restructured)
 
   return main
-
 }
 
 export function loadDependencies(dependencies:any[], callback:any = null, i:number = 0) {
-  console.log(dependencies[i])
   loadDependency(dependencies[i], () => {
     if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
     else if (callback) callback()
