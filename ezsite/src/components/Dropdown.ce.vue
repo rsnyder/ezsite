@@ -30,6 +30,7 @@
   // watch(menuItems, () => console.log('menuItems', toRaw(menuItems.value)))
 
   function getMenuItems() {
+    console.log(`baseurl=${((window as any)?.config || {})?.baseurl || ''}`)
     function parseSlot() {
       menuItems.value = Array.from(host.value.querySelectorAll('li'))
         .map((li: any) => {
@@ -48,16 +49,14 @@
   }
 
   function menuItemSelected(item: any, evt:Event) {
-    console.log('menuItemSelected', item, evt)
     let action = item.href.split('/').filter((x:string) => x).pop().toLowerCase()
     action = location.host === action ? 'home' : action
     if (action === 'search') window.open(item.href, '_blank');
     else {
       let href = new URL(item.href)
       if (href.origin === location.origin) {
-        let baseurl = ((window as any)?.config || {})?.baseurl || '/'
-        let path = href.pathname
-        if (path.indexOf(baseurl) === -1) path = `${baseurl}${path.slice(1)}`
+        let baseurl = ((window as any)?.config || {})?.baseurl || ''
+        let path = `${baseurl}${href.pathname}`
         location.pathname = path
       } else {
         location.href = item.href
