@@ -30,7 +30,6 @@
   // watch(menuItems, () => console.log('menuItems', toRaw(menuItems.value)))
 
   function getMenuItems() {
-    console.log(`baseurl=${((window as any)?.config || {})?.baseurl || ''}`)
     function parseSlot() {
       menuItems.value = Array.from(host.value.querySelectorAll('li'))
         .map((li: any) => {
