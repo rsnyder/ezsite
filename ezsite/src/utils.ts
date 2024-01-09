@@ -53,7 +53,7 @@ export function ezComponentHtml(el:HTMLElement) {
   let lines = el.textContent?.trim().split('\n') || []
   if (lines.length === 0) return ''
   let headLine = lines[0]
-  let tag = headLine.match(/\.ez-[^\W]+/)?.[0].slice(1)
+  let tag = headLine.match(/ez-[^\W]+/)?.[0]
   let attrs = asAttrs(parseHeadline(headLine))
   let slot = lines.length > 1 ? marked.parse(lines.slice(1).map(l => l.replace(/^    /,'')).join('\n')) : ''
   let elemHtml = `<${tag} ${attrs}>\n${slot}</${tag}>`
@@ -320,12 +320,25 @@ export async function convertToEzElements(el:HTMLElement) {
       (img.parentNode as HTMLElement).replaceWith(ezImage)
     })
 
+  /*
   Array.from(el.querySelectorAll('p'))
     .filter((p: HTMLParagraphElement) => /^\.ez-/.test(p.textContent || ''))
     .forEach((p: HTMLParagraphElement) => {
       let ezComponent = new DOMParser().parseFromString(ezComponentHtml(p), 'text/html').children[0].children[1].children[0]
       p.parentNode?.replaceChild(ezComponent, p)
     })
+  */
+
+  Array.from(el.querySelectorAll('blockquote'))
+  .filter((blockquote: HTMLQuoteElement) => /^\s*ez-\S+/.test(blockquote.textContent || ''))
+  .forEach((blockquote: HTMLQuoteElement) => {
+    let p = blockquote.querySelector('p') as HTMLParagraphElement
+    let ul = blockquote.querySelector('ul') as HTMLUListElement
+    let ezComponent = new DOMParser().parseFromString(ezComponentHtml(p), 'text/html').children[0].children[1].children[0]
+    if (ul) ezComponent.appendChild(ul)
+    blockquote.parentNode?.replaceChild(ezComponent, blockquote)
+  })
+    
 }
 
 function isNumeric(arg:any) { return !isNaN(arg) }

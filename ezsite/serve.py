@@ -113,13 +113,25 @@ html_template = html_template.replace('{{ site.components }}', components)
 def html_from_markdown(md, baseurl):
   html = html_template.replace('{{ content }}', markdown.markdown(md, extensions=['extra', 'toc']))
   soup = BeautifulSoup(html, 'html5lib')
-  for tag in soup.find_all(re.compile('^ve-')):
-    parent = tag.parent
-    if parent.next_sibling and parent.next_sibling.name == 'ul':
-      options_list = parent.next_sibling
-      tag.append(options_list)
-      parent.replace_with(tag)
-      # tag.parent.next_sibling.decompose()
+
+  for bc in soup.find_all('blockquote'):
+    for para in bc.find_all('p'):
+      if para.string.startswith('ez-'):
+        bc_lines = para.string.split('\n- ')
+        new_bc = soup.new_tag('blockquote')
+        new_bc.append(soup.new_tag('p'))
+        new_bc.p.string = bc_lines[0]
+        bc.insert_before(new_bc)
+        if len(bc_lines) > 1:
+          new_bc.append(soup.new_tag('ul'))
+          for ln in bc_lines[1:]:
+            li = soup.new_tag('li')
+            li.string = ln
+            new_bc.ul.append(li)
+        para.decompose()
+    if bc.renderContents().decode('utf-8').strip() == '':
+      bc.decompose()
+      
   for link in soup.find_all('a'):
     href = link.get('href')
     if href and not href.startswith('http') and not href.startswith('#') and not href.startswith('/'):
@@ -128,18 +140,16 @@ def html_from_markdown(md, baseurl):
     src = img.get('src')
     if not src.startswith('http') and not src.startswith('/'):
       img['src'] = f'{baseurl}{src}'
+
   for param in soup.find_all('param'):
     node = param.parent
     while node.next_sibling.name == 'param':
       node = node.next_sibling
     node.insert_after(param)
-  for heading in soup.find_all('h1'):
-    if heading.renderContents().decode('utf-8').strip() == '':
-      pass # heading.decompose()
   for para in soup.find_all('p'):
     if para.renderContents().decode('utf-8').strip() == '':
       para.decompose()
-  return soup.prettify()
+  return str(soup)
   
 @app.get('/{path:path}')
 async def serve(path: Optional[str] = None):
