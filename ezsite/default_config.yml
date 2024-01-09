@@ -1,5 +1,5 @@
 stylesheets: 
-  - default.css
+  - ezsite/default.css
 nav:
   - label: Home
     href: /
