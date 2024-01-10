@@ -45,7 +45,7 @@ function defineCustomElements() {
 	customElements.define('ez-trigger', defineCustomElement(Trigger))
 }
 
-import { getConfig, loadDependencies, md2html, structureContent } from './utils'
+import { getConfig, loadDependencies, md2html, structureContent, observeVisible } from './utils'
 export { md2html }
 let window = (globalThis as any).window as any
 window.md2html = md2html
@@ -65,7 +65,10 @@ loadDependencies([
 			window.config.stylesheets.map(ss => {
 				return {tag: 'link', href: ss[0] == '/' ? ss : `${window.config.baseurl || 'http://localhost:8080'}/${ss}`, rel: 'stylesheet'}
 			}), 
-			() => structureContent()
+			() => {
+				structureContent()
+				observeVisible()
+			}
 		)
 	} else structureContent()
 })

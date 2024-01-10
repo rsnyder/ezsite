@@ -409,7 +409,7 @@ export function structureContent() {
       }
 
       currentSection.innerHTML += heading.outerHTML
-      if (!heading.innerHTML.trim()) currentSection.firstChild?.remove()
+      // if (!heading.innerHTML.trim()) currentSection.firstChild?.remove()
 
       let headings = [...restructured.querySelectorAll(`H${sectionLevel-1}`)]
       let parent = sectionLevel === 1 || headings.length === 0 ? restructured : headings.pop()?.parentElement as HTMLElement
@@ -420,6 +420,8 @@ export function structureContent() {
       if (el !== sectionParam) currentSection.innerHTML += el.outerHTML
     }
   })
+
+  console.log(restructured)
 
   restructured.querySelectorAll('section').forEach((section:HTMLElement) => {
   if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
@@ -438,6 +440,17 @@ export function structureContent() {
     })
     section.appendChild(wrapper)
     }
+  });
+
+  (Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6') as NodeListOf<HTMLElement>) as HTMLHeadingElement[])
+  .filter(heading => !heading.innerHTML.trim())
+  .forEach(heading => heading.remove());
+
+  (Array.from(restructured?.querySelectorAll('param') as NodeListOf<HTMLElement>) as HTMLParamElement[])
+  .forEach(param => {
+    param.classList.forEach(c => (param.previousSibling as HTMLElement)?.classList.add(c))
+    if (param.id) (param.previousSibling as HTMLElement).id = param.id
+    param.remove()
   })
 
   convertToEzElements(restructured)
@@ -688,4 +701,34 @@ export function parseImageOptions(str: string) {
     format: elems.length > offset+4 && elems[offset+4] ? elems[offset+4] : format
   }
   return options
+}
+
+let visibleParagraphs: IntersectionObserverEntry[] = []
+export function observeVisible(callback:any = null) {
+  const observer = new IntersectionObserver((entries, observer) => {
+    let notVisible = entries.filter(entry => !entry.isIntersecting)
+    for (const entry of entries) { if (entry.isIntersecting) visibleParagraphs.push(entry) }
+    
+    visibleParagraphs = visibleParagraphs
+      .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
+      .filter(entry => entry.target.getBoundingClientRect().x < 300)
+    visibleParagraphs
+
+      .sort((a,b) => {
+        let aTop = a.target.getBoundingClientRect().top
+        let bTop = b.target.getBoundingClientRect().top
+        return aTop < bTop ? -1 : 1
+      })
+      .sort((a,b) => {
+        return a.intersectionRatio > b.intersectionRatio ? -1 : 1
+      })
+    visibleParagraphs.forEach(entry => {
+      console.log(entry, entry.intersectionRatio, entry.target.offsetLeft, entry.target.getBoundingClientRect())
+    })
+    document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
+    visibleParagraphs[0]?.target.classList.add('active')
+  }, { root: null, threshold: [1.0, .5], rootMargin: '0px 0px 0px 0px'})
+
+  // target the elements to be observed
+  document.querySelectorAll('p').forEach((paragraph) => observer.observe(paragraph))
 }
