@@ -212,13 +212,18 @@
       let link = new URL(anchorElem.href)
       let path = link.pathname.split('/').filter((p:string) => p)
       let zoomIdx = path.indexOf('zoom')
-      if (zoomIdx && path.length > zoomIdx+1) {
+      if (zoomIdx >= 0 && path.length > zoomIdx+1) {
         let region = path[zoomIdx+1]
         console.log(`region=${region}`)
         anchorElem.href = 'javascript:void(0)'
+        anchorElem.setAttribute('data-region', region)
         let imageEl = findImageEl(anchorElem)
         if (imageEl) {
-          anchorElem.addEventListener('click', () => { if (region) zoomto(region) })
+          anchorElem.addEventListener('click', (evt:Event) => {
+            console.log(evt)
+            let region = (evt.target as HTMLElement).getAttribute('data-region')
+            if (region) zoomto(region) 
+          })
         }
       }
     })
