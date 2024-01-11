@@ -209,9 +209,10 @@
     let el = host.value.parentElement
     while (el.parentElement && el.tagName !== 'MAIN') el = el.parentElement;
     (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
-      console.log(anchorElem)
       let link = new URL(anchorElem.href)
+      console.log(link)
       let path = link.pathname.split('/').filter((p:string) => p)
+      console.log(path)
       if (path.length > 1 && path[0] === 'zoom') {
         let region = path[1]
         console.log(`region=${region}`)
