@@ -214,12 +214,12 @@
       let zoomIdx = path.indexOf('zoom')
       if (zoomIdx >= 0 && path.length > zoomIdx+1) {
         let region = path[zoomIdx+1]
-        console.log(`region=${region}`)
         anchorElem.href = 'javascript:void(0)'
         anchorElem.setAttribute('data-region', region)
         let imageEl = findImageEl(anchorElem)
-        console.log(imageEl)
+        console.log(`imageEl=${imageEl !== null}}`)
         if (imageEl) {
+          console.log('adding click handler')
           anchorElem.addEventListener('click', (evt:Event) => {
             console.log(evt)
             let region = (evt.target as HTMLElement).getAttribute('data-region')
@@ -244,7 +244,6 @@
     while (el.parentElement && el.tagName !== 'BODY') {
       el = el.parentElement
       let imageEl = el.querySelector(':scope > ez-image, :scope > p > ez-image')
-      console.log('findImageEl', imageEl, host.value)
       if (imageEl) return imageEl === host.value ? imageEl : null
     }
   }
