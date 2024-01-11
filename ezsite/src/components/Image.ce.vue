@@ -214,13 +214,15 @@
       let zoomIdx = path.indexOf('zoom')
       if (zoomIdx >= 0 && path.length > zoomIdx+1) {
         let region = path[zoomIdx+1]
-        anchorElem.href = 'javascript:void(0)'
+        anchorElem.href = 'javascript:'
         anchorElem.setAttribute('data-region', region)
         let imageEl = findImageEl(anchorElem)
         console.log(`imageEl=${imageEl !== null}`)
         if (imageEl) {
           console.log('adding click handler')
           anchorElem.addEventListener('click', (evt:Event) => {
+            evt.preventDefault()
+            evt.stopPropagation()
             console.log(evt)
             let region = (evt.target as HTMLElement).getAttribute('data-region')
             if (region) zoomto(region) 
