@@ -6,7 +6,7 @@
     
     <div v-if="props.logo">
       <a v-if="props.url" :href="props.url">
-        <img class="h-[80px] w-[80px]" :src="props.logo" alt="logo"/>
+        <img class="logo" :src="props.logo" alt="logo"/>
       </a>
       <img v-else :src="props.logo" alt="logo" class="logo"/>
     </div>
@@ -52,7 +52,7 @@
   watch(shadow, () => applyProps() )
 
   const navEl = ref<string>()
-  watch(navEl, () => console.log(toRaw(navEl.value)) )
+  // watch(navEl, () => console.log(toRaw(navEl.value)) )
 
   onMounted(() => {
     nextTick(() => {
@@ -101,4 +101,9 @@
 
 <style>
   @import '../tailwind.css';
+  .logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+  }
 </style>

@@ -316,8 +316,12 @@ export async function getHtml() {
 export async function convertToEzElements(el:HTMLElement) {
   el.querySelectorAll('a').forEach(anchorElem => {
     let link = new URL(anchorElem.href)
-    let qargs = new URLSearchParams(link.search)
-    if (qargs.get('zoom')) anchorElem.setAttribute('rel', 'nofollow')
+    let path = link.pathname.split('/').filter(p => p)
+    if (path[0] === 'zoom') {
+      anchorElem.classList.add('zoom')
+      anchorElem.setAttribute('rel', 'nofollow')
+    }
+    console.log(anchorElem)
     if (isGHP && config.repo && link.origin === location.origin && link.pathname.indexOf(`/${config.repo}/`) !== 0) anchorElem.href = `/${config.repo}${link.pathname}`
   })
 
@@ -450,8 +454,19 @@ export function structureContent() {
   .forEach(param => {
     param.classList.forEach(c => (param.previousSibling as HTMLElement)?.classList.add(c))
     if (param.id) (param.previousSibling as HTMLElement).id = param.id
-    param.remove()
-  })
+    param.remove();
+  });
+
+  (Array.from(restructured?.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLParagraphElement[])
+  .forEach(para => {
+    let lines = para.textContent?.split('\n').map(l => l.trim()) || []
+    if (lines.length > 1) {
+      para.setAttribute('data-head', lines[0])
+      if (lines.length > 2) para.setAttribute('data-qids', lines[2])
+      if (lines.length > 3) para.setAttribute('data-related', lines[3])
+      para.innerHTML = lines[1]
+    }
+  });
 
   convertToEzElements(restructured)
   main?.replaceWith(restructured)

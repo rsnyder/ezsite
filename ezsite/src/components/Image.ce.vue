@@ -210,10 +210,9 @@
     while (el.parentElement && el.tagName !== 'MAIN') el = el.parentElement;
     (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
       let link = new URL(anchorElem.href)
-      let qargs = new URLSearchParams(link.search)
-      let region = qargs.get('zoom')
-      if (region) {
-        anchorElem.classList.add('zoom')
+      let path = link.pathname.split('/').filter((p:string) => p)
+      if (path.length > 1 && path[0] === 'zoom') {
+        let region = path[1]
         anchorElem.href = 'javascript:void(0)'
         let imageEl = findImageEl(anchorElem)
         if (imageEl) {

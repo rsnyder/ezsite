@@ -13,85 +13,51 @@
       ez-dropdown ul {
         display: none
       }
+      .zoom {
+        text-decoration: none;
+      }
     </style>
   </head>
   <body>
-    <ez-button label="Button"></ez-button>
-
-    <ez-dropdown>
-      <ul>
-        <li>
-          <a href="/">
-            Home
-            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>
-          </a>
-        </li>
-        <li><a href="/about">About</a></li>
-      </ul>
-    </ez-dropdown>
-    
-    <!--
-    <ez-header label="Plant Humanities Lab" logo="https://raw.githubusercontent.com/plant-humanities/media/main/images/phl-website-png-logo.png" background="gh:plant-humanities/media/images/header.jpg" subtitle="Explore the cultural histories of plants and their influence on human societies" auth="github" contact="ron.snyder@ithaka.org" url="/" sticky="" data-id="1.2" id="1.2" class="segment sticky">
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-      </ul>
-    </ez-header>
-    
-
-    <ez-menu>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-      </ul>
-    </ez-menu>
-  -->
-    <!--
-    <ez-header title="EZPage" color="#990001">
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-      </ul>
-    </ez-header>
 
     <main>
-      
-      <h2 class="font-bold text-2xl mt-4">Custom Menu Component</h2>
+
+      <section class="bg-slate-100 rounded m-2 p-2">
+        <ez-header label="Header" 
+                   logo="https://raw.githubusercontent.com/plant-humanities/media/main/images/phl-website-png-logo.png" 
+                   background="gh:plant-humanities/media/images/header.jpg" 
+                   subtitle="Explore the cultural histories of plants and their influence on human societies" 
+                   contact="ron@snyderjr.com" 
+                   url="/" 
+                   sticky
+        >
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+          </ul>
+        </ez-header>    
+      </section>
+
+      <h2 class="font-bold text-2xl mt-4">Menu</h2>
       <section class="bg-slate-100 rounded m-2 p-2">
         <ez-menu>
           <ul>
-            <li><a href="/">Home</a></li>
+            <li>
+              <a href="/">
+                Home
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>
+              </a>
+            </li>
             <li><a href="/about">About</a></li>
           </ul>
         </ez-menu>
       </section>
 
-      <h2 class="font-bold text-2xl mt-4">Custom Accordion Component</h2>
+      <h2 class="font-bold text-2xl mt-4">Modal</h2>
       <section class="bg-slate-100 rounded m-2 p-2">
-        <ez-accordion></ez-accordion>
+        <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded" onclick="toggleModal()">Show Modal</button>
       </section>
-
-      <h2 class="font-bold text-2xl mt-4">Custom Modal Component</h2>
-      <section class="bg-slate-100 rounded m-2 p-2">
-        <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded" onclick="toggleModal()">
-          Show Modal
-        </button>
-      </section>
-          
-      <h2 class="font-bold text-2xl mt-4">Entity Infobox and Viewer Triggers</h2>
-      <section class="bg-slate-100 rounded m-2 p-2">
-        The <ez-entity-infobox qid="Q6960545">Vainakh tower architecture</ez-entity-infobox>, also called Nakh architecture, is a characteristic feature of ancient and medieval architecture of <ez-entity-infobox qid="Q5187">Chechnya</ez-entity-infobox> and <ez-entity-infobox qid="Q5219">Ingushetia</ez-entity-infobox>.
-      </section>
-
-      <h2 class="font-bold text-2xl mt-4">Default Preline Collapse Component</h2>
-      <section class="bg-slate-100 rounded m-2 p-2">
-        <button type="button" class="hs-collapse-toggle bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4" id="hs-unstyled-collapse" data-hs-collapse="#hs-unstyled-collapse-heading">
-          Preline Collapse
-        </button>
-        <div id="hs-unstyled-collapse-heading" class="hs-collapse hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-unstyled-collapse">
-          This is a collapse body. It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions.
-        </div>
-      </section>
+  
       <h2 class="font-bold text-2xl mt-4">Image Viewer</h2>
       <section class="flow-root bg-slate-100 rounded m-2 p-2">
         <ez-image 
@@ -99,25 +65,25 @@
           right
         ></ez-image>
         <ul>
-          <li><ez-trigger zoomto="1763,1178,212,142">Zoom to 1</ez-trigger></li>
-          <li><ez-trigger zoomto="116,1494,255,170">Zoom to 2</ez-trigger></li>
+          <li><a href="zoom/1763,1178,212,142" class="zoom">Zoom to 1</a></li>
+          <li><a href="zoom/116,1494,255,170" class="zoom">Zoom to 2</a></li>
         </ul>
-        
       </section>
-      -->
+
+      <h2 class="font-bold text-2xl mt-4">Entity Infobox and Viewer Triggers</h2>
+      <section class="bg-slate-100 rounded m-2 p-2">
+        The <ez-entity-infobox qid="Q6960545">Vainakh tower architecture</ez-entity-infobox>, also called Nakh architecture, is a characteristic feature of ancient and medieval architecture of <ez-entity-infobox qid="Q5187">Chechnya</ez-entity-infobox> and <ez-entity-infobox qid="Q5219">Ingushetia</ez-entity-infobox>.
+      </section>
 
     </main>
-    
-    <!--
-    <a href="https://github.com/rsnyder/ezsite" target="_blank" class="text-blue-500 ml-4 mt-4">View on GitHub</a>
 
     <ez-modal></ez-modal>
-    -->
 
     <script src="main.ts" type="module"></script>
 
     <script>
       function toggleModal() {
+        console.log('toggleModal')
         let modal = document.querySelector('ez-modal')
         let isOpen = modal.getAttribute('open') !== null
         if (isOpen) modal.removeAttribute('open')

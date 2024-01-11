@@ -23,6 +23,10 @@ body {
   }
 }
 
+.zoom {
+  text-decoration: none;
+}
+
 main {
   display: flow-root;
   margin: 0 auto;

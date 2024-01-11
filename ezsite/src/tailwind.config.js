@@ -3,7 +3,7 @@ import preline from 'preline/plugin.js'
 export default {
   content: [
     './index.html', 
-    './src/**/*.{html,vue,js}', 
+    '**/*.{html,vue,js}', 
     'node_modules/preline/dist/*.js'],
   darkMode: 'class',
   theme: {
