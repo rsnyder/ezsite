@@ -210,11 +210,10 @@
     while (el.parentElement && el.tagName !== 'MAIN') el = el.parentElement;
     (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
       let link = new URL(anchorElem.href)
-      console.log(link)
       let path = link.pathname.split('/').filter((p:string) => p)
-      console.log(path)
-      if (path.length > 1 && path[0] === 'zoom') {
-        let region = path[1]
+      console.log(path, path[path.length-2], path[path.length-1])
+      if (path.length > 1 && path[path.length-2] === 'zoom') {
+        let region = path[path.length-1]
         console.log(`region=${region}`)
         anchorElem.href = 'javascript:void(0)'
         let imageEl = findImageEl(anchorElem)
