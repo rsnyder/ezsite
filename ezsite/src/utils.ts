@@ -424,8 +424,6 @@ export function structureContent() {
     }
   })
 
-  console.log(restructured)
-
   restructured.querySelectorAll('section').forEach((section:HTMLElement) => {
   if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
     section.classList.remove('cards')

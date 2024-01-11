@@ -218,6 +218,7 @@
         anchorElem.href = 'javascript:void(0)'
         anchorElem.setAttribute('data-region', region)
         let imageEl = findImageEl(anchorElem)
+        console.log(imageEl)
         if (imageEl) {
           anchorElem.addEventListener('click', (evt:Event) => {
             console.log(evt)
@@ -243,6 +244,7 @@
     while (el.parentElement && el.tagName !== 'BODY') {
       el = el.parentElement
       let imageEl = el.querySelector(':scope > ez-image, :scope > p > ez-image')
+      console.log('findImageEl', imageEl, host.value)
       if (imageEl) return imageEl === host.value ? imageEl : null
     }
   }
