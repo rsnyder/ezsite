@@ -711,6 +711,10 @@ video {
   z-index: 60;
 }
 
+.z-20 {
+  z-index: 20;
+}
+
 .float-right {
   float: right;
 }

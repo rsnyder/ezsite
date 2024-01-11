@@ -217,7 +217,7 @@
         anchorElem.href = 'javascript:void(0)'
         anchorElem.setAttribute('data-region', region)
         let imageEl = findImageEl(anchorElem)
-        console.log(`imageEl=${imageEl !== null}}`)
+        console.log(`imageEl=${imageEl !== null}`)
         if (imageEl) {
           console.log('adding click handler')
           anchorElem.addEventListener('click', (evt:Event) => {
