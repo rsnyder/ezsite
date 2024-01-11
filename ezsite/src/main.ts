@@ -55,15 +55,15 @@ loadDependencies([
 		window.config = await getConfig()
 		console.log(window.config)
     if (window.config.stylesheets) {
-		loadDependencies(
-			window.config.stylesheets.map(ss => {
-				let href = ss.indexOf('http') == 0
-					? ss
-					: location.hostname == 'localhost'
-						? `http://localhost:8080'}/${ss[0] == '/' ? ss.slice(1) : ss}`
-						: `${window.config.baseurl}/${ss[0] == '/' ? ss.slice(1) : ss}`
-				return {tag: 'link', href, rel: 'stylesheet'}
-			}), 
+		let stylesheets = window.config.stylesheets.map(ss => {
+			let href = ss.indexOf('http') == 0
+				? ss
+				: location.hostname == 'localhost'
+					? `http://localhost:8080/${ss[0] == '/' ? ss.slice(1) : ss}`
+					: `${window.config.baseurl}/${ss[0] == '/' ? ss.slice(1) : ss}`
+			return {tag: 'link', href, rel: 'stylesheet'}
+		})
+		loadDependencies(stylesheets,
 			() => {
 				structureContent()
 				defineCustomElements()
