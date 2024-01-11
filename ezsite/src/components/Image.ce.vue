@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
+  import { computed, onMounted, ref, toRaw, watch } from 'vue'
   import OpenSeadragon, { TiledImage } from 'openseadragon'
 
   type ImageSize = {

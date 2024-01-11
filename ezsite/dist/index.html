@@ -10,6 +10,9 @@
       html {
         font-family: Roboto, sans-serif;
       }
+      main {
+        padding-bottom: 100vh;
+      }
       ez-dropdown ul {
         display: none
       }
@@ -85,7 +88,6 @@
 
     <script>
       function toggleModal() {
-        console.log('toggleModal')
         let modal = document.querySelector('ez-modal')
         let isOpen = modal.getAttribute('open') !== null
         if (isOpen) modal.removeAttribute('open')
