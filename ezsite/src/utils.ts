@@ -321,7 +321,6 @@ export async function convertToEzElements(el:HTMLElement) {
       anchorElem.classList.add('zoom')
       anchorElem.setAttribute('rel', 'nofollow')
     }
-    console.log(anchorElem)
     if (isGHP && config.repo && link.origin === location.origin && link.pathname.indexOf(`/${config.repo}/`) !== 0) anchorElem.href = `/${config.repo}${link.pathname}`
   })
 
