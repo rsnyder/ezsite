@@ -40,7 +40,7 @@ function defineCustomElements() {
 	// customElements.define('ez-trigger', defineCustomElement(Trigger))
 }
 
-import { getConfig, loadDependencies, md2html, structureContent, observeVisible } from './utils'
+import { getConfig, setMeta, loadDependencies, md2html, structureContent, observeVisible } from './utils'
 export { md2html }
 let window = (globalThis as any).window as any
 window.md2html = md2html
@@ -53,7 +53,6 @@ loadDependencies([
 	{tag: 'script', src: 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', crossorigin: 'anonymous', referrerpolicy: 'no-referrer'}],
 	async () => {
 		window.config = await getConfig()
-		console.log(window.config)
     if (window.config.stylesheets) {
 		let stylesheets = window.config.stylesheets.map(ss => {
 			let href = ss.indexOf('http') == 0
@@ -67,8 +66,16 @@ loadDependencies([
 			() => {
 				structureContent()
 				defineCustomElements()
+				setMeta()
+				console.log(window.config)
 				observeVisible()
 			}
 		)
-	} else structureContent()
+	} else {
+		structureContent()
+		defineCustomElements()
+		setMeta()
+		console.log(window.config)
+		observeVisible()
+	}
 })
