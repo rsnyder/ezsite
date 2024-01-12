@@ -244,7 +244,13 @@ export function setMeta() {
       ? window.config.description
       : firstParagraph || ''
 
-  let robots =  meta?.getAttribute('robots') || (location.hostname.indexOf('www') === 0 ? '' : 'noindex, nofollow')
+  let robots = meta?.getAttribute('robots')
+    ? meta?.getAttribute('robots')
+    : window.config.robots
+      ? window.config.robots
+      : location.hostname.indexOf('www') === 0
+        ? '' 
+        : 'noindex, nofollow'
 
   if (title) {
     document.title = title
