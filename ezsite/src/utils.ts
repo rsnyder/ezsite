@@ -191,7 +191,7 @@ export async function getConfig() {
     ? window.config?.baseurl
     : isGHP ? `/${location.pathname.split('/')[1]}` : ''
   const configUrls = [
-    location.hostname === 'localhost' ? 'http://localhost:8080/ezsite/default_config.yml' : `${baseurl}/ezsite/default_config.yml`,
+    location.hostname === 'localhost' ? 'http://localhost:8080/ezsite/default_config.yml' : 'https://rsnyder.github.io/ezsite/ezsite/default_config.yml',
     location.hostname === 'localhost' ? 'http://localhost:8080/config.yml' : `${baseurl}/config.yml`
   ]
   for (const configUrl of configUrls) {
