@@ -1,6 +1,4 @@
 <template>
-
-    <div v-bind="$attrs"></div>
     
     <ez-hero v-if="backgroundImage"
       :background="backgroundImage"
@@ -12,12 +10,11 @@
     ></ez-hero>
 
     <ez-navbar ref="navbar"
-      class="sticky z-10"
+      :class="`${props.sticky ? 'sticky ' : ''}z-10`"
       :label="label"
       :subtitle="props.subtitle"
       :logo="props.logo"
       :url="props.url"
-      :sticky="props.sticky ? '' : null"
       :search-domain="props.searchDomain"
       :search-cx="props.searchCx"
       :search-key="props.searchKey"
@@ -92,7 +89,7 @@
     }
     if (props.label && props.label !== 'static') label.value = props.label
     // if (navbar.value) navbar.value.style.height = `${props.height || navbarHeight}px`
-    if (props.sticky) host.value.classList.add('sticky')
+    // if (props.sticky) host.value.classList.add('sticky')
     // navEl.value = (host.value.querySelector('ul') as HTMLUListElement)?.innerHTML
   }
 

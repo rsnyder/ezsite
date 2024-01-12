@@ -1,4 +1,5 @@
 import { marked } from 'marked'
+import { nextTick } from 'vue'
 
 export const iiifServer = 'https://iiif.juncture-digital.org'
 
@@ -466,6 +467,17 @@ export function structureContent() {
   });
 
   convertToEzElements(restructured)
+
+  let stickyHeader = restructured.querySelector('ez-header[sticky]')
+  let stickyElems = Array.from(restructured?.querySelectorAll('.sticky') as NodeListOf<HTMLElement>) as HTMLElement[]
+  if (stickyHeader) {
+    nextTick(() => {
+      let headerHeight = stickyHeader.getBoundingClientRect().height;
+      stickyElems.forEach(stickyEl => stickyEl.style.top = `${headerHeight}px`)  
+    })
+  }
+
+  restructured.style.paddingBottom = '100vh'
   main?.replaceWith(restructured)
 
   return main
@@ -717,15 +729,16 @@ export function parseImageOptions(str: string) {
 
 let visibleParagraphs: IntersectionObserverEntry[] = []
 export function observeVisible(callback:any = null) {
+  let stickyHeader = document.querySelector('ez-header[sticky]')
+  let topMargin = stickyHeader ? -stickyHeader.getBoundingClientRect().height : 0
   const observer = new IntersectionObserver((entries, observer) => {
     let notVisible = entries.filter(entry => !entry.isIntersecting)
     for (const entry of entries) { if (entry.isIntersecting) visibleParagraphs.push(entry) }
-    
     visibleParagraphs = visibleParagraphs
       .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
-      .filter(entry => entry.target.getBoundingClientRect().x < 300)
-    visibleParagraphs
+      .filter(entry => entry.target.getBoundingClientRect().x < 600)
 
+    visibleParagraphs = visibleParagraphs
       .sort((a,b) => {
         let aTop = a.target.getBoundingClientRect().top
         let bTop = b.target.getBoundingClientRect().top
@@ -734,12 +747,9 @@ export function observeVisible(callback:any = null) {
       .sort((a,b) => {
         return a.intersectionRatio > b.intersectionRatio ? -1 : 1
       })
-    visibleParagraphs.forEach(entry => {
-      console.log(entry, entry.intersectionRatio, entry.target.offsetLeft, entry.target.getBoundingClientRect())
-    })
     document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
     visibleParagraphs[0]?.target.classList.add('active')
-  }, { root: null, threshold: [1.0, .5], rootMargin: '0px 0px 0px 0px'})
+  }, { root: null, threshold: [1.0, .5], rootMargin: `${topMargin}px 0px 0px 0px`})
 
   // target the elements to be observed
   document.querySelectorAll('p').forEach((paragraph) => observer.observe(paragraph))

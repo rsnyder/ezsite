@@ -1,7 +1,7 @@
 <template>
 
   <section ref="root"
-    class="flex sticky top-0 items-center w-full pl-4 z-10 bg-[#000]/30"
+    class="flex top-0 items-center w-full pl-4 z-10 bg-[#000]/30"
     :style="{height: `${props.height}px`}">
     
     <div v-if="props.logo">
@@ -79,6 +79,7 @@
     if (props.background) host.value.style.backgroundColor = props.background
     if (props.offset) shadow.value.style.marginTop = `-${props.offset}px`
     if (props.sticky) {
+      console.log('sticky')
       host.value.classList.add('sticky')
       host.value.style.position = 'sticky'
       // host.value.style.top = '0'

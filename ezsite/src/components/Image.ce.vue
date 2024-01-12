@@ -240,7 +240,7 @@
     checkSibs(el)
     while (el.parentElement && el.tagName !== 'BODY') {
       el = el.parentElement
-      let imageEl = el.querySelector(':scope > ez-image, :scope > p > ez-image')
+      let imageEl = el.querySelector(':scope ez-image')
       if (imageEl) return imageEl === host.value ? imageEl : null
     }
   }

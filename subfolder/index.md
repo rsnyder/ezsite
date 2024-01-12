@@ -1,3 +1,0 @@
-# subfolder index.md
-
-[back](..)

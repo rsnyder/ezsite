@@ -7,8 +7,6 @@ body {
   color: rgb(24, 24, 27);
   line-height: 1.5;
   background-color: #f8f8f8;
-  /* max-width: 1200px; */
-  /* margin: auto; */
   animation: fadeInAnimation ease .3s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
@@ -21,10 +19,6 @@ body {
   100% {
     opacity: 1;
   }
-}
-
-.zoom {
-  text-decoration: none;
 }
 
 main {
@@ -44,8 +38,26 @@ ez-map ul {
   display: none;
 }
 
-main > section:first-of-type {
-  margin-top: 1em
+main > p:first-of-type {
+  margin-top: 1em,
+}
+
+.mcol {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 1em;
+}
+
+.sticky {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+}
+
+.active {
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -73,6 +85,7 @@ h4, h5, h6 {
 }
 
 p {
+  padding: 0.2em;
   font-size: 1.2em;
   line-height: 1.5;
   color: #444;
