@@ -444,7 +444,7 @@ function handleCodeEl(codeEl:HTMLCodeElement) {
         if (parsed.id) parent.id = parsed.id
         if (parsed.class) parsed.class.split(' ').forEach(c => parent.classList.add(c))
         if (parsed.style) parent.setAttribute('style', parsed.style)
-        codeWrapper.remove()
+        // codeWrapper.remove()
       }
     }
   }
@@ -458,9 +458,9 @@ export function structureContent() {
 
   // Converts empty headings (changed to paragraphs by markdown converter) to headings with the correct level
   if (main)
-  (Array.from(main?.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLElement[])
-  .filter(p => /^#{1,6}$/.test(p.textContent || ''))
-  .forEach(p => p.replaceWith(document.createElement(`h${p.textContent?.length}`)));
+    (Array.from(main?.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLElement[])
+    .filter(p => /^#{1,6}$/.test(p.textContent || ''))
+    .forEach(p => p.replaceWith(document.createElement(`h${p.textContent?.length}`)));
 
   (Array.from(main?.children || []) as HTMLElement[]).forEach((el:HTMLElement) => {
     if (el.tagName[0] === 'H' && isNumeric(el.tagName.slice(1))) {
