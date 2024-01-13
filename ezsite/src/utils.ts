@@ -123,21 +123,6 @@ function imgHandler(paraText:string) {
   return `<ez-image src="${img.src}" ${asAttrs(attrs)}></ez-image>`
 }
 
-function parseHeadline(s:string) {
-  let tokens:string[] = []
-  s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
-  s?.match(/[^\s"]+|"([^"]*)"/gmi)?.forEach((token:string) => {
-    if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
-    else tokens.push(token)
-  })
-  return Object.fromEntries(tokens.slice(1).map(token => {
-    if (token.indexOf('=') > 0) {
-      let [key, value] = token.split('=')
-      return [key, value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value]
-    } else return [token, "true"]
-  }))
-}
-
 function asAttrs(obj:any) {
   return Object.entries(obj).map(([k, v]) => v === 'true' ? k : `${k}="${v}"`).join(' ')
 }
@@ -385,6 +370,86 @@ function computeDataId(el:HTMLElement) {
   return dataId.reverse().join('.')
 }
 
+function parseHeadline(s:string) {
+  let tokens:string[] = []
+  s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
+  s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach((token:string) => {
+    if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
+    else tokens.push(token)
+  })
+  let parsed = {}
+  tokens.forEach(token => {
+    if (token.indexOf('=') > 0) {
+      let [key, value] = token.split('=')
+      value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
+      if (parsed[key]) parsed[key] += ` ${value}`
+      else parsed[key] = value
+    }
+    else if (token[0] === '.') {
+      let key = 'class'
+      let value = token.slice(1)
+      value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
+      if (parsed[key]) parsed[key] += ` ${value}`
+      else parsed[key] = value
+    }
+    else if (token[0] === ':') {
+      let key = 'style'
+      let value = token.slice(1)
+      value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
+      if (parsed[key]) parsed[key] += ` ${value}`
+      else parsed[key] = value
+    }
+    else if (token[0] === '"') {
+      let key = 'args'
+      let value = token.slice(1,-1)
+      if (parsed[key]) parsed[key].push(value)
+      else parsed[key] = [value]
+    }
+    else if (token[0] === '#') parsed['id'] = token.slice(1)
+    else if (/^\w+-\w+$/.test(token)) parsed['tag'] = token
+    else parsed[token] = 'true'
+  })
+  return parsed
+}
+
+function parseCodeEl(codeEl:HTMLCodeElement) {
+  let codeElems = codeEl.textContent.replace(/\s+\|\s+/g,'\n').split('\n').map(l => l.trim()).filter(x => x)
+  let parsed = parseHeadline(codeElems[0])
+  if (codeElems.length > 1) parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
+  return parsed
+}
+
+function handleCodeEl(codeEl:HTMLCodeElement) {
+  if (codeEl.parentElement?.tagName === 'P' || codeEl.parentElement?.tagName === 'PRE') {
+    let codeWrapper = (codeEl.parentElement?.tagName === 'P' ? codeEl.parentElement : codeEl.parentElement.parentElement.parentElement) as HTMLElement
+    let parent = codeWrapper.parentElement as HTMLElement
+    let codeLang = codeEl.parentElement?.tagName === 'PRE' 
+      ? Array.from(parent.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'ezsite'
+      : 'ezsite'
+    if (codeLang === 'ezsite') {
+      let parsed = parseCodeEl(codeEl)
+      // console.log(parsed)
+      if (parsed.tag) {
+        let parent = codeEl.parentElement.parentElement as HTMLElement
+        let ezComponent = document.createElement(parsed.tag)
+        if (parsed.id) ezComponent.id = parsed.id
+        if (parsed.class) parsed.class.split(' ').forEach(c => ezComponent.classList.add(c))
+        if (parsed.style) ezComponent.setAttribute('style', parsed.style)
+        for (const [k,v] of Object.entries(parsed)) {
+          if (k === 'tag' || k === 'id' || k === 'class' || k === 'style') continue
+          ezComponent.setAttribute(k, v)
+        }
+        codeWrapper.replaceWith(ezComponent)
+      } else if (parsed.class || parsed.style || parsed.id) {
+        if (parsed.id) parent.id = parsed.id
+        if (parsed.class) parsed.class.split(' ').forEach(c => parent.classList.add(c))
+        if (parsed.style) parent.setAttribute('style', parsed.style)
+        codeWrapper.remove()
+      }
+    }
+  }
+}
+
 export function structureContent() {
   let main = document.querySelector('main') as HTMLElement
   let restructured = document.createElement('main')
@@ -416,12 +481,14 @@ export function structureContent() {
       currentSection = document.createElement('section')
       currentSection.classList.add(`section-${sectionLevel}`)
       Array.from(heading.classList).forEach(c => currentSection.classList.add(c))
+      /*
       sectionParam = heading.nextElementSibling?.tagName === 'PARAM'
         ? heading.nextElementSibling as HTMLElement
         : null
       if (sectionParam) {
         sectionParam.classList.forEach(c => currentSection.classList.add(c))
       }
+      */
       heading.className = ''
       if (heading.id) {
         currentSection.id = heading.id
@@ -459,6 +526,9 @@ export function structureContent() {
     section.appendChild(wrapper)
     }
   });
+
+  (Array.from(restructured?.querySelectorAll('code') as NodeListOf<HTMLElement>) as HTMLCodeElement[])
+  .forEach(codeEl => handleCodeEl(codeEl));
 
   (Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6') as NodeListOf<HTMLElement>) as HTMLHeadingElement[])
   .filter(heading => !heading.innerHTML.trim())

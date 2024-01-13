@@ -113,42 +113,30 @@ html_template = html_template.replace('{{ site.components }}', components)
 def html_from_markdown(md, baseurl):
   html = html_template.replace('{{ content }}', markdown.markdown(md, extensions=['extra', 'toc']))
   soup = BeautifulSoup(html, 'html5lib')
-
-  for bc in soup.find_all('blockquote'):
-    for para in bc.find_all('p'):
-      if para.string.startswith('ez-'):
-        bc_lines = para.string.split('\n- ')
-        new_bc = soup.new_tag('blockquote')
-        new_bc.append(soup.new_tag('p'))
-        new_bc.p.string = bc_lines[0]
-        bc.insert_before(new_bc)
-        if len(bc_lines) > 1:
-          new_bc.append(soup.new_tag('ul'))
-          for ln in bc_lines[1:]:
-            li = soup.new_tag('li')
-            li.string = ln
-            new_bc.ul.append(li)
-        para.decompose()
-    if bc.renderContents().decode('utf-8').strip() == '':
-      bc.decompose()
       
   for link in soup.find_all('a'):
     href = link.get('href')
     if href and not href.startswith('http') and not href.startswith('#') and not href.startswith('/'):
       link['href'] = f'{baseurl}{href}'
+  
   for img in soup.find_all('img'):
     src = img.get('src')
     if not src.startswith('http') and not src.startswith('/'):
       img['src'] = f'{baseurl}{src}'
-
-  for param in soup.find_all('param'):
-    node = param.parent
-    while node.next_sibling.name == 'param':
-      node = node.next_sibling
-    node.insert_after(param)
-  for para in soup.find_all('p'):
-    if para.renderContents().decode('utf-8').strip() == '':
-      para.decompose()
+      
+  for code in soup.find_all('code'):
+    if code.parent.name == 'pre':
+      top_div = soup.new_tag('div')
+      if code.get('class'): top_div['class'] = code.get('class')
+      wrapper_div = soup.new_tag('div')
+      top_div.append(wrapper_div)
+      pre = soup.new_tag('pre')
+      wrapper_div.append(pre)
+      new_code = soup.new_tag('code')
+      new_code.string = code.string
+      pre.append(new_code)
+      code.parent.replace_with(top_div)
+  logger.info(soup.prettify())
   return str(soup)
   
 @app.get('/{path:path}')
