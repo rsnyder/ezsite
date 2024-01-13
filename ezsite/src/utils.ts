@@ -463,12 +463,12 @@ export function structureContent() {
     (Array.from(main?.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLElement[])
     .filter(p => {
       console.log(p)
-      let ptext = p.childNodes[0].nodeValue
+      let ptext = p.childNodes[0].nodeValue.trim()
       console.log(ptext)
       return /^#{1,6}$/.test(ptext)
     })
     .forEach(p => {
-      let ptext = p.childNodes[0].nodeValue
+      let ptext = p.childNodes[0].nodeValue.trim()
       console.log(ptext)
       let codeEl = p.querySelector('code') as HTMLCodeElement
       let heading = document.createElement(`h${ptext.length}`)
