@@ -462,6 +462,7 @@ export function structureContent() {
   if (main)
     (Array.from(main?.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLElement[])
     .filter(p => {
+      console.log(p)
       let ptext = p.childNodes[0].nodeValue
       console.log(ptext)
       return /^#{1,6}$/.test(ptext)
