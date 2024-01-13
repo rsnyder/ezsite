@@ -21,6 +21,11 @@
 
 `ez-header label=Header sticky`
 
+```
+ez-menu
+[About](/about)
+```
+
 # Section level 1
 
 ## Section level 2

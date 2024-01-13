@@ -136,7 +136,6 @@ def html_from_markdown(md, baseurl):
       new_code.string = code.string
       pre.append(new_code)
       code.parent.replace_with(top_div)
-  logger.info(soup.prettify())
   return str(soup)
   
 @app.get('/{path:path}')

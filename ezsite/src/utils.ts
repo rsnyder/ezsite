@@ -441,6 +441,15 @@ function handleCodeEl(codeEl:HTMLCodeElement) {
           if (k === 'tag' || k === 'id' || k === 'class' || k === 'style') continue
           ezComponent.setAttribute(k, v)
         }
+        if (parsed.args) {
+          let ul = document.createElement('ul')
+          ezComponent.appendChild(ul)
+          for (const arg of parsed.args) {
+            let li = document.createElement('li')
+            li.innerHTML = marked.parse(arg)
+            ul.appendChild(li)
+          }
+        }
         codeWrapper.replaceWith(ezComponent)
       } else if (parsed.class || parsed.style || parsed.id) {
         if (parsed.id) parent.id = parsed.id
@@ -543,12 +552,14 @@ export function structureContent() {
   .filter(heading => !heading.innerHTML.trim())
   .forEach(heading => heading.remove());
 
+  /*
   (Array.from(restructured?.querySelectorAll('param') as NodeListOf<HTMLElement>) as HTMLParamElement[])
   .forEach(param => {
     param.classList.forEach(c => (param.previousSibling as HTMLElement)?.classList.add(c))
     if (param.id) (param.previousSibling as HTMLElement).id = param.id
     param.remove();
   });
+  */
 
   (Array.from(restructured?.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLParagraphElement[])
   .forEach(para => {
