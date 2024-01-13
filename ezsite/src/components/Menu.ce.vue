@@ -66,6 +66,7 @@
 </script>
 
 <style>
+  @import '@shoelace-style/shoelace/dist/themes/light.css';
   @import '../tailwind.css';
   sl-menu-item svg {
     width: 1em;

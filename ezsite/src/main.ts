@@ -6,7 +6,7 @@ import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js'
 import '@shoelace-style/shoelace/dist/components/menu/menu.js'
 import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js'
 
-import '@shoelace-style/shoelace/dist/themes/light.css'
+// import '@shoelace-style/shoelace/dist/themes/light.css'
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js'
 // setBasePath('https://raw.githubusercontent.com/rsnyder/ezsite/ezsite/dist')
 setBasePath('node_modules/@shoelace-style/shoelace/dist');
@@ -49,8 +49,10 @@ window.md2html = md2html
 console.log(`ezsite: version=${process.env.version}`)
 
 loadDependencies([
-  {tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js'},
-	{tag: 'script', src: 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', crossorigin: 'anonymous', referrerpolicy: 'no-referrer'}],
+  	{tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js'},
+	{tag: 'script', src: 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', crossorigin: 'anonymous', referrerpolicy: 'no-referrer'},
+	// {tag: 'link', src: '../css/index.css', type: 'stylesheet'},
+	],
 	async () => {
 		window.config = await getConfig()
     if (window.config.stylesheets) {
