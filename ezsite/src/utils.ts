@@ -463,16 +463,18 @@ export function structureContent() {
     (Array.from(main?.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLElement[])
     .filter(p => {
       let ptext = p.childNodes[0].nodeValue
-      console.log(ptext)
       return /^#{1,6}$/.test(ptext)
     })
     .forEach(p => {
+      let ptext = p.childNodes[0].nodeValue
+      console.log(ptext)
       let codeEl = p.querySelector('code') as HTMLCodeElement
-      p.replaceWith(document.createElement(`h${p.textContent?.length}`))
+      let heading = document.createElement(`h${ptext.length}`)
+      p.replaceWith(heading)
       if (codeEl) {
         let codeWrapper = document.createElement('p')
         codeWrapper.appendChild(codeEl)
-        p.parentElement?.insertBefore(codeWrapper, p.nextSibling)
+        p.parentElement?.insertBefore(codeWrapper, heading.nextSibling)
       }
     });
 
