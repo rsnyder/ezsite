@@ -461,22 +461,17 @@ export function structureContent() {
   // Converts empty headings (changed to paragraphs by markdown converter) to headings with the correct level
   if (main)
     (Array.from(main?.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLElement[])
-    .filter(p => {
-      console.log(p)
-      let ptext = p.childNodes[0].nodeValue?.trim()
-      console.log(ptext)
-      return /^#{1,6}$/.test(ptext)
-    })
+    .filter(p => /^#{1,6}$/.test(p.childNodes[0].nodeValue?.trim()))
     .forEach(p => {
       let ptext = p.childNodes[0].nodeValue.trim()
-      console.log(ptext)
       let codeEl = p.querySelector('code') as HTMLCodeElement
+      console.log(ptext, codeEl)
       let heading = document.createElement(`h${ptext.length}`)
       p.replaceWith(heading)
       if (codeEl) {
         let codeWrapper = document.createElement('p')
         codeWrapper.appendChild(codeEl)
-        p.parentElement?.insertBefore(codeWrapper, heading.nextSibling)
+        heading.parentElement?.insertBefore(codeWrapper, heading.nextSibling)
       }
     });
 
