@@ -428,7 +428,7 @@ function handleCodeEl(codeEl:HTMLCodeElement) {
       : 'ezsite'
     if (codeLang === 'ezsite') {
       let parsed = parseCodeEl(codeEl)
-      // console.log(parsed)
+      console.log(parsed)
       if (parsed.tag) {
         let parent = codeEl.parentElement.parentElement as HTMLElement
         console.log(codeWrapper)
@@ -446,7 +446,7 @@ function handleCodeEl(codeEl:HTMLCodeElement) {
         if (parsed.id) parent.id = parsed.id
         if (parsed.class) parsed.class.split(' ').forEach(c => parent.classList.add(c))
         if (parsed.style) parent.setAttribute('style', parsed.style)
-        // codeWrapper.remove()
+        codeWrapper.remove()
       }
     }
   }
