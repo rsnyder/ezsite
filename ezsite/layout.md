@@ -19,21 +19,17 @@
 
 </style>
 
-> ez-header label="Header" sticky
+`ez-header label=Header sticky`
 
 # Section level 1
 
 ## Section level 2
-
-###
-`.test`
 
 ### Section level 3
 
 #### Section level 4
 
 #
-
 `.mcol`
 
 ## 
@@ -55,7 +51,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ##
 
 ###
-
 `.sticky`
 
 `ez-image src=wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg`

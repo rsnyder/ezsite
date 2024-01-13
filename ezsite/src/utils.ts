@@ -465,7 +465,6 @@ export function structureContent() {
     .forEach(p => {
       let ptext = p.childNodes[0].nodeValue.trim()
       let codeEl = p.querySelector('code') as HTMLCodeElement
-      console.log(ptext, codeEl)
       let heading = document.createElement(`h${ptext.length}`)
       p.replaceWith(heading)
       if (codeEl) {
