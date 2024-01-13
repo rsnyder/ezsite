@@ -431,6 +431,8 @@ function handleCodeEl(codeEl:HTMLCodeElement) {
       // console.log(parsed)
       if (parsed.tag) {
         let parent = codeEl.parentElement.parentElement as HTMLElement
+        console.log(codeWrapper)
+        console.log(parent)
         let ezComponent = document.createElement(parsed.tag)
         if (parsed.id) ezComponent.id = parsed.id
         if (parsed.class) parsed.class.split(' ').forEach(c => ezComponent.classList.add(c))
@@ -527,9 +529,6 @@ export function structureContent() {
     }
   });
 
-  (Array.from(restructured?.querySelectorAll('code') as NodeListOf<HTMLElement>) as HTMLCodeElement[])
-  .forEach(codeEl => handleCodeEl(codeEl));
-
   (Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6') as NodeListOf<HTMLElement>) as HTMLHeadingElement[])
   .filter(heading => !heading.innerHTML.trim())
   .forEach(heading => heading.remove());
@@ -552,7 +551,30 @@ export function structureContent() {
     }
   });
 
-  convertToEzElements(restructured)
+  // convertToEzElements(restructured)
+
+  (Array.from(restructured?.querySelectorAll('code') as NodeListOf<HTMLElement>) as HTMLCodeElement[])
+  .forEach(codeEl => handleCodeEl(codeEl));
+
+  restructured.querySelectorAll('a').forEach(anchorElem => {
+    let link = new URL(anchorElem.href)
+    let path = link.pathname.split('/').filter(p => p)
+    if (path[0] === 'zoom') {
+      anchorElem.classList.add('zoom')
+      anchorElem.setAttribute('rel', 'nofollow')
+    }
+    if (isGHP && config.repo && link.origin === location.origin && link.pathname.indexOf(`/${config.repo}/`) !== 0) anchorElem.href = `/${config.repo}${link.pathname}`
+  })
+
+  Array.from(restructured.querySelectorAll('img'))
+    .forEach((img: HTMLImageElement) => {
+      if (img.parentElement?.classList.contains('card')) return
+      let ezImage = document.createElement('ez-image')
+      ezImage.setAttribute('src', img.src)
+      ezImage.setAttribute('alt', img.alt)
+      ezImage.setAttribute('left', '');
+      (img.parentNode as HTMLElement).replaceWith(ezImage)
+    })
 
   let stickyHeader = restructured.querySelector('ez-header[sticky]')
   let stickyElems = Array.from(restructured?.querySelectorAll('.sticky') as NodeListOf<HTMLElement>) as HTMLElement[]
