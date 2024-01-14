@@ -1,174 +1,19 @@
 import { marked } from 'marked'
 import { nextTick } from 'vue'
+import { Md5 } from 'ts-md5'
 
 export const iiifServer = 'https://iiif.juncture-digital.org'
 
-marked.use({
-  walkTokens(token: any) {
-    const { type, raw } = token
-    /*
-    if (type === 'paragraph' && (raw.startsWith('.ez-'))) {
-      token.type = 'code'
-      token.lang = 'juncture'
-    }
-    */
-  },
-  renderer: {
-    paragraph(paraText) {
-
-      // if (paraText.startsWith('<img')) return imgHandler(paraText)
-
-      let fnRefs = Array.from(paraText.matchAll(/(\[\^(\w+)\])([^:]|\s|$)/g))        // footnote references
-      let markedText = Array.from(paraText.matchAll(/==(.+?)==\{([^\}]+)/g))  // marked text
-      if (fnRefs.length || markedText.length) {
-        paraText = footnoteReferencesHandler(paraText)
-        paraText = markedTextHandler(paraText)
-        return `<p>${paraText}</p>`
-      }
-
-      let fns = Array.from(paraText.matchAll(/(\[\^(\w+)\]:)/g))              // footnotes
-      if (fns.length) {
-        return `<ol style="margin-left:-1rem;">${footnotesHandler(paraText)}</ol>`
-      }
-      
-      return false // Use default renderer
-    
-    },
-    code(code, language) {
-      if (language === 'juncture') {
-        let lines = code.trim().split('\n')
-        let headLine = lines[0]
-        let tag = headLine.match(/\.ez-[^\W]+/)?.[0].slice(1)
-        let attrs = asAttrs(parseHeadline(headLine))
-        let slot = lines.length > 1 ? marked.parse(lines.slice(1).map(l => l.replace(/^    /,'')).join('\n')) : ''
-        let elemHtml = `<${tag} ${attrs}>\n${slot}</${tag}>`
-        return elemHtml
-      }
-      return false // Use default code renderer.
-    }
-
-  }
-})
-
 export function isURL(str:string) { return /^https*:\/\//.test(str) }
+export function isQid(s:string) { return /^Q\d+$/.test(s) }
+export function isCoords(s:string) { return /^[+-]?\d+(.\d*|\d*),{1}[+-]?\d+(.\d*|\d*)$/.test(s) }
+export function isNumeric(arg:any) { return !isNaN(arg) }
 
-const isGHP = /\.github\.io$/.test(location.hostname)
+export const isGHP = /\.github\.io$/.test(location.hostname)
 
-export function ezComponentHtml(el:HTMLElement) {
-  let lines = el.textContent?.trim().split('\n') || []
-  if (lines.length === 0) return ''
-  let headLine = lines[0]
-  let tag = headLine.match(/ez-[^\W]+/)?.[0]
-  let attrs = asAttrs(parseHeadline(headLine))
-  let slot = lines.length > 1 ? marked.parse(lines.slice(1).map(l => l.replace(/^    /,'')).join('\n')) : ''
-  let elemHtml = `<${tag} ${attrs}>\n${slot}</${tag}>`
-  return elemHtml
-}
+const window = (globalThis as any).window as any
 
-function markedTextHandler(paraText: string) {
-  let markedText = paraText.matchAll(/==(.+?)==\{([^\}]+)/g)
-  let segments:string[] = []
-  let start = 0
-  for (const match of markedText) {
-    segments.push(paraText.slice(start, match.index))
-    let [all, text, attrStr] = match
-    let attrs = parseAttrsStr(attrStr)
-    let tag = attrs.qid ? 'ez-entity-infobox' : 'ez-trigger'
-    segments.push(`<${tag} ${asAttrs(attrs)}>${text}</${tag}>`)
-    start = (match.index || 0) + all.length + 1
-  }
-  segments.push(paraText.slice(start))
-  return segments.join('')
-}
-
-function footnoteReferencesHandler(paraText:string) { // TODO - Handle multiple references to the same footnote
-  let segments:string[] = []
-  let start = 0
-  Array.from(paraText.matchAll(/(\[\^(\w+)\])([^:]|\s|$)/g)).forEach(match => {
-    segments.push(paraText.slice(start, match.index))
-    let [all, group, fnRef] = match
-    segments.push(`<sup><a id="fnRef:${fnRef}" href="#fn:${fnRef}" style="font-weight:bold;padding:0 3px;">${fnRef}</a></sup>`)
-    start = (match.index || 0) + group.length
-  })
-  segments.push(paraText.slice(start))
-  return segments.join('')
-}
-
-function footnotesHandler(paraText:string) { // TODO - Handle multiple references to the same footnote
-  let footnotes:string[] = []
-  let start = 0
-  let backLink:string = ''
-  let fnRef:string = ''
-  Array.from(paraText.matchAll(/(\[\^(\w+)\]:)/g)).forEach(match => {
-    let [all, _, _fnRef] = match
-    if (backLink) {
-      let text = paraText.slice(start, match.index).trim()
-      footnotes.push(`<li id="fn:${fnRef}" role="doc-endnote"><p>${text}${backLink}</p></li>`)
-    }
-    backLink = `<a href="#fnRef:${_fnRef}" title="Jump back to footnote ${_fnRef} in the text" class="reversefootnote" role="doc-backlink" style="margin-left:6px;text-decoration:none;">↩</a>`
-    fnRef = _fnRef
-    start = (match.index || 0) + all.length + 1
-  })
-  let text = paraText.slice(start).trim()
-  footnotes.push(`<li id="fn:${fnRef}" role="doc-endnote"><p>${text}${backLink}</p></li>`)
-  return footnotes.join('')
-}
-
-function imgHandler(paraText:string) {
-  let match = paraText.match(/(<img.+>)\s*{?([^\}]+)?/) || []
-  let [_, imgStr, attrStr] = match
-  let img:any = new DOMParser().parseFromString(imgStr, 'text/html').children[0].children[1].children[0]
-  let attrs = parseAttrsStr(attrStr)
-  if (!attrs.full && !attrs.right) attrs.left = 'true'
-  return `<ez-image src="${img.src}" ${asAttrs(attrs)}></ez-image>`
-}
-
-function asAttrs(obj:any) {
-  return Object.entries(obj).map(([k, v]) => v === 'true' ? k : `${k}="${v}"`).join(' ')
-}
-
-function isQid(s:string) { return /^Q\d+$/.test(s) }
-function isCoords(s:string) { return /^[+-]?\d+(.\d*|\d*),{1}[+-]?\d+(.\d*|\d*)$/.test(s) }
-
-function parseAttrsStr(s: string): any {
-  if (!s) return {}
-  let tokens:string[] = []
-  s = s.replace(/“/g,'"').replace(/”/g,'"').replace(/’/g,"'")
-  s?.match(/[^\s"]+|"([^"]*)"/gmi)?.forEach(token => {
-    if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
-    else tokens.push(token)
-  })
-  let obj:any = {}
-  let classes = new Set()
-  tokens.forEach(token => {
-    if (token[0] === '#') obj.id = token.slice(1)
-    else if (token[0] === '.') classes.add(token.slice(1))
-    else if (token.indexOf('=') > 0) {
-      let [key, value] = token.split('=')
-      if (key === 'class') value.split(',').forEach(c => classes.add(c))
-      else obj[key] = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
-    }
-    else if (isQid(token)) obj.qid = token
-    else if (isCoords(token)) obj.zoomto = token
-    else obj[token] = "true"
-  })
-  if (classes.size > 0) obj.class = Array.from(classes).join(' ')
-  return obj
-}
-
-export function md2html(markdown: string) {
-  return marked.parse(markdown)
-}
-
-async function getHeaderHtml() {
-  let resp = await fetch('/_includes/header.html')
-  if (resp.ok) return await resp.text()
-}
-
-async function getFooterHtml() {
-  let resp = await fetch('/_includes/footer.html')
-  if (resp.ok) return await resp.text()
-}
+export function md2html(markdown: string) { return marked.parse(markdown) }
 
 export async function getConfig() {
   let configExtras: any = {}
@@ -263,105 +108,8 @@ export function setMeta() {
   window.config = {...window.config, ...{meta: {title, description, robots, seo}}}
 }
 
-export async function getHtml() {
-    
-  let path = location.pathname.split('/').filter(p => p)
-  let branch = 'main'
-  let owner: string = '', 
-      repo: string = '', 
-      resp: Response
-
-  owner = config.owner
-  repo = config.repo
-
-  if (path.length === 0) path = ['README.md']
-
-  let contentUrl = location.hostname === 'localhost'
-    ? `${location.origin}/${path}`
-    : `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`
-
-  let rawText, markdown
-  resp = await fetch(contentUrl)
-  if (resp.ok) {
-    let rawText = await resp.text()
-    if (rawText.indexOf('<!DOCTYPE html>') < 0) markdown = rawText
-  } 
-  if (!markdown && !/\.md$/.test(contentUrl)) {
-    contentUrl += '.md'
-    resp = await fetch(contentUrl)
-    if (resp.ok) {
-      rawText = await resp.text()
-      if (rawText.indexOf('<!DOCTYPE html>') < 0) markdown = rawText
-    }
-    if (!markdown) {
-      contentUrl = contentUrl.replace(/\.md$/, '/README.md')
-      resp = await fetch(contentUrl)
-      if (resp.ok) {
-        rawText = await resp.text()
-        if (rawText.indexOf('<!DOCTYPE html>') < 0) markdown = rawText
-      }      
-    }
-  }
-  if (markdown) {
-    let headerHtml = (await getHeaderHtml() || '').replace(/\{\{\s*site\.baseurl\s*\}\}/g, '/')
-    let footerHtml = await getFooterHtml() || ''
-    let el:HTMLElement = new DOMParser().parseFromString(md2html(markdown), 'text/html').children[0].children[1] as HTMLElement
-    let html = `
-      ${headerHtml}
-      <main class="page-content" aria-label="Content">${el.innerHTML}</main>
-      ${footerHtml}
-    `
-    return html
-  }
-}
-
-export async function convertToEzElements(el:HTMLElement) {
-  el.querySelectorAll('a').forEach(anchorElem => {
-    let link = new URL(anchorElem.href)
-    let path = link.pathname.split('/').filter(p => p)
-    if (path[0] === 'zoom') {
-      anchorElem.classList.add('zoom')
-      anchorElem.setAttribute('rel', 'nofollow')
-    }
-    if (isGHP && config.repo && link.origin === location.origin && link.pathname.indexOf(`/${config.repo}/`) !== 0) anchorElem.href = `/${config.repo}${link.pathname}`
-  })
-
-  Array.from(el.querySelectorAll('img'))
-    .forEach((img: HTMLImageElement) => {
-      if (img.parentElement?.classList.contains('card')) return
-      let ezImage = document.createElement('ez-image')
-      ezImage.setAttribute('src', img.src)
-      ezImage.setAttribute('alt', img.alt)
-      ezImage.setAttribute('left', '');
-      (img.parentNode as HTMLElement).replaceWith(ezImage)
-    })
-
-  /*
-  Array.from(el.querySelectorAll('p'))
-    .filter((p: HTMLParagraphElement) => /^\.ez-/.test(p.textContent || ''))
-    .forEach((p: HTMLParagraphElement) => {
-      let ezComponent = new DOMParser().parseFromString(ezComponentHtml(p), 'text/html').children[0].children[1].children[0]
-      p.parentNode?.replaceChild(ezComponent, p)
-    })
-  */
-
-  Array.from(el.querySelectorAll('blockquote'))
-  .filter((blockquote: HTMLQuoteElement) => /^\s*ez-\S+/.test(blockquote.textContent || ''))
-  .forEach((blockquote: HTMLQuoteElement) => {
-    let p = blockquote.querySelector('p') as HTMLParagraphElement
-    let ul = blockquote.querySelector('ul') as HTMLUListElement
-    let ezComponent = new DOMParser().parseFromString(ezComponentHtml(p), 'text/html').children[0].children[1].children[0]
-    if (ul) ezComponent.appendChild(ul)
-    blockquote.parentNode?.replaceChild(ezComponent, blockquote)
-  })
-    
-}
-
-function isNumeric(arg:any) { return !isNaN(arg) }
-
 function computeDataId(el:HTMLElement) {
   let dataId: number[] = []
-  // if (!el.parentElement) dataId.push(1)
   while (el.parentElement) {
     let siblings: HTMLElement[] = Array.from(el.parentElement.children).filter(c => c.tagName === el.tagName) as HTMLElement[]
     dataId.push(siblings.indexOf(el) + 1)
@@ -407,39 +155,40 @@ function parseHeadline(s:string) {
     }
     else if (token[0] === '#') parsed['id'] = token.slice(1)
     else if (/^\w+-\w+$/.test(token)) parsed['tag'] = token
-    else parsed[token] = 'true'
+    else parsed[token] = true
   })
   return parsed
 }
 
-function parseCodeEl(codeEl:HTMLCodeElement) {
-  let codeElems = codeEl.textContent.replace(/\s+\|\s+/g,'\n').split('\n').map(l => l.trim()).filter(x => x)
-  let parsed = parseHeadline(codeElems[0])
+function parseCodeEl(codeEl:HTMLElement) {
+  let codeElems = codeEl.textContent?.replace(/\s+\|\s+/g,'\n').split('\n').map(l => l.trim()).filter(x => x) || []
+  let parsed: any = parseHeadline(codeElems?.[0]) || {}
   if (codeElems.length > 1) parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
   return parsed
 }
 
-function handleCodeEl(codeEl:HTMLCodeElement) {
+function handleCodeEl(codeEl:HTMLElement) {
   if (codeEl.parentElement?.tagName === 'P' || codeEl.parentElement?.tagName === 'PRE') {
-    let codeWrapper = (codeEl.parentElement?.tagName === 'P' ? codeEl.parentElement : codeEl.parentElement.parentElement.parentElement) as HTMLElement
+    let codeWrapper = (codeEl.parentElement?.tagName === 'P' 
+      ? codeEl.parentElement?.childNodes.item(0).nodeValue?.trim()
+        ? codeEl
+        : codeEl.parentElement
+      : codeEl.parentElement?.parentElement?.parentElement
+    ) as HTMLElement
     let parent = codeWrapper.parentElement as HTMLElement
     let codeLang = codeEl.parentElement?.tagName === 'PRE' 
       ? Array.from(parent.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'ezsite'
       : 'ezsite'
-    if (codeLang === 'ezsite') {
+      if (codeLang === 'ezsite') {
       let parsed = parseCodeEl(codeEl)
-      console.log(parsed)
       if (parsed.tag) {
-        let parent = codeEl.parentElement.parentElement as HTMLElement
-        console.log(codeWrapper)
-        console.log(parent)
         let ezComponent = document.createElement(parsed.tag)
         if (parsed.id) ezComponent.id = parsed.id
         if (parsed.class) parsed.class.split(' ').forEach(c => ezComponent.classList.add(c))
         if (parsed.style) ezComponent.setAttribute('style', parsed.style)
         for (const [k,v] of Object.entries(parsed)) {
           if (k === 'tag' || k === 'id' || k === 'class' || k === 'style') continue
-          ezComponent.setAttribute(k, v)
+          ezComponent.setAttribute(k, v === true ? '' : v)
         }
         if (parsed.args) {
           let ul = document.createElement('ul')
@@ -469,12 +218,12 @@ export function structureContent() {
 
   // Converts empty headings (changed to paragraphs by markdown converter) to headings with the correct level
   if (main)
-    (Array.from(main?.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLElement[])
-    .filter(p => /^#{1,6}$/.test(p.childNodes[0].nodeValue?.trim()))
+    (Array.from(main?.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLParagraphElement[])
+    .filter(p => /^#{1,6}$/.test(p.childNodes.item(0).nodeValue?.trim() || ''))
     .forEach(p => {
-      let ptext = p.childNodes[0].nodeValue.trim()
-      let codeEl = p.querySelector('code') as HTMLCodeElement
-      let heading = document.createElement(`h${ptext.length}`)
+      let ptext = p.childNodes.item(0).nodeValue?.trim()
+      let codeEl = p.querySelector('code') as HTMLElement
+      let heading = document.createElement(`h${ptext?.length}`)
       p.replaceWith(heading)
       if (codeEl) {
         let codeWrapper = document.createElement('p')
@@ -502,14 +251,6 @@ export function structureContent() {
       currentSection = document.createElement('section')
       currentSection.classList.add(`section-${sectionLevel}`)
       Array.from(heading.classList).forEach(c => currentSection.classList.add(c))
-      /*
-      sectionParam = heading.nextElementSibling?.tagName === 'PARAM'
-        ? heading.nextElementSibling as HTMLElement
-        : null
-      if (sectionParam) {
-        sectionParam.classList.forEach(c => currentSection.classList.add(c))
-      }
-      */
       heading.className = ''
       if (heading.id) {
         currentSection.id = heading.id
@@ -517,7 +258,6 @@ export function structureContent() {
       }
 
       currentSection.innerHTML += heading.outerHTML
-      // if (!heading.innerHTML.trim()) currentSection.firstChild?.remove()
 
       let headings = [...restructured.querySelectorAll(`H${sectionLevel-1}`)]
       let parent = sectionLevel === 1 || headings.length === 0 ? restructured : headings.pop()?.parentElement as HTMLElement
@@ -527,55 +267,58 @@ export function structureContent() {
     } else {
       if (el !== sectionParam) currentSection.innerHTML += el.outerHTML
     }
-  })
-
-  restructured.querySelectorAll('section').forEach((section:HTMLElement) => {
-  if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
-    section.classList.remove('cards')
-    let wrapper = document.createElement('section')
-    wrapper.className = 'cards wrapper'
-    Array.from(section.children).slice(1).forEach(card => {
-      wrapper.appendChild(card)
-      card.classList.add('card')
-      let heading = card.querySelector('h1, h2, h3, h4, h5, h6') as HTMLHeadingElement
-      if (heading) heading.remove()
-      let img = card.querySelector('p > img') as HTMLImageElement
-      if (img) img.parentElement?.replaceWith(img)
-      let link = card.querySelector('p > a') as HTMLImageElement
-      if (link) link.parentElement?.replaceWith(link)
-    })
-    section.appendChild(wrapper)
-    }
   });
 
   (Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6') as NodeListOf<HTMLElement>) as HTMLHeadingElement[])
   .filter(heading => !heading.innerHTML.trim())
   .forEach(heading => heading.remove());
 
-  /*
-  (Array.from(restructured?.querySelectorAll('param') as NodeListOf<HTMLElement>) as HTMLParamElement[])
-  .forEach(param => {
-    param.classList.forEach(c => (param.previousSibling as HTMLElement)?.classList.add(c))
-    if (param.id) (param.previousSibling as HTMLElement).id = param.id
-    param.remove();
-  });
-  */
-
   (Array.from(restructured?.querySelectorAll('p') as NodeListOf<HTMLElement>) as HTMLParagraphElement[])
   .forEach(para => {
     let lines = para.textContent?.split('\n').map(l => l.trim()) || []
+    let codeEl = para.querySelector('code') as HTMLElement
+    if (codeEl) lines = lines.slice(0,-1)
+    // console.log(lines)
     if (lines.length > 1) {
       para.setAttribute('data-head', lines[0])
       if (lines.length > 2) para.setAttribute('data-qids', lines[2])
       if (lines.length > 3) para.setAttribute('data-related', lines[3])
       para.innerHTML = lines[1]
+      if (codeEl) para.appendChild(codeEl)
     }
   });
 
-  // convertToEzElements(restructured)
-
-  (Array.from(restructured?.querySelectorAll('code') as NodeListOf<HTMLElement>) as HTMLCodeElement[])
+  (Array.from(restructured?.querySelectorAll('code') as NodeListOf<HTMLElement>) as HTMLElement[])
   .forEach(codeEl => handleCodeEl(codeEl));
+
+  restructured.querySelectorAll('section').forEach((section:HTMLElement) => {
+    if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
+      section.classList.remove('cards')
+      let wrapper = document.createElement('section')
+      wrapper.className = 'cards wrapper'
+      Array.from(section.children).slice(1).forEach(card => {
+        wrapper.appendChild(card)
+        card.classList.add('card')
+        let heading = card.querySelector('h1, h2, h3, h4, h5, h6') as HTMLHeadingElement
+        if (heading) heading.remove()
+        let img = card.querySelector('p > img') as HTMLImageElement
+        if (img) img.parentElement?.replaceWith(img)
+        let link = card.querySelector('p > a') as HTMLImageElement
+        if (link) link.parentElement?.replaceWith(link)
+      })
+      section.appendChild(wrapper)
+    }
+    if (section.classList.contains('mcol') && !section.classList.contains('wrapper')) {
+      let wrapper = document.createElement('section')
+      wrapper.className = 'mcol wrapper'
+      section.classList.remove('mcol')
+      Array.from(section.children).slice(1).forEach((col, idz) => {
+        wrapper.appendChild(col)
+        col.classList.add(`col-${idz+1}`)
+      })
+      section.appendChild(wrapper)
+    }
+  });
 
   restructured.querySelectorAll('a').forEach(anchorElem => {
     let link = new URL(anchorElem.href)
@@ -584,7 +327,7 @@ export function structureContent() {
       anchorElem.classList.add('zoom')
       anchorElem.setAttribute('rel', 'nofollow')
     }
-    if (isGHP && config.repo && link.origin === location.origin && link.pathname.indexOf(`/${config.repo}/`) !== 0) anchorElem.href = `/${config.repo}${link.pathname}`
+    if (isGHP && window.config.repo && link.origin === location.origin && link.pathname.indexOf(`/${window.config.repo}/`) !== 0) anchorElem.href = `/${window.config.repo}${link.pathname}`
   })
 
   Array.from(restructured.querySelectorAll('img'))
@@ -601,7 +344,7 @@ export function structureContent() {
   let stickyElems = Array.from(restructured?.querySelectorAll('.sticky') as NodeListOf<HTMLElement>) as HTMLElement[]
   if (stickyHeader) {
     nextTick(() => {
-      let headerHeight = stickyHeader.getBoundingClientRect().height;
+      let headerHeight = stickyHeader?.getBoundingClientRect().height;
       stickyElems.forEach(stickyEl => stickyEl.style.top = `${headerHeight}px`)  
     })
   }
@@ -610,14 +353,6 @@ export function structureContent() {
   main?.replaceWith(restructured)
 
   return main
-
-}
-
-export function loadDependencies(dependencies:any[], callback:any = null, i:number = 0) {
-  loadDependency(dependencies[i], () => {
-    if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
-    else if (callback) callback()
-  })
 }
 
 function loadDependency(dependency, callback) {
@@ -628,15 +363,46 @@ function loadDependency(dependency, callback) {
   else document.head.appendChild(e)
 }
 
-export async function getEntity(qid: string, language: string = 'en') {
-  let entities = await getEntityData([qid], language)
-  return entities[qid]
+export function loadDependencies(dependencies:any[], callback:any = null, i:number = 0) {
+  loadDependency(dependencies[i], () => {
+    if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
+    else if (callback) callback()
+  })
 }
+
+let visibleParagraphs: IntersectionObserverEntry[] = []
+export function observeVisible(callback:any = null) {
+  let stickyHeader = document.querySelector('ez-header[sticky]')
+  let topMargin = stickyHeader ? -stickyHeader.getBoundingClientRect().height : 0
+  const observer = new IntersectionObserver((entries, observer) => {
+    let notVisible = entries.filter(entry => !entry.isIntersecting)
+    for (const entry of entries) { if (entry.isIntersecting) visibleParagraphs.push(entry) }
+    visibleParagraphs = visibleParagraphs
+      .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
+      .filter(entry => entry.target.getBoundingClientRect().x < 600)
+
+    visibleParagraphs = visibleParagraphs
+      .sort((a,b) => {
+        let aTop = a.target.getBoundingClientRect().top
+        let bTop = b.target.getBoundingClientRect().top
+        return aTop < bTop ? -1 : 1
+      })
+      .sort((a,b) => {
+        return a.intersectionRatio > b.intersectionRatio ? -1 : 1
+      })
+    document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
+    visibleParagraphs[0]?.target.classList.add('active')
+  }, { root: null, threshold: [1.0, .5], rootMargin: `${topMargin}px 0px 0px 0px`})
+
+  // target the elements to be observed
+  document.querySelectorAll('p').forEach((paragraph) => observer.observe(paragraph))
+}
+
+////////// Wikidata Entity functions //////////
 
 let entityData:any = {}
 export async function getEntityData(qids: string[] = [], language: string = 'en') {
   let values = qids.filter(qid => !entityData[qid]).map(qid => `(<http://www.wikidata.org/entity/${qid}>)`)
-  // console.log(`getEntityData: qids=${qids.length} toGet=${values.length}`)
   if (values.length > 0) {
     let query = `
       SELECT ?item ?label ?description ?alias ?image ?logoImage ?coords ?pageBanner ?whosOnFirst ?wikipedia WHERE {
@@ -745,7 +511,6 @@ export async function imageDataUrl(url: string, region: any, dest: any): Promise
       canvas.height = height
       x = x*sw
       y = y*sh
-      // console.log(`x=${x} y=${y} sw=${sw} sh=${sh} swScaled=${swScaled} shScaled=${shScaled} width=${width} height=${height} ratio=${ratio}`)
       ctx?.drawImage(image, x, y, swScaled, shScaled, 0, 0, width, height)
       let dataUrl = canvas.toDataURL()
       resolve(dataUrl)
@@ -754,10 +519,12 @@ export async function imageDataUrl(url: string, region: any, dest: any): Promise
   })
 }
 
-export function findItem(toMatch: object, current: object, seq: number = 1): any {
-  const found = _findItems(toMatch, current)
-  return found.length >= seq ? found[seq-1] : null
+export async function getEntity(qid: string, language: string = 'en') {
+  let entities = await getEntityData([qid], language)
+  return entities[qid]
 }
+
+////////// IIIF functions //////////
 
 function _findItems(toMatch: object, current: any, found: object[] = []) {
   found = found || []
@@ -772,19 +539,41 @@ function _findItems(toMatch: object, current: any, found: object[] = []) {
   return found
 }
 
+export function findItem(toMatch: object, current: object, seq: number = 1): any {
+  const found = _findItems(toMatch, current)
+  return found.length >= seq ? found[seq-1] : null
+}
+
 export function getItemInfo(manifest:any, seq=1) {
-  // console.log(`itemInfo: seq=${seq}`, manifest)
   let _itemInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, seq).body
   // if (_itemInfo.service) _itemInfo.service = _itemInfo.service.map((svc:any) => ({...svc, ...{id: (svc.id || svc['@id']).replace(/\/info\.json$/,'')}}))
   return _itemInfo
 }
 
-export async function getManifest(manifestId: string, refresh: boolean=false) {
-  let manifestUrl = manifestId.indexOf('http') === 0
-    ? manifestId
-    : `${iiifServer}/${manifestId}/manifest.json`
-  let manifests = await loadManifests([manifestUrl], refresh)
-  return manifests[0]
+export function parseImageOptions(str: string) {
+  let elems = str?.split('/') || []
+  // let seq = 1
+  let region = 'full'
+  let size = 'full'
+  let rotation = '0'
+  let quality = 'default'
+  let format = 'jpg'
+  let offset = 0
+  /*
+  if (isNum(elems[0])) {
+    seq = +elems[0]
+    offset = 1
+  }
+  */
+  let options = {
+    // seq,
+    region: elems.length > offset && elems[offset] ? elems[offset] : region,
+    size: elems.length > offset+1 && elems[offset+1] ? elems[offset+1] : size,
+    rotation: elems.length > offset+2 && elems[offset+2] ? elems[offset+2] : rotation,
+    quality: elems.length > offset+3 && elems[offset+3] ? elems[offset+3] : quality,
+    format: elems.length > offset+4 && elems[offset+4] ? elems[offset+4] : format
+  }
+  return options
 }
 
 const _manifestCache:any = {}
@@ -796,7 +585,6 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
       : `${iiifServer}/${manifestId}/manifest.json`
   )
   let toGet = _manifestUrls.filter(url => !_manifestCache[url])
-  // console.log('loadManifests', toGet)
 
   if (toGet.length > 0) {
     let requests: any = toGet
@@ -830,56 +618,10 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
   }
 }
 
-export function parseImageOptions(str: string) {
-  let elems = str?.split('/') || []
-  // let seq = 1
-  let region = 'full'
-  let size = 'full'
-  let rotation = '0'
-  let quality = 'default'
-  let format = 'jpg'
-  let offset = 0
-  /*
-  if (isNum(elems[0])) {
-    seq = +elems[0]
-    offset = 1
-  }
-  */
-  let options = {
-    // seq,
-    region: elems.length > offset && elems[offset] ? elems[offset] : region,
-    size: elems.length > offset+1 && elems[offset+1] ? elems[offset+1] : size,
-    rotation: elems.length > offset+2 && elems[offset+2] ? elems[offset+2] : rotation,
-    quality: elems.length > offset+3 && elems[offset+3] ? elems[offset+3] : quality,
-    format: elems.length > offset+4 && elems[offset+4] ? elems[offset+4] : format
-  }
-  return options
-}
-
-let visibleParagraphs: IntersectionObserverEntry[] = []
-export function observeVisible(callback:any = null) {
-  let stickyHeader = document.querySelector('ez-header[sticky]')
-  let topMargin = stickyHeader ? -stickyHeader.getBoundingClientRect().height : 0
-  const observer = new IntersectionObserver((entries, observer) => {
-    let notVisible = entries.filter(entry => !entry.isIntersecting)
-    for (const entry of entries) { if (entry.isIntersecting) visibleParagraphs.push(entry) }
-    visibleParagraphs = visibleParagraphs
-      .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
-      .filter(entry => entry.target.getBoundingClientRect().x < 600)
-
-    visibleParagraphs = visibleParagraphs
-      .sort((a,b) => {
-        let aTop = a.target.getBoundingClientRect().top
-        let bTop = b.target.getBoundingClientRect().top
-        return aTop < bTop ? -1 : 1
-      })
-      .sort((a,b) => {
-        return a.intersectionRatio > b.intersectionRatio ? -1 : 1
-      })
-    document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
-    visibleParagraphs[0]?.target.classList.add('active')
-  }, { root: null, threshold: [1.0, .5], rootMargin: `${topMargin}px 0px 0px 0px`})
-
-  // target the elements to be observed
-  document.querySelectorAll('p').forEach((paragraph) => observer.observe(paragraph))
+export async function getManifest(manifestId: string, refresh: boolean=false) {
+  let manifestUrl = manifestId.indexOf('http') === 0
+    ? manifestId
+    : `${iiifServer}/${manifestId}/manifest.json`
+  let manifests = await loadManifests([manifestUrl], refresh)
+  return manifests[0]
 }

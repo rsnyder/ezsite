@@ -4,7 +4,7 @@
 
 ### Inline code
 
-`.class #id :background-color:yellow key=value`
+`:background-color:yellow key=value`
 
 `ez-image key=value arg1 "phrase 1"`
 

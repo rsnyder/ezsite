@@ -1,5 +1,5 @@
 stylesheets: 
-  - https://rsnyder.github.io/ezsite/ezsite/default.css
+  - ezsite/default.css
 nav:
   - label: Home
     href: /

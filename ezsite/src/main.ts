@@ -51,7 +51,6 @@ console.log(`ezsite: version=${process.env.version}`)
 loadDependencies([
   	{tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js'},
 	{tag: 'script', src: 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', crossorigin: 'anonymous', referrerpolicy: 'no-referrer'},
-	// {tag: 'link', src: '../css/index.css', type: 'stylesheet'},
 	],
 	async () => {
 		window.config = await getConfig()
@@ -61,7 +60,9 @@ loadDependencies([
 				? ss
 				: location.hostname == 'localhost'
 					? `http://localhost:8080/${ss[0] == '/' ? ss.slice(1) : ss}`
-					: `${window.config.baseurl}/${ss[0] == '/' ? ss.slice(1) : ss}`
+					: ss === 'ezsite/default.css'
+						? 'https://rsnyder.github.io/ezsite/ezsite/default.css'
+						: `${window.config.baseurl}/${ss[0] == '/' ? ss.slice(1) : ss}`
 			return {tag: 'link', href, rel: 'stylesheet'}
 		})
 		loadDependencies(stylesheets,

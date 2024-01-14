@@ -1,10 +1,10 @@
 <style>
-  main{
+  main {
     padding: 2em; 
     border: 1px solid #444;
   }
   main > p {
-    font-size: 1.5em;
+    font-size: 2em;
     font-weight: 500;
   }
   section { 
