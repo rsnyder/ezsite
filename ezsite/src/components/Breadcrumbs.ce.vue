@@ -1,18 +1,17 @@
 <script setup lang="ts">
 
-  import { onMounted, ref, watch } from 'vue'
+  import { onMounted, ref } from 'vue'
 
   const crumbs = ref()
-  watch(crumbs, () => console.log(crumbs.value))
 
   onMounted(() => {
     let path = location.pathname
     let baseurl = (window as any).config.baseurl
-    console.log(`path: ${path}, baseurl: ${baseurl}`)
     crumbs.value = [ 
-      ...[{ name: 'Home', path: '/' }],
+      ...[{ name: 'home', path: '/' }],
       ...path.split('/')
         .filter(pe => pe)
+        .slice(baseurl.split('/').filter(pe => pe).length)
         .map((path, index, paths) => ({ name: path, path: '/' + paths.slice(0, index + 1).join('/')}))
     ]
   })
