@@ -39,3 +39,7 @@ ez-image key=value arg1 "phrase 1" | list-item 1 | list-item 2
 ```
 
 `ez-image src=wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg`
+
+## Docs
+
+[docs](ezsite/README.md)
