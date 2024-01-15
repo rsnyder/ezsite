@@ -42,7 +42,7 @@ ez-map ul {
 }
 
 main > p:first-of-type {
-  margin-top: 1em,
+  margin-top: 1em;
 }
 
 .mcol {
@@ -183,6 +183,64 @@ mark.flyto::after {
   top: 0;
 }
 
+/********** Tabs **********/
+
+.tabs {
+  /* height: 100%; */
+}
+
+section.tab {
+  height: calc(100% - 84px);
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+}
+
+.tabs label {
+  margin-bottom: 0;
+}
+
+input { display: none; }
+input + label { display: inline-block }
+input ~ .tab { visibility: hidden }
+#tab1:checked ~ .tab.content1,
+#tab2:checked ~ .tab.content2,
+#tab3:checked ~ .tab.content3,
+#tab4:checked ~ .tab.content4,
+#tab5:checked ~ .tab.content5,
+#tab6:checked ~ .tab.content6 {
+  visibility: visible;
+}
+input + label {
+  border: 1px solid #999;
+  background: #EEE;
+  padding: 4px 12px;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  top: 1px;
+  cursor: pointer;
+}
+input:checked + label {
+  background: #FFF;
+  border-bottom: 1px solid white;
+  z-index: 2;
+}
+input ~ .tab {
+  border-top: 1px solid #999;
+  padding: 12px;
+}
+h1 {margin-bottom: 32px;}
+
+.tab { 
+  position: absolute;
+  visibility: hidden;
+  width: 100%;
+  height: 100%;
+  padding: 1rem 0;
+}
+.tab p {
+  /* height: 100%; */
+}
+/********** End Tabs **********/
 
 /********** Cards **********/
 
