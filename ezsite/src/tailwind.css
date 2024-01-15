@@ -711,10 +711,6 @@ video {
   z-index: 60;
 }
 
-.z-20 {
-  z-index: 20;
-}
-
 .float-right {
   float: right;
 }
@@ -749,6 +745,11 @@ video {
 
 .m-3 {
   margin: 0.75rem;
+}
+
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .mb-2 {
@@ -2310,6 +2311,11 @@ video {
   font-variant-numeric: var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction);
 }
 
+.text-\[\#0645ad\] {
+  --tw-text-opacity: 1;
+  color: rgb(6 69 173 / var(--tw-text-opacity));
+}
+
 .text-\[\#336699\]\/\[\.35\] {
   color: rgb(51 102 153 / .35);
 }
@@ -2795,6 +2801,10 @@ ez-menu ul {
 .hover\:text-gray-400:hover {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
+}
+
+.hover\:underline:hover {
+  text-decoration-line: underline;
 }
 
 .before\:hover\:text-center:hover::before {

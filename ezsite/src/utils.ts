@@ -340,15 +340,34 @@ export function structureContent() {
       (img.parentNode as HTMLElement).replaceWith(ezImage)
     })
 
-  let stickyHeader = restructured.querySelector('ez-header[sticky]')
-  let stickyElems = Array.from(restructured?.querySelectorAll('.sticky') as NodeListOf<HTMLElement>) as HTMLElement[]
-  if (stickyHeader) {
+  let stickyElems = (Array.from(restructured?.querySelectorAll('.sticky') as NodeListOf<HTMLElement>) as HTMLElement[])
+  .sort((a,b) => {
+      let aTop = a.getBoundingClientRect().top
+      let bTop = b.getBoundingClientRect().top
+      return aTop < bTop ? -1 : 1
+    })
+  
+  // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl.getBoundingClientRect()) ))
+
+  if (stickyElems.length > 1) {
     nextTick(() => {
-      let headerHeight = stickyHeader?.getBoundingClientRect().height;
-      stickyElems.forEach(stickyEl => stickyEl.style.top = `${headerHeight}px`)  
+      for (let i = 1; i < stickyElems.length; i++) {
+        let top = 0
+        let bcr1 = stickyElems[i].getBoundingClientRect()
+        let left1 = bcr1.x
+        let right1 = bcr1.x + bcr1.width
+        for (let j = 0; j < i; j++) {
+          let bcr2 = stickyElems[j].getBoundingClientRect()
+          let left2 = bcr2.x
+          let right2 = bcr2.x + bcr2.width
+          if ((left1 <= right2) && (right1 >= left2)) {
+            top += stickyElems[j].getBoundingClientRect().height
+          }
+        }
+        stickyElems[i].style.top = `${Math.round(top)}px`
+      }
     })
   }
-
   restructured.style.paddingBottom = '100vh'
   main?.replaceWith(restructured)
 
@@ -372,16 +391,22 @@ export function loadDependencies(dependencies:any[], callback:any = null, i:numb
 
 let visibleParagraphs: IntersectionObserverEntry[] = []
 export function observeVisible(callback:any = null) {
-  let stickyHeader = document.querySelector('ez-header[sticky]')
-  let topMargin = stickyHeader ? -stickyHeader.getBoundingClientRect().height : 0
+
+  let topMargin = 0;
+  (Array.from(document.querySelectorAll('.sticky') as NodeListOf<HTMLElement>) as HTMLElement[])
+  .filter(sticklEl => sticklEl.getBoundingClientRect().x < 600)
+  .forEach(stickyEl => topMargin += stickyEl.getBoundingClientRect().height)
+
   const observer = new IntersectionObserver((entries, observer) => {
     let notVisible = entries.filter(entry => !entry.isIntersecting)
     for (const entry of entries) { if (entry.isIntersecting) visibleParagraphs.push(entry) }
+
     visibleParagraphs = visibleParagraphs
       .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
       .filter(entry => entry.target.getBoundingClientRect().x < 600)
+      .filter(entry => entry.target.classList.contains('sticky') ? false : true)
 
-    visibleParagraphs = visibleParagraphs
+      visibleParagraphs = visibleParagraphs
       .sort((a,b) => {
         let aTop = a.target.getBoundingClientRect().top
         let bTop = b.target.getBoundingClientRect().top
@@ -392,7 +417,7 @@ export function observeVisible(callback:any = null) {
       })
     document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
     visibleParagraphs[0]?.target.classList.add('active')
-  }, { root: null, threshold: [1.0, .5], rootMargin: `${topMargin}px 0px 0px 0px`})
+  }, { root: null, threshold: [1.0, .5], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
 
   // target the elements to be observed
   document.querySelectorAll('p').forEach((paragraph) => observer.observe(paragraph))

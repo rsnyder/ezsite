@@ -11,6 +11,7 @@ import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.j
 // setBasePath('https://raw.githubusercontent.com/rsnyder/ezsite/ezsite/dist')
 setBasePath('node_modules/@shoelace-style/shoelace/dist');
 
+import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
 // import EntityInfobox from './components/EntityInfobox.ce.vue'
@@ -26,6 +27,7 @@ import Navbar from './components/Navbar.ce.vue'
 
 
 function defineCustomElements() {
+	customElements.define('ez-breadcrumbs', defineCustomElement(Breadcrumbs))
 	// customElements.define('ez-button', defineCustomElement(Button))
 	// customElements.define('ez-dropdown', defineCustomElement(Dropdown))
 	// customElements.define('ez-entity-infobox', defineCustomElement(EntityInfobox))
