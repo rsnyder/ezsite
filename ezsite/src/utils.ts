@@ -364,7 +364,7 @@ export function structureContent() {
             top += stickyElems[j].getBoundingClientRect().height
           }
         }
-        stickyElems[i].style.top = `${Math.round(top)}px`
+        stickyElems[i].style.top = `${Math.floor(top)}px`
       }
     })
   }
