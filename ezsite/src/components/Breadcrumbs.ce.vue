@@ -12,7 +12,7 @@
       ...path.split('/')
         .filter(pe => pe)
         .slice(baseurl.split('/').filter(pe => pe).length)
-        .map((path, index, paths) => ({ name: path, path: '/' + paths.slice(0, index + 1).join('/')}))
+        .map((path, index, paths) => ({ name: path, path: baseurl + '/' + paths.slice(0, index + 1).join('/')}))
     ]
   })
 
