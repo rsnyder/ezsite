@@ -1,6 +1,13 @@
 <script setup lang="ts">
 
-  import { onMounted, ref } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
+
+  const root = ref<HTMLElement | null>(null)
+  const host = computed(() => (root.value?.getRootNode() as any)?.host)
+  const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
+  watch(shadowRoot, (shadowRoot) => {
+    shadowRoot.children[1].classList.remove('sticky')
+  })
 
   const crumbs = ref()
 
@@ -19,7 +26,7 @@
 </script>
 
 <template>
-  <div class="inline-block">
+  <div class="inline-block" ref="root">
     <template v-for="(crumb, idx) in crumbs" :key="crumb.path">
       <a :href="crumb.path" class="text-[#0645ad] hover:underline">{{ crumb.name }}</a>
       <span v-if="idx < crumbs.length - 1" class="mx-2 text-gray-500"> > </span>
