@@ -8,6 +8,5 @@
 - [2 column with scroll behind](2col-scroll)
 - [Cards](cards)
 - [Tabs](tabs)
-- [Shoelace Tabs](sl-tabs)
 - [Juncture 1](juncture1)
 - [Sticky](sticky)

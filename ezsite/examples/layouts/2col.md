@@ -1,4 +1,4 @@
-`ez-breadcrumbs`
+`ez-breadcrumbs .sticky`
 
 # 2 Column Layouts
 

@@ -1,4 +1,4 @@
-`ez-breadcrumbs sticky`
+`ez-breadcrumbs .sticky`
 
 `.showactive`
 

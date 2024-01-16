@@ -1,8 +1,8 @@
 <style>
-    .sticky { border: 1px solid blue;}
+    p.sticky { border: 1px solid blue;}
 </style>
 
-`ez-breadcrumbs`
+`ez-breadcrumbs .sticky`
 
 # 2 Column Layout
 `.mcol .showactive`

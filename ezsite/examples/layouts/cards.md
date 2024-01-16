@@ -1,4 +1,4 @@
-`ez-breadcrumbs`
+`ez-breadcrumbs .sticky`
 
 # Cards Layout
 
