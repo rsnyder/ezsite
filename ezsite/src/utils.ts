@@ -486,7 +486,7 @@ export function observeVisible(callback:any = null) {
       activeParagraph = visibleParagraphs[0]?.target as HTMLElement
       // console.log('activeParagraph', activeParagraph)
       document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
-      activeParagraph.classList.add('active')
+      activeParagraph?.classList.add('active')
       computeStickyOffsets(document.querySelector('main') as HTMLElement)
     }
   }, { root: null, threshold: [1.0, .5], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
