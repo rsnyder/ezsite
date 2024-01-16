@@ -19,7 +19,7 @@
 </script>
 
 <template>
-  <div class="inline-block mb-2">
+  <div class="inline-block">
     <template v-for="(crumb, idx) in crumbs" :key="crumb.path">
       <a :href="crumb.path" class="text-[#0645ad] hover:underline">{{ crumb.name }}</a>
       <span v-if="idx < crumbs.length - 1" class="mx-2 text-gray-500"> > </span>

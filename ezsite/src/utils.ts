@@ -308,11 +308,54 @@ export function structureContent() {
       })
       section.appendChild(wrapper)
     }
+    /*
+    if (section.classList.contains('tabs')) {
+      (Array.from(section.querySelectorAll(':scope > section') as NodeListOf<HTMLElement>) as HTMLElement[])
+      .forEach((tabSection:HTMLElement, idx:number) => {
+        let input = document.createElement('input')
+        input.classList.add(`tab${idx+1}`)
+        input.setAttribute('id', `tab${idx+1}`)
+        input.setAttribute('type', 'radio')
+        input.setAttribute('name', 'tabs')
+        if (idx === 0) input.setAttribute('checked', '')
+        let label = document.createElement('label')
+        label.setAttribute('for', `tab${idx+1}`)
+        label.innerHTML = tabSection.querySelector('h1, h2, h3, h4, h5, h6')?.innerHTML || ''
+        section.insertBefore(label, section.children.item(idx*2))
+        section.insertBefore(input, section.children.item(idx*2))
+
+        tabSection.classList.add('tab')
+        tabSection.classList.add(`content${idx+1}`)
+      })
+    }
+    */
+    if (section.classList.contains('tabs')) {
+      let tabGroup = document.createElement('sl-tab-group');
+      (Array.from(section.classList).forEach(cls => tabGroup.classList.add(cls)));
+      (Array.from(section.querySelectorAll(':scope > section') as NodeListOf<HTMLElement>) as HTMLElement[])
+      .forEach((tabSection:HTMLElement, idx:number) => {
+        let tab = document.createElement('sl-tab')
+        tab.setAttribute('slot', 'nav')
+        tab.setAttribute('panel', `tab${idx+1}`)
+        tab.innerHTML = tabSection.querySelector('h1, h2, h3, h4, h5, h6')?.innerHTML || ''
+        tabGroup.appendChild(tab)      
+      });
+      (Array.from(section.querySelectorAll(':scope > section') as NodeListOf<HTMLElement>) as HTMLElement[])
+      .forEach((tabSection:HTMLElement, idx:number) => {
+        let tabPanel = document.createElement('sl-tab-panel')
+        tabPanel.setAttribute('name', `tab${idx+1}`)
+        tabPanel.innerHTML = tabSection.innerHTML || ''
+        tabGroup.appendChild(tabPanel)
+      })
+      section.replaceWith(tabGroup)
+    }
     if (section.classList.contains('mcol') && !section.classList.contains('wrapper')) {
       let wrapper = document.createElement('section')
       wrapper.className = 'mcol wrapper'
       section.classList.remove('mcol')
-      Array.from(section.children).slice(1).forEach((col, idz) => {
+      Array.from(section.children)
+        .filter(child => child.tagName === 'SECTION')
+        .forEach((col, idz) => {
         wrapper.appendChild(col)
         col.classList.add(`col-${idz+1}`)
       })
@@ -340,16 +383,41 @@ export function structureContent() {
       (img.parentNode as HTMLElement).replaceWith(ezImage)
     })
 
-  let stickyElems = (Array.from(restructured?.querySelectorAll('.sticky') as NodeListOf<HTMLElement>) as HTMLElement[])
+  computeStickyOffsets(restructured)
+
+  restructured.style.paddingBottom = '100vh'
+  main?.replaceWith(restructured)
+
+  return main
+}
+
+function computeStickyOffsets(root:HTMLElement) {
+  function topIsVisible(el:HTMLElement) {
+    let bcr = el.getBoundingClientRect()
+    return bcr.top >= 0 && bcr.top <= window.innerHeight
+  }
+  let stickyElems = [
+    ...(Array.from(root.querySelectorAll('ez-header[sticky], ez-breadcrumbs[sticky]') as NodeListOf<HTMLElement>) as HTMLElement[]),
+    ...(Array.from(root.querySelectorAll('.sticky') as NodeListOf<HTMLElement>) as HTMLElement[])
+  ]
+  .filter(stickyEl => {
+    // console.log(stickyEl, topIsVisible(stickyEl))
+    return topIsVisible(stickyEl)
+  })
   .sort((a,b) => {
       let aTop = a.getBoundingClientRect().top
       let bTop = b.getBoundingClientRect().top
       return aTop < bTop ? -1 : 1
     })
   
-  // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl.getBoundingClientRect()) ))
+  console.log('computeStickyOffsets', stickyElems.length)
 
-  if (stickyElems.length > 1) {
+  // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl.getBoundingClientRect()) ))
+  // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl) ))
+
+  if (stickyElems.length === 1) {
+    stickyElems[0].style.top = '0px'
+  } else if (stickyElems.length > 1) {
     nextTick(() => {
       for (let i = 1; i < stickyElems.length; i++) {
         let top = 0
@@ -368,10 +436,6 @@ export function structureContent() {
       }
     })
   }
-  restructured.style.paddingBottom = '100vh'
-  main?.replaceWith(restructured)
-
-  return main
 }
 
 function loadDependency(dependency, callback) {
@@ -389,6 +453,8 @@ export function loadDependencies(dependencies:any[], callback:any = null, i:numb
   })
 }
 
+let activeParagraph: HTMLElement
+
 let visibleParagraphs: IntersectionObserverEntry[] = []
 export function observeVisible(callback:any = null) {
 
@@ -399,24 +465,30 @@ export function observeVisible(callback:any = null) {
 
   const observer = new IntersectionObserver((entries, observer) => {
     let notVisible = entries.filter(entry => !entry.isIntersecting)
-    for (const entry of entries) { if (entry.isIntersecting) visibleParagraphs.push(entry) }
+    for (const entry of entries) { if (entry.isIntersecting && !visibleParagraphs.find(vp => vp.target === entry.target)) visibleParagraphs.push(entry) }
 
     visibleParagraphs = visibleParagraphs
       .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
       .filter(entry => entry.target.getBoundingClientRect().x < 600)
       .filter(entry => entry.target.classList.contains('sticky') ? false : true)
 
-      visibleParagraphs = visibleParagraphs
+    visibleParagraphs = visibleParagraphs
       .sort((a,b) => {
         let aTop = a.target.getBoundingClientRect().top
         let bTop = b.target.getBoundingClientRect().top
         return aTop < bTop ? -1 : 1
       })
-      .sort((a,b) => {
-        return a.intersectionRatio > b.intersectionRatio ? -1 : 1
-      })
-    document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
-    visibleParagraphs[0]?.target.classList.add('active')
+      // .sort((a,b) => { return a.intersectionRatio > b.intersectionRatio ? -1 : 1 })
+    // console.log(`visibleParagraphs: ${visibleParagraphs.length}`)
+    // visibleParagraphs.forEach(entry => console.log(entry.target))
+
+    if (activeParagraph !== visibleParagraphs[0]?.target) {
+      activeParagraph = visibleParagraphs[0]?.target as HTMLElement
+      // console.log('activeParagraph', activeParagraph)
+      document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
+      activeParagraph.classList.add('active')
+      computeStickyOffsets(document.querySelector('main') as HTMLElement)
+    }
   }, { root: null, threshold: [1.0, .5], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
 
   // target the elements to be observed

@@ -38,6 +38,7 @@
   import { isURL, getEntity } from '../utils'
   
   const props = defineProps({
+    class: { type: String },
     label: { type: String },
     subtitle: { type: String },
     logo: { type: String },
