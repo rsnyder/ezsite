@@ -247,11 +247,11 @@
 
   let zoomedToRegion:string = ''
   function zoomto(arg: string) {
-    arg = arg.replace(/^zoomto\|/i,'')
+    arg = arg.replace(/^zoom\|/i,'')
     const match = arg?.match(/^(?<region>(pct:|pixel:|px:)?[\d.]+,[\d.]+,[\d.]+,[\d.]+)?$/)
     if (match) {
       let region = match?.groups?.region
-      // console.log(`ez-image.zoomto: region=${region}`)
+      // console.log(`ez-image.zoom: region=${region}`)
       if (region) {
         if (zoomedToRegion === region) {
           osd.value?.viewport.goHome()

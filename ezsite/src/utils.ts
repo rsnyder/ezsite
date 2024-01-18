@@ -170,7 +170,7 @@ function parseCodeEl(codeEl:HTMLElement) {
 function handleCodeEl(codeEl:HTMLElement) {
   if (codeEl.parentElement?.tagName === 'P' || codeEl.parentElement?.tagName === 'PRE') {
     let codeWrapper = (codeEl.parentElement?.tagName === 'P' 
-      ? codeEl.parentElement?.childNodes.item(0).nodeValue?.trim()
+      ? Array.from(codeEl.parentElement?.childNodes).map(c => c.nodeValue?.trim()).filter(x => x).join('')
         ? codeEl
         : codeEl.parentElement
       : codeEl.parentElement?.parentElement?.parentElement
@@ -201,18 +201,32 @@ function handleCodeEl(codeEl:HTMLElement) {
         }
         codeWrapper.replaceWith(ezComponent)
       } else if (parsed.class || parsed.style || parsed.id) {
-        if (parsed.id) parent.id = parsed.id
-        if (parsed.class) parsed.class.split(' ').forEach(c => parent.classList.add(c))
-        if (parsed.style) parent.setAttribute('style', parsed.style)
+        let target
+        let priorEl = codeEl.previousElementSibling as HTMLElement
+        if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG') {
+          target = document.createElement('span')
+          target.innerHTML = priorEl.innerHTML
+          priorEl.replaceWith(target)
+        } else if (priorEl?.tagName === 'A') {
+          target = priorEl
+        } else {
+          target = parent
+        }
+        if (parsed.id) target.id = parsed.id
+        if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
+        if (parsed.style) target.setAttribute('style', parsed.style)
         codeWrapper.remove()
       }
     }
   }
 }
 
+function hasTimestamp(s:string) { return /\d{1,2}:\d{1,2}/.test(s) }
+
 export function structureContent() {
   let main = document.querySelector('main') as HTMLElement
   let restructured = document.createElement('main')
+  restructured.className = 'markdown-body'
   let currentSection: HTMLElement = restructured;
   let sectionParam: HTMLElement | null
 
@@ -240,6 +254,7 @@ export function structureContent() {
         (Array.from(currentSection.children) as HTMLElement[])
           .filter(child => !/^H\d/.test(child.tagName))
           .filter(child => !/PARAM/.test(child.tagName))
+          .filter(child => !/STYLE/.test(child.tagName))
           .forEach((child:HTMLElement, idx:number) => { 
             let segId = `${currentSection.getAttribute('data-id') || 1}.${idx+1}`
             child.setAttribute('data-id', segId)
@@ -249,7 +264,7 @@ export function structureContent() {
       }
 
       currentSection = document.createElement('section')
-      currentSection.classList.add(`section-${sectionLevel}`)
+      currentSection.classList.add(`section${sectionLevel}`)
       Array.from(heading.classList).forEach(c => currentSection.classList.add(c))
       heading.className = ''
       if (heading.id) {
@@ -279,7 +294,7 @@ export function structureContent() {
     let codeEl = para.querySelector('code') as HTMLElement
     if (codeEl) lines = lines.slice(0,-1)
     // console.log(lines)
-    if (lines.length > 1) {
+    if (lines.length > 1 && hasTimestamp(lines[0])) {
       para.setAttribute('data-head', lines[0])
       if (lines.length > 2) para.setAttribute('data-qids', lines[2])
       if (lines.length > 3) para.setAttribute('data-related', lines[3])
@@ -332,6 +347,7 @@ export function structureContent() {
     if (section.classList.contains('tabs')) {
       let tabGroup = document.createElement('sl-tab-group');
       (Array.from(section.classList).forEach(cls => tabGroup.classList.add(cls)));
+      (Array.from(section.attributes).forEach(attr => tabGroup.setAttribute(attr.name, attr.value)));
       (Array.from(section.querySelectorAll(':scope > section') as NodeListOf<HTMLElement>) as HTMLElement[])
       .forEach((tabSection:HTMLElement, idx:number) => {
         let tab = document.createElement('sl-tab')

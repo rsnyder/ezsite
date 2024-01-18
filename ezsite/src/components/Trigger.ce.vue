@@ -11,14 +11,14 @@
     anno: { type: String },
     play: { type: String },
     start: { type: String },
-    zoomto: { type: String },
+    zoom: { type: String },
   })
 
   watch(props, () => { getAction() })
   onMounted(() => { getAction() })
 
   function getAction() {
-    action.value = props.anno && 'anno' || props.play && 'play' || props.start && 'play' || props.zoomto && 'zoomto'
+    action.value = props.anno && 'anno' || props.play && 'play' || props.start && 'play' || props.zoom && 'zoom'
   }
 
 </script>

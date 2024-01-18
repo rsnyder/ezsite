@@ -139,50 +139,54 @@ section#references P {
   margin-bottom: 0.7em;
 }
 
-mark {
-  cursor: pointer;
-  background: unset;
-  border-bottom: 1px solid #ccc;
-  color: #444;
+a.flyto,
+a.play, 
+a.qid,
+a.zoom {
+    cursor: pointer;
+    background: unset;
+    border-bottom: 1px solid #ccc;
+    color: #444;
 }
 
-mark:hover {
-  border-bottom: 2px solid #444;
-  background: #eee;
+a.flyto:hover,
+a.play:hover, 
+a.qid:hover,
+a.zoom:hover {
+    border-bottom: 2px solid #444;
+    background: #eee;
 }
 
-mark::after {
-  color: #aaa;
-  font-size: 50%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-  top: -.3em;
-  padding-left: 2px;
-  padding-right: 4px;
+a.flyto::after,
+a.play::after, 
+a.qid::after,
+a.zoom::after {
+    color: #aaa;
+    font-size: 50%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+    top: -.5em;
+    padding-left: 2px;
+    padding-right: 4px;
 }
 
-mark.anno::after,
-mark.zoomto::after {
-  content: "🔎";
+a.flyto::after {
+    content: "✈";
+    font-size: 120%;
+    top: 0;
 }
 
-mark.play::after {
-  content: "▶";
+a.play::after {
+    content: "▶";
 }
 
-/*
-mark[qid]:after {
-  content: "ⓘ";
-  font-size: .8em;
-  color:black;
+a.qid:after {
+    content: "ⓘ";
 }
-*/
 
-mark.flyto::after {
-  content: "✈";
-  font-size: 120%;
-  top: 0;
+a.zoom::after {
+    content: "🔎";
 }
 
 /********** Tabs **********/
