@@ -226,7 +226,9 @@ function hasTimestamp(s:string) { return /\d{1,2}:\d{1,2}/.test(s) }
 export function structureContent() {
   let main = document.querySelector('main') as HTMLElement
   let restructured = document.createElement('main')
-  restructured.className = 'markdown-body'
+  restructured.className = 'page-content markdown-body'
+  restructured.setAttribute('aria-label', 'Content')
+  restructured.style.display = 'none'
   let currentSection: HTMLElement = restructured;
   let sectionParam: HTMLElement | null
 
