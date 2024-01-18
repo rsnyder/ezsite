@@ -2,5 +2,5 @@
 
 # Examples
 
-- [Markdownn](markdown)
+- [Markdown](markdown)
 - [Layouts](layouts)

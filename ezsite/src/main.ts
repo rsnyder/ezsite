@@ -66,8 +66,8 @@ loadDependencies([
 				? ss
 				: location.hostname == 'localhost'
 					? `http://localhost:8080/${ss[0] == '/' ? ss.slice(1) : ss}`
-					: ss === 'ezsite/default.css'
-						? 'https://rsnyder.github.io/ezsite/ezsite/default.css'
+					: ss === 'ezsite/css/default.css'
+						? 'https://rsnyder.github.io/ezsite/ezsite/css/default.css'
 						: `${window.config.baseurl}/${ss[0] == '/' ? ss.slice(1) : ss}`
 			return {tag: 'link', href, rel: 'stylesheet'}
 		})
