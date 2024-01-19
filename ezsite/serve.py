@@ -101,7 +101,7 @@ html_template = open(f'{BASEDIR}/_layouts/default.html', 'r').read().replace('/e
 html_template = re.sub(r'^\s*{%- include header.html -%}', header, html_template, flags=re.MULTILINE)
 html_template = re.sub(r'^\s*{%- include footer.html -%}', footer, html_template, flags=re.MULTILINE)
 
-html_template = html_template.replace('https://rsnyder.github.io/ezsite/ezsite/css/default.css', '/ezsite/css/default.css')
+html_template = html_template.replace('https://rsnyder.github.io/ezsite/ezsite/dist/css/index.css', '/ezsite/src/css/default.css')
 html_template = html_template.replace('https://rsnyder.github.io/ezsite/ezsite/dist/js/index.js', 'http://localhost:5173/main.ts')
 html_template = html_template.replace('{%- seo -%}', seo)
 html_template = html_template.replace('{{ site.mode }}', mode)
