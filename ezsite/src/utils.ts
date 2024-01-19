@@ -1,7 +1,7 @@
 import { marked } from 'marked'
 import { nextTick } from 'vue'
 import { Md5 } from 'ts-md5'
-import * as yaml from 'js-yaml'
+// import * as yaml from 'js-yaml'
 
 export const iiifServer = 'https://iiif.juncture-digital.org'
 
@@ -14,8 +14,9 @@ export const isGHP = /\.github\.io$/.test(location.hostname)
 
 const window = (globalThis as any).window as any
 
-export function md2html(markdown: string) { return marked.parse(markdown) }
+// export function md2html(markdown: string) { return marked.parse(markdown) }
 
+/*
 export async function getConfig() {
   let configExtras: any = {}
   let baseurl = window.config?.baseurl !== undefined
@@ -43,6 +44,7 @@ export async function getConfig() {
   }
   return window.config
 }
+*/
 
 export function setMeta() {
   let meta
@@ -388,7 +390,7 @@ export function structureContent() {
       anchorElem.classList.add('zoom')
       anchorElem.setAttribute('rel', 'nofollow')
     }
-    if (isGHP && window.config.repo && link.origin === location.origin && link.pathname.indexOf(`/${window.config.repo}/`) !== 0) anchorElem.href = `/${window.config.repo}${link.pathname}`
+    // if (isGHP && window.config.repo && link.origin === location.origin && link.pathname.indexOf(`/${window.config.repo}/`) !== 0) anchorElem.href = `/${window.config.repo}${link.pathname}`
   })
 
   Array.from(restructured.querySelectorAll('img'))
