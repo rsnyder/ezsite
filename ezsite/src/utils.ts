@@ -430,7 +430,7 @@ function computeStickyOffsets(root:HTMLElement) {
       return aTop < bTop ? -1 : 1
     })
   
-  console.log('computeStickyOffsets', stickyElems.length)
+  // console.log('computeStickyOffsets', stickyElems.length)
 
   // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl.getBoundingClientRect()) ))
   // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl) ))
