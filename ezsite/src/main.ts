@@ -53,10 +53,11 @@ window.md2html = md2html
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
 
+console.log(window.config)
 getConfig().then(config => {
-	structureContent()
-	defineCustomElements()
-	setMeta()
 	console.log(window.config)
-	observeVisible()
 })
+structureContent()
+defineCustomElements()
+setMeta()
+observeVisible()
