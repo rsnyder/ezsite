@@ -1,6 +1,7 @@
 import { marked } from 'marked'
 import { nextTick } from 'vue'
 import { Md5 } from 'ts-md5'
+import YAML from 'yaml'
 
 export const iiifServer = 'https://iiif.juncture-digital.org'
 
@@ -27,7 +28,7 @@ export async function getConfig() {
   for (const configUrl of configUrls) {
     let resp = await fetch(configUrl)
     if (resp.ok) {
-      configExtras = {...configExtras, ...window.jsyaml.load(await resp.text())}
+      configExtras = {...configExtras, ...YAML.parse(await resp.text())}
     }
   }
   window.config = {
@@ -228,7 +229,6 @@ export function structureContent() {
   let restructured = document.createElement('main')
   restructured.className = 'page-content markdown-body'
   restructured.setAttribute('aria-label', 'Content')
-  restructured.style.display = 'none'
   let currentSection: HTMLElement = restructured;
   let sectionParam: HTMLElement | null
 
@@ -465,10 +465,15 @@ function loadDependency(dependency, callback) {
 }
 
 export function loadDependencies(dependencies:any[], callback:any = null, i:number = 0) {
-  loadDependency(dependencies[i], () => {
-    if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
-    else if (callback) callback()
-  })
+  if (dependencies.length === 0) {
+    if (callback) callback()
+    else return
+  } else {
+    loadDependency(dependencies[i], () => {
+      if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
+      else if (callback) callback()
+    })
+  }
 }
 
 let activeParagraph: HTMLElement

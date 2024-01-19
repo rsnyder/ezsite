@@ -9,10 +9,14 @@ import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js'
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js'
 import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 
-import '@shoelace-style/shoelace/dist/themes/light.css'
-import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js'
+// import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js'
 // setBasePath('https://raw.githubusercontent.com/rsnyder/ezsite/ezsite/dist')
-setBasePath('node_modules/@shoelace-style/shoelace/dist');
+// setBasePath('node_modules/@shoelace-style/shoelace/dist');
+
+import '@shoelace-style/shoelace/dist/themes/light.css'
+import './css/github-markdown.css' /* From https://github.com/sindresorhus/github-markdown-css */
+import './css/cards.css'
+import './css/default.css'
 
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
@@ -48,43 +52,14 @@ function defineCustomElements() {
 import { getConfig, setMeta, loadDependencies, md2html, structureContent, observeVisible } from './utils'
 export { md2html }
 let window = (globalThis as any).window as any
+console.log(window)
 window.md2html = md2html
 
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
 
-loadDependencies([
-  	{tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js'},
-	{tag: 'script', src: 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', crossorigin: 'anonymous', referrerpolicy: 'no-referrer'},
-	{tag: 'link', href: 'https://rsnyder.github.io/ezsite/ezsite/dist/css/index.css', rel: 'stylesheet'}
-	],
-	async () => {
-		window.config = await getConfig()
-    if (window.config.stylesheets) {
-		let stylesheets = window.config.stylesheets.map(ss => {
-			let href = ss.indexOf('http') == 0
-				? ss
-				: location.hostname == 'localhost'
-					? `http://localhost:8080/${ss[0] == '/' ? ss.slice(1) : ss}`
-					: ss === 'ezsite/css/default.css'
-						? 'https://rsnyder.github.io/ezsite/ezsite/css/default.css'
-						: `${window.config.baseurl}/${ss[0] == '/' ? ss.slice(1) : ss}`
-			return {tag: 'link', href, rel: 'stylesheet'}
-		})
-		loadDependencies(stylesheets,
-			() => {
-				structureContent()
-				defineCustomElements()
-				setMeta()
-				console.log(window.config)
-				observeVisible()
-			}
-		)
-	} else {
-		structureContent()
-		defineCustomElements()
-		setMeta()
-		console.log(window.config)
-		observeVisible()
-	}
-})
+structureContent()
+defineCustomElements()
+setMeta()
+console.log(window.config)
+observeVisible()

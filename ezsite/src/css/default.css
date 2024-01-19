@@ -1,5 +1,6 @@
-@import url('github-markdown.css'); /* From https://github.com/sindresorhus/github-markdown-css */
-@import url('cards.css');
+@import 'github-markdown.css'; /* From https://github.com/sindresorhus/github-markdown-css */
+@import 'cards.css';
+@import 'shoelace-light.css';
 
 .markdown-body {
   max-width: 1200px;
