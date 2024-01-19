@@ -46,9 +46,6 @@ function defineCustomElements() {
 }
 
 import { setMeta, structureContent, observeVisible } from './utils'
-export { md2html }
-let window = (globalThis as any).window as any
-window.md2html = md2html
 
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
