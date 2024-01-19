@@ -1,7 +1,7 @@
 import { marked } from 'marked'
 import { nextTick } from 'vue'
 import { Md5 } from 'ts-md5'
-import YAML from 'yaml'
+import * as yaml from 'js-yaml'
 
 export const iiifServer = 'https://iiif.juncture-digital.org'
 
@@ -28,7 +28,7 @@ export async function getConfig() {
   for (const configUrl of configUrls) {
     let resp = await fetch(configUrl)
     if (resp.ok) {
-      configExtras = {...configExtras, ...YAML.parse(await resp.text())}
+      configExtras = {...configExtras, ...yaml.load(await resp.text())}
     }
   }
   window.config = {

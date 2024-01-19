@@ -9,10 +9,6 @@ import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js'
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js'
 import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 
-// import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js'
-// setBasePath('https://raw.githubusercontent.com/rsnyder/ezsite/ezsite/dist')
-// setBasePath('node_modules/@shoelace-style/shoelace/dist');
-
 import '@shoelace-style/shoelace/dist/themes/light.css'
 import './css/github-markdown.css' /* From https://github.com/sindresorhus/github-markdown-css */
 import './css/cards.css'
@@ -52,14 +48,15 @@ function defineCustomElements() {
 import { getConfig, setMeta, loadDependencies, md2html, structureContent, observeVisible } from './utils'
 export { md2html }
 let window = (globalThis as any).window as any
-console.log(window)
 window.md2html = md2html
 
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
 
-structureContent()
-defineCustomElements()
-setMeta()
-console.log(window.config)
-observeVisible()
+getConfig().then(config => {
+	structureContent()
+	defineCustomElements()
+	setMeta()
+	console.log(window.config)
+	observeVisible()
+})
