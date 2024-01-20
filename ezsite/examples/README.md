@@ -4,3 +4,4 @@
 
 - [Markdown](markdown)
 - [Layouts](layouts)
+- [Images](images)

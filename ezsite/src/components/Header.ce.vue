@@ -4,13 +4,13 @@
       :background="backgroundImage"
       :options="props.options"
       :position="props.position"
-      :sticky="props.sticky ? '' : null"
+      :sticky="isSticky ? '' : null"
       :height="height"
       :top="props.sticky ? height - navbarHeight : 0"
     ></ez-hero>
 
     <ez-navbar ref="navbar"
-      :class="`${props.sticky ? 'sticky ' : ''}z-10`"
+      :class="`${isSticky ? 'sticky ' : ''}z-10`"
       :label="label"
       :subtitle="props.subtitle"
       :logo="props.logo"
@@ -39,6 +39,7 @@
   
   const props = defineProps({
     class: { type: String },
+    style: { type: String },
     label: { type: String },
     subtitle: { type: String },
     logo: { type: String },
@@ -70,6 +71,11 @@
   const entity = ref<any>()
   const backgroundColor = ref<string>('#444A1E')
   const backgroundImage = ref<string>()
+
+  const isSticky = ref(false)
+  watch(host, (host) => {
+    isSticky.value = host.classList.contains('sticky')
+  })
 
   const navEl = ref<HTMLUListElement>()
   // watch(navEl, () => { console.log(toRaw(navEl.value)) })

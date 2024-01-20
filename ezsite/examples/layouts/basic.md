@@ -1,7 +1,5 @@
 `ez-breadcrumbs .sticky`
 
-`.markdown-body`
-
 # Basic Layout
 
 ## Section level 2

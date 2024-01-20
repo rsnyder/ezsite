@@ -65,7 +65,7 @@ export function setMeta() {
 
   let title = meta?.getAttribute('title')
     ? meta.getAttribute('title')
-    : window.config.title
+    : window.config?.title
       ? window.config.title
       : header?.getAttribute('label')
         ? header.getAttribute('label')
@@ -73,13 +73,13 @@ export function setMeta() {
 
   let description =  meta?.getAttribute('description')
     ? meta.getAttribute('description')
-    : window.config.description
+    : window.config?.description
       ? window.config.description
       : firstParagraph || ''
 
   let robots = meta?.getAttribute('robots')
     ? meta?.getAttribute('robots')
-    : window.config.robots
+    : window.config?.robots
       ? window.config.robots
       : location.hostname.indexOf('www') === 0
         ? '' 
@@ -129,7 +129,9 @@ function parseHeadline(s:string) {
     else tokens.push(token)
   })
   let parsed = {}
-  tokens.forEach(token => {
+  let tokenIdx = 0
+  while (tokenIdx < tokens.length) {
+    let token = tokens[tokenIdx]
     if (token.indexOf('=') > 0) {
       let [key, value] = token.split('=')
       value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
@@ -145,8 +147,13 @@ function parseHeadline(s:string) {
     }
     else if (token[0] === ':') {
       let key = 'style'
-      let value = token.slice(1)
-      value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
+      let value
+      if (token.length === 1 && tokenIdx < token.length && tokens[tokenIdx+1][0] === '"') {
+        value = tokens[tokenIdx+1].slice(1, -1)
+        tokenIdx++
+      } else {
+        value = token.slice(1)
+      }
       if (parsed[key]) parsed[key] += ` ${value}`
       else parsed[key] = value
     }
@@ -157,9 +164,10 @@ function parseHeadline(s:string) {
       else parsed[key] = [value]
     }
     else if (token[0] === '#') parsed['id'] = token.slice(1)
-    else if (/^\w+-\w+$/.test(token)) parsed['tag'] = token
+    else if (/^\w+-[-\w]*\w+$/.test(token)) parsed['tag'] = token
     else parsed[token] = true
-  })
+    tokenIdx++
+  }
   return parsed
 }
 
@@ -259,6 +267,7 @@ export function structureContent() {
           .filter(child => !/^H\d/.test(child.tagName))
           .filter(child => !/PARAM/.test(child.tagName))
           .filter(child => !/STYLE/.test(child.tagName))
+          .filter(child => !/^EZ-/.test(child.tagName))
           .forEach((child:HTMLElement, idx:number) => { 
             let segId = `${currentSection.getAttribute('data-id') || 1}.${idx+1}`
             child.setAttribute('data-id', segId)
@@ -389,6 +398,14 @@ export function structureContent() {
     if (path[0] === 'zoom') {
       anchorElem.classList.add('zoom')
       anchorElem.setAttribute('rel', 'nofollow')
+    } else {
+      let lastPathElem = path[path.length-1]
+      if (/^Q\d+$/.test(lastPathElem)) {
+        let ezEntityInfobox = document.createElement('ez-entity-infobox')
+        ezEntityInfobox.innerHTML = anchorElem.innerHTML
+        ezEntityInfobox.setAttribute('qid', lastPathElem)
+        anchorElem.replaceWith(ezEntityInfobox)
+      }
     }
     // if (isGHP && window.config.repo && link.origin === location.origin && link.pathname.indexOf(`/${window.config.repo}/`) !== 0) anchorElem.href = `/${window.config.repo}${link.pathname}`
   })
@@ -436,23 +453,23 @@ function computeStickyOffsets(root:HTMLElement) {
   // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl) ))
 
   if (stickyElems.length === 1) {
-    stickyElems[0].style.top = '0px'
+    if (!stickyElems[0].style.top) stickyElems[0].style.top = '0px'
   } else if (stickyElems.length > 1) {
     nextTick(() => {
       for (let i = 1; i < stickyElems.length; i++) {
-        let top = 0
-        let bcr1 = stickyElems[i].getBoundingClientRect()
-        let left1 = bcr1.x
-        let right1 = bcr1.x + bcr1.width
-        for (let j = 0; j < i; j++) {
-          let bcr2 = stickyElems[j].getBoundingClientRect()
-          let left2 = bcr2.x
-          let right2 = bcr2.x + bcr2.width
-          if ((left1 <= right2) && (right1 >= left2)) {
-            top += stickyElems[j].getBoundingClientRect().height
+        let bcr = stickyElems[i].getBoundingClientRect()
+        let left = bcr.x
+        let right = bcr.x + bcr.width
+        
+        for (let j = i-1; j >= 0; --j) {
+          let bcrPrior = stickyElems[j].getBoundingClientRect()
+          let leftPrior = bcrPrior.x
+          let rightPrior = bcrPrior.x + bcrPrior.width
+          if ((leftPrior <= right) && (rightPrior >= left)) {
+            // stickyElems[i].style.top = `${Math.floor(bcrPrior.y + bcrPrior.height)}px`
+            break
           }
         }
-        stickyElems[i].style.top = `${Math.floor(top)}px`
       }
     })
   }

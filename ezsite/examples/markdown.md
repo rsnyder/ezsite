@@ -1,4 +1,4 @@
-`.markdown-body`
+`ez-breadcrumbs .sticky`
 
 * * *
 # A First Level Header

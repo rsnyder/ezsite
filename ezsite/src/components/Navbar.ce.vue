@@ -48,8 +48,12 @@
 
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
-  const shadow = computed(() => root?.value?.parentNode?.querySelector('section') as HTMLElement)
-  watch(shadow, () => applyProps() )
+  const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
+  const section = computed(() => shadowRoot.value.querySelector('section') as HTMLElement)
+  watch(shadowRoot, (shadowRoot) => {
+    shadowRoot.children[1].classList.remove('sticky')
+    applyProps() 
+  })
 
   const navEl = ref<string>()
   // watch(navEl, () => console.log(toRaw(navEl.value)) )
@@ -68,16 +72,16 @@
           ul.appendChild(li)
         })
       }
-      navEl.value = ul.innerHTML
+      navEl.value = ul?.innerHTML
     })
   })
 
   watch(props, () => applyProps())
 
   function applyProps() {
-    shadow.value.style.height = `${props.height}px`
+    section.value.style.height = `${props.height}px`
     if (props.background) host.value.style.backgroundColor = props.background
-    if (props.offset) shadow.value.style.marginTop = `-${props.offset}px`
+    if (props.offset) section.value.style.marginTop = `-${props.offset}px`
     if (props.sticky) {
       console.log('sticky')
       host.value.classList.add('sticky')

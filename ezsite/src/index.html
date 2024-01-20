@@ -19,13 +19,18 @@
       .zoom {
         text-decoration: none;
       }
+      .sticky {
+        position: -webkit-sticky; /* Safari */
+        position: sticky;
+        top: 0;
+        background-color: inherit
+      }
     </style>
   </head>
   <body>
 
     <main>
 
-      <section class="bg-slate-100 rounded m-2 p-2">
         <ez-header label="Header" 
                    logo="https://raw.githubusercontent.com/plant-humanities/media/main/images/phl-website-png-logo.png" 
                    background="gh:plant-humanities/media/images/header.jpg" 
@@ -39,7 +44,6 @@
             <li><a href="/about">About</a></li>
           </ul>
         </ez-header>    
-      </section>
 
       <h2 class="font-bold text-2xl mt-4">Menu</h2>
       <section class="bg-slate-100 rounded m-2 p-2">

@@ -17,7 +17,7 @@ import './css/default.css'
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
-// import EntityInfobox from './components/EntityInfobox.ce.vue'
+import EntityInfobox from './components/EntityInfobox.ce.vue'
 import Header from './components/Header.ce.vue'
 import Hero from './components/Hero.ce.vue'
 import Image from './components/Image.ce.vue'
@@ -26,6 +26,7 @@ import Menu from './components/Menu.ce.vue'
 // import Meta from './components/Meta.ce.vue'
 // import Modal from './components/Modal.ce.vue'
 import Navbar from './components/Navbar.ce.vue'
+import SimpleHeader from './components/SimpleHeader.ce.vue'
 // import Trigger from './components/Trigger.ce.vue'
 
 
@@ -33,7 +34,7 @@ function defineCustomElements() {
 	customElements.define('ez-breadcrumbs', defineCustomElement(Breadcrumbs))
 	// customElements.define('ez-button', defineCustomElement(Button))
 	// customElements.define('ez-dropdown', defineCustomElement(Dropdown))
-	// customElements.define('ez-entity-infobox', defineCustomElement(EntityInfobox))
+	customElements.define('ez-entity-infobox', defineCustomElement(EntityInfobox))
 	customElements.define('ez-header', defineCustomElement(Header))
 	customElements.define('ez-hero', defineCustomElement(Hero))
 	customElements.define('ez-image', defineCustomElement(Image))
@@ -42,6 +43,7 @@ function defineCustomElements() {
 	// customElements.define('ez-meta', defineCustomElement(Meta))
 	customElements.define('ez-navbar', defineCustomElement(Navbar))
 	// customElements.define('ez-modal', defineCustomElement(Modal))
+	customElements.define('ez-simple-header', defineCustomElement(SimpleHeader))
 	// customElements.define('ez-trigger', defineCustomElement(Trigger))
 }
 
@@ -49,6 +51,8 @@ import { setMeta, structureContent, observeVisible } from './utils'
 
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
+
+// @ts-ignore
 console.log(window.config)
 
 setMeta()

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-  import { computed, onMounted, ref, toRaw, watch } from 'vue'
+  import { computed, h, onMounted, ref, toRaw, watch } from 'vue'
   import OpenSeadragon, { TiledImage } from 'openseadragon'
 
   type ImageSize = {
@@ -12,6 +12,9 @@
   const osdEl = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
   const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
+  watch(shadowRoot, (shadowRoot) => {
+    shadowRoot.children[1].classList.remove('sticky')
+  })
 
   const osdWidth = ref<number>()
   watch(osdWidth, () => { resize() })
@@ -39,8 +42,6 @@
     src: { type: String, required: true },
     width: { type: Number },
     height: { type: Number },
-    left: { type: Boolean, default: false },
-    right: { type: Boolean, default: false },
     cover: { type: Boolean, default: false },
     fit: { type: String, default: 'contain' },
     caption: { type: String },
@@ -93,7 +94,7 @@
     return resp.headers.get('Content-Type')?.indexOf('image') === -1
   }
 
-  // convert IIIF v2 manifest to v3; all operations in this component are based on v3
+  // convert IIIF v2 manifest to v3; all operations in this component assume v3
   async function prezi2to3(manifest: any) {
     let resp = await fetch('https://iiif.juncture-digital.org/prezi2to3/', {
       method: 'POST', 
@@ -207,24 +208,27 @@
 
   function addInteractionHandlers() {
     let el = host.value.parentElement
-    while (el.parentElement && el.tagName !== 'MAIN') el = el.parentElement;
-    (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
-      let link = new URL(anchorElem.href)
-      let path = link.pathname.split('/').filter((p:string) => p)
-      let zoomIdx = path.indexOf('zoom')
-      if (zoomIdx >= 0 && path.length > zoomIdx+1) {
-        let region = path[zoomIdx+1]
-        anchorElem.href = 'javascript:;'
-        anchorElem.setAttribute('data-region', region)
-        let imageEl = findImageEl(anchorElem)
-        if (imageEl) {
-          anchorElem.addEventListener('click', (evt:Event) => {
-            let region = (evt.target as HTMLElement).getAttribute('data-region')
-            if (region) zoomto(region) 
-          })
+    while (el.parentElement && el.tagName !== 'MAIN') {
+      (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
+        let link = new URL(anchorElem.href)
+        let path = link.pathname.split('/').filter((p:string) => p)
+        let zoomIdx = path.indexOf('zoom')
+        if (zoomIdx >= 0 && path.length > zoomIdx+1) {
+          let imageEl = findImageEl(anchorElem)
+          if (imageEl) {
+            let region = path[zoomIdx+1]
+            anchorElem.classList.add('zoom')
+            anchorElem.href = 'javascript:;'
+            anchorElem.setAttribute('data-region', region)
+            anchorElem.addEventListener('click', (evt:Event) => {
+              let region = (evt.target as HTMLElement).getAttribute('data-region')
+              if (region) zoomto(region) 
+            })
+          }
         }
-      }
-    })
+      })
+      el = el.parentElement;
+    }
   }
 
   function findImageEl(el:any) {
@@ -310,12 +314,6 @@ function copyTextToClipboard(text: string) {
 
 <div ref="root" 
   class="rounded overflow-hidden shadow-lg"
-  :class="{ 
-    'float-left mr-4': left ,
-    'float-right ml-4': right,
-    'w-1/2': left || right,
-    'w-full': !left && !right,
-  }"
 >
   <!-- <img class="w-full" :src="src" alt="Image title"> -->
   <div v-if="tileSource" ref="osdEl" id="osd" class="w-full" role="img" :aria-label="caption" :alt="caption"></div>

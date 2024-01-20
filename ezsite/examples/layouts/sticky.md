@@ -2,7 +2,7 @@
     p.sticky, section.sticky { border: 1px solid blue;}
 </style>
 
-`ez-header .sticky`
+`ez-header label="Header" logo="https://raw.githubusercontent.com/plant-humanities/media/main/images/phl-website-png-logo.png" background="gh:plant-humanities/media/images/header.jpg" subtitle="Explore the cultural histories of plants and their influence on human societies" contact="ron@snyderjr.com" url="/" sticky`
 
 # 2 Column Layout
 `.mcol .showactive`

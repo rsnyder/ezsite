@@ -32,7 +32,7 @@
     if (props.sticky) {
       host.value.style.position = 'sticky'
       host.value.style.top = '-320px'
-    } 
+    }
   })
 
   watch(host, () => {
@@ -41,7 +41,9 @@
     if (props.background) getManifest(props.background).then(_manifest => manifest.value = _manifest)
     host.value.style.height = `${props.height}px`
     if (props.sticky) host.value.style.position = 'sticky'
-    if (props.top) host.value.style.top = `-${props.top}px`
+    // if (props.top) host.value.style.top = `-${props.top}px`
+    host.value.style.top = '-320px'
+    console.log('host.value.style.top', host.value.style.top)
   })
 
   watch(manifest, (val: object, priorVal: object) => {
