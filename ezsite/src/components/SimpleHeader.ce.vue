@@ -45,8 +45,8 @@
   const imageInfo = ref<any>()
   const imgUrl = ref<string>()
 
-  const defaults = window.config?.defaults || {}
-  console.log(defaults)
+  const config = window.config || {}
+  console.log('header config', config)
 
   const props = defineProps({
     alpha: { type: Number },
