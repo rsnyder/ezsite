@@ -6,7 +6,19 @@
 <script>window.config = { 
     baseurl: '{{ site.baseurl }}',
     title: 'EzSite',
-    description: 'Website framework using Markdown, Github Pages, and custom web components.'
+    description: 'Website framework using Markdown, Github Pages, and custom web components.',
+    defaults: {
+        header: {
+            backgroundImage: 'wc:Mont_Blanc_from_Les_Arcs_1950.jpg',
+            logo: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Noun_Project_website_icon_3077870.svg',
+            logoUrl: '/',
+            contact: 'ron@snyderjr.com',
+            nav: [
+                { label: 'Home', url: '/', icon: 'Home' },
+                { label: 'About', url: '/about', icon: 'About' }
+            ]
+        }
+    }
 }</script>
 <script src="https://rsnyder.github.io/ezsite/ezsite/dist/js/index.js" type="module"></script>
 <main>

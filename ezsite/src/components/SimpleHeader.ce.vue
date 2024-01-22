@@ -39,12 +39,14 @@
     navbar.style.backgroundColor = toRGBA(props.color || props.background ? 'black' : 'green', props.alpha || props.background ? 0.3 : 1.0)
   })
 
-
   const isSticky = ref<boolean>(false)
   const manifest = ref<any>()
   const imageOptions = ref<any>()
   const imageInfo = ref<any>()
   const imgUrl = ref<string>()
+
+  const defaults = window.config?.defaults || {}
+  console.log(defaults)
 
   const props = defineProps({
     alpha: { type: Number },
@@ -64,6 +66,7 @@
   })
 
   watch(host, (host) => {
+    console.log(props)
     imageOptions.value = parseImageOptions(props.options || '')
     if (props.background) getManifest(props.background).then(_manifest => manifest.value = _manifest)
     background.value.style.height = props.height
