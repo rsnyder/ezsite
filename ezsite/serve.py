@@ -144,17 +144,23 @@ def html_from_markdown(md, baseurl):
 async def serve(path: Optional[str] = None):
   path = [pe for pe in path.split('/') if pe != ''] if path else []
   ext = path[-1].split('.')[-1].lower() if len(path) > 0 and '.' in path[-1] else None
-  local_file_path = f'{BASEDIR}/{"/".join(path)}' if ext else f'{BASEDIR}/{"/".join(path)}/README.md'
-  logger.info(f'path: {path} ext: {ext} local_file_path: {local_file_path}')
-  if os.path.exists(local_file_path):
-    pass
-  elif os.path.exists(f'{BASEDIR}/{"/".join(path)}.md'):
-    local_file_path = f'{BASEDIR}/{"/".join(path)}.md'
-  elif os.path.exists(f'{BASEDIR}/{"/".join(path)}/index.html'):
-    local_file_path = f'{BASEDIR}/{"/".join(path)}/index.html'
-    ext = 'html'
-  else:
+
+  if ext:
+    local_file_path = f'{BASEDIR}/{"/".join(path)}'
+    if not os.path.exists(local_file_path):
       return Response(status_code=404, content=not_found_page, media_type='text/html')
+  else: 
+    local_file_path = f'{BASEDIR}/{"/".join(path)}/index.html'
+    if os.path.exists(local_file_path):
+      ext = 'html'
+    else:
+      local_file_path = f'{BASEDIR}/{"/".join(path)}' if ext else f'{BASEDIR}/{"/".join(path)}/README.md'
+      if os.path.exists(local_file_path):
+        pass
+      elif os.path.exists(f'{BASEDIR}/{"/".join(path)}.md'):
+        local_file_path = f'{BASEDIR}/{"/".join(path)}.md'
+      else:
+        return Response(status_code=404, content=not_found_page, media_type='text/html')
   if ext == 'ico':
     content = favicon
   elif ext in ['jpg', 'jpeg', 'png', 'svg']:
@@ -166,6 +172,8 @@ async def serve(path: Optional[str] = None):
   if ext is None: # markdown file
     content = html_from_markdown(content, baseurl=f'/{"/".join(path)}/' if len(path) > 0 else '/')
   media_type = media_types[ext] if ext in media_types else 'text/html'
+
+  logger.info(f'path: {path} ext: {ext} local_file_path: {local_file_path}')
   return Response(status_code=200, content=content, media_type=media_type)
 
 if __name__ == '__main__':

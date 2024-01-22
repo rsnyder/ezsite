@@ -237,6 +237,7 @@ function hasTimestamp(s:string) { return /\d{1,2}:\d{1,2}/.test(s) }
 export function structureContent() {
   let main = document.querySelector('main') as HTMLElement
   let restructured = document.createElement('main')
+  console.log(restructured)
   restructured.className = 'page-content markdown-body'
   restructured.setAttribute('aria-label', 'Content')
   let currentSection: HTMLElement = restructured;
@@ -434,7 +435,7 @@ function computeStickyOffsets(root:HTMLElement) {
     return bcr.top >= 0 && bcr.top <= window.innerHeight
   }
   let stickyElems = [
-    ...(Array.from(root.querySelectorAll('ez-header[sticky], ez-breadcrumbs[sticky]') as NodeListOf<HTMLElement>) as HTMLElement[]),
+    ...(Array.from(root.querySelectorAll('ez-header[sticky], ez-simple-header[sticky], ez-breadcrumbs[sticky]') as NodeListOf<HTMLElement>) as HTMLElement[]),
     ...(Array.from(root.querySelectorAll('.sticky') as NodeListOf<HTMLElement>) as HTMLElement[])
   ]
   .filter(stickyEl => {
@@ -453,7 +454,7 @@ function computeStickyOffsets(root:HTMLElement) {
   // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl) ))
 
   if (stickyElems.length === 1) {
-    if (!stickyElems[0].style.top) stickyElems[0].style.top = '0px'
+    // if (!stickyElems[0].style.top) stickyElems[0].style.top = '0px'
   } else if (stickyElems.length > 1) {
     nextTick(() => {
       for (let i = 1; i < stickyElems.length; i++) {
@@ -462,11 +463,15 @@ function computeStickyOffsets(root:HTMLElement) {
         let right = bcr.x + bcr.width
         
         for (let j = i-1; j >= 0; --j) {
-          let bcrPrior = stickyElems[j].getBoundingClientRect()
+          let priorSticky = stickyElems[j]
+          let bcrPrior = priorSticky.getBoundingClientRect()
           let leftPrior = bcrPrior.x
           let rightPrior = bcrPrior.x + bcrPrior.width
           if ((leftPrior <= right) && (rightPrior >= left)) {
-            // stickyElems[i].style.top = `${Math.floor(bcrPrior.y + bcrPrior.height)}px`
+            // console.log(priorSticky, priorSticky.style.top)
+            let priorTop = parseInt(priorSticky.style.top.replace(/px/,'')) || 0
+            console.log(priorTop)
+            stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.y + bcrPrior.height)}px`
             break
           }
         }

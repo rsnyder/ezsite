@@ -51,6 +51,11 @@ ez-navbar ul {
   display: none;
 }
 
+ez-header {
+  z-index: 10;
+  margin-bottom: 1em;
+}
+
 .mcol { /* multiple columns */
   display: grid;
   grid-auto-flow: column;

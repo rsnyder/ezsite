@@ -2,4 +2,4 @@
 
 ## Docs
 
-[docs](ezsite/README.md)
+[docs](ezsite)

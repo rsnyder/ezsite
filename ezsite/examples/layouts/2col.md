@@ -1,5 +1,3 @@
-`ez-breadcrumbs .sticky`
-
 # 2 Column Layouts
 
 ## Basic 2 Column Layout
