@@ -237,7 +237,6 @@ function hasTimestamp(s:string) { return /\d{1,2}:\d{1,2}/.test(s) }
 export function structureContent() {
   let main = document.querySelector('main') as HTMLElement
   let restructured = document.createElement('main')
-  console.log(restructured)
   restructured.className = 'page-content markdown-body'
   restructured.setAttribute('aria-label', 'Content')
   let currentSection: HTMLElement = restructured;
@@ -470,7 +469,6 @@ function computeStickyOffsets(root:HTMLElement) {
           if ((leftPrior <= right) && (rightPrior >= left)) {
             // console.log(priorSticky, priorSticky.style.top)
             let priorTop = parseInt(priorSticky.style.top.replace(/px/,'')) || 0
-            console.log(priorTop)
             stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.y + bcrPrior.height)}px`
             break
           }

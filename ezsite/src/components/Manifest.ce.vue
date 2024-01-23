@@ -8,7 +8,7 @@
       <div v-if="parsed?.summary" class="summary" v-html="parsed?.summary"></div>
       <a v-if="parsed?.rights" :href="parsed?.rights" v-html="licenseBadge"/>
       <div class="links">
-        <img src="https://juncture-digital.github.io/web-app/static/iiif.png" class="iiif" alt="IIIF manifest icon"
+        <img src="https://rsnyder.github.io/ezsite/ezsite/dist/img/iiif.png" class="iiif" alt="IIIF manifest icon"
           @click="copyTextToClipboard(manifest.id)" 
         />
       </div>
@@ -145,7 +145,7 @@
   onMounted(() => init())
 
   function init() {
-    console.log(toRaw(props.manifest))
+    // console.log(toRaw(props.manifest))
     if (typeof props.manifest === 'object') {
       manifest.value = props.manifest
     } else {

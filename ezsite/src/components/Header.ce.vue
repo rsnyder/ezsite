@@ -41,13 +41,16 @@
 
   const title = computed(() => props.title || config.title )
   const backgroundImage = computed(() => props.background || config.defaults?.header?.backgroundImage )
-  const logo = computed(() => props.logo || config.defaults?.header?.logo )
+  const logo = computed(() => {
+    let logo = props.logo || config.defaults?.header?.logo
+    return logo.indexOf('http') === 0 ? logo : `${config.baseurl}/${logo}`
+  })
   const iconFilter = computed(() => props.iconFilter || config.defaults?.header?.iconFilter )
   const color = computed(() => props.color || backgroundImage.value ? 'black' : 'green' )
   const contact = computed(() => props.contact || config.defaults?.header?.contact )
   const breadcrumbs = computed(() => props.breadcrumbs || config.defaults?.header?.breadcrumbs )
 
-  watch(backgroundImage, (backgroundImage) => { console.log(`backgroundImage=${backgroundImage}`) })
+  // watch(backgroundImage, (backgroundImage) => { console.log(`backgroundImage=${backgroundImage}`) })
 
   watch(navbar, (navbar) => { if (navbar) navbar.style.backgroundColor = toRGBA(color.value, props.alpha || backgroundImage.value ? 0.3 : 1.0) })
 
