@@ -1,4 +1,4 @@
-`ez-simple-header title="EzSite Example" background="wc:Mont_Blanc_from_Les_Arcs_1950.jpg" logo="https://upload.wikimedia.org/wikipedia/commons/8/82/Noun_Project_website_icon_3077870.svg" contact="ron@snyderjr.com" url="/" icon-filter="white" breadcrumbs .sticky | [Home](/) | [About](/about)`
+`ez-header`
 
 # Basic Layout
 

@@ -14,19 +14,19 @@ import './css/github-markdown.css' /* From https://github.com/sindresorhus/githu
 import './css/cards.css'
 import './css/default.css'
 
+import './assets/iiif.png'
+
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
 import EntityInfobox from './components/EntityInfobox.ce.vue'
 import Header from './components/Header.ce.vue'
-import Hero from './components/Hero.ce.vue'
 import Image from './components/Image.ce.vue'
-// import ManifestPopup from './components/ManifestPopup.ce.vue'
+import Manifest from './components/Manifest.ce.vue'
+import ManifestPopup from './components/ManifestPopup.ce.vue'
 import Menu from './components/Menu.ce.vue'
 // import Meta from './components/Meta.ce.vue'
 // import Modal from './components/Modal.ce.vue'
-import Navbar from './components/Navbar.ce.vue'
-import SimpleHeader from './components/SimpleHeader.ce.vue'
 // import Trigger from './components/Trigger.ce.vue'
 
 
@@ -36,14 +36,12 @@ function defineCustomElements() {
 	// customElements.define('ez-dropdown', defineCustomElement(Dropdown))
 	customElements.define('ez-entity-infobox', defineCustomElement(EntityInfobox))
 	customElements.define('ez-header', defineCustomElement(Header))
-	customElements.define('ez-hero', defineCustomElement(Hero))
 	customElements.define('ez-image', defineCustomElement(Image))
-	// customElements.define('ez-manifest-popup', defineCustomElement(ManifestPopup))
+	customElements.define('ez-manifest', defineCustomElement(Manifest))
+	customElements.define('ez-manifest-popup', defineCustomElement(ManifestPopup))
 	customElements.define('ez-menu', defineCustomElement(Menu))
 	// customElements.define('ez-meta', defineCustomElement(Meta))
-	customElements.define('ez-navbar', defineCustomElement(Navbar))
 	// customElements.define('ez-modal', defineCustomElement(Modal))
-	customElements.define('ez-simple-header', defineCustomElement(SimpleHeader))
 	// customElements.define('ez-trigger', defineCustomElement(Trigger))
 }
 
