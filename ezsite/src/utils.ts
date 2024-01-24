@@ -61,6 +61,7 @@ export function setMeta() {
   
   let jldEl = document.querySelector('script[type="application/ld+json"]') as HTMLElement
   let seo = jldEl ? JSON.parse(jldEl.innerText) : {'@context':'https://schema.org', '@type':'WebSite', description:'', headline:'', name:'', url:''}
+  console.log('seo', seo)
   seo.url = location.href
 
   let title = meta?.getAttribute('title')

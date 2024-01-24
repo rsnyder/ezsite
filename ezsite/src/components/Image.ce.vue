@@ -312,9 +312,7 @@ function copyTextToClipboard(text: string) {
 
 <template>
 
-<div ref="root" 
-  class="rounded overflow-hidden shadow-lg"
->
+<div ref="root" class="image relative rounded overflow-hidden shadow-lg">
   <!-- <img class="w-full" :src="src" alt="Image title"> -->
   <div v-if="tileSource" ref="osdEl" id="osd" class="w-full" role="img" :aria-label="caption" :alt="caption"></div>
   <div v-if="tileSource && caption && !noCaption" class="group relative h-10 p-2">
@@ -328,10 +326,25 @@ function copyTextToClipboard(text: string) {
       @click="copyTextToClipboard(coords || '')">
     </div>
   </div>
+  <ez-manifest-popup v-if="manifest" :manifest="manifest"></ez-manifest-popup>
 </div>
 
 </template>
 
 <style>
   @import '../tailwind.css';
+
+  ez-manifest-popup {
+  visibility: hidden;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  z-index: 10;
+}
+
+.image:hover ez-manifest-popup {
+  visibility: visible;
+  transition: all .5s ease-in;
+}
+
 </style>

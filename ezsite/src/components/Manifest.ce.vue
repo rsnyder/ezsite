@@ -145,12 +145,24 @@
   onMounted(() => init())
 
   function init() {
-    // console.log(toRaw(props.manifest))
+    console.log(toRaw(props.manifest))
     if (typeof props.manifest === 'object') {
       manifest.value = props.manifest
     } else {
       getManifest(<string>props.manifest).then(resp => manifest.value = resp )
     }
+  }
+
+  function attributionStatement() {
+    let statement = ''
+    if (parsed.value?.provider) {
+      statement = parsed.value.provider.map((provider:any) => provider.label).join(', ')
+    }
+    if (parsed.value?.requiredStatement) {
+      statement = statement ? `${statement} | ${parsed.value.requiredStatement.value}` : parsed.value.requiredStatement.value
+    }
+    return statement
+
   }
 
   function _value(langObj: any, language='en') {

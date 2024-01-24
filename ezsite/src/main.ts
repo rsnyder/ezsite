@@ -50,10 +50,11 @@ import { setMeta, structureContent, observeVisible } from './utils'
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
 
+setMeta()
+
 // @ts-ignore
 console.log(window.config)
 
-setMeta()
 structureContent()
 defineCustomElements()
 observeVisible()
