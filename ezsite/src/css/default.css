@@ -43,6 +43,7 @@ section {
   margin-top: 0; 
 }
 
+ez-footer ul,
 ez-header ul,
 ez-image ul,
 ez-map ul,
@@ -68,6 +69,10 @@ ez-header {
   position: sticky;
   top: 0;
   background-color: inherit
+}
+
+ez-footer.sticky {
+  bottom: 0;
 }
 
 .right {

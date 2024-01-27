@@ -1,4 +1,4 @@
-`ez-header`
+`ez-header subtitle="Basic Layout"`
 
 # Basic Layout
 

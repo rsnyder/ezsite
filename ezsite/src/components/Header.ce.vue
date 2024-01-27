@@ -31,7 +31,6 @@
   import { getManifest, imageDataUrl, getItemInfo, parseImageOptions } from '../utils'
 
   const window = (self as any).window
-  const config = window.config || {}
 
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
@@ -39,16 +38,18 @@
   const navbar = ref<HTMLElement | null>(null)
   const navEl = ref<string>()
 
-  const title = computed(() => props.title || config.title )
-  const backgroundImage = computed(() => props.background || config.defaults?.header?.backgroundImage )
+  const config = ref<any>(window.config || {})
+
+  const title = computed(() => props.title || config.value.meta?.title )
+  const backgroundImage = computed(() => props.background || config.value.defaults?.header?.backgroundImage )
   const logo = computed(() => {
-    let logo = props.logo || config.defaults?.header?.logo
-    return logo.indexOf('http') === 0 ? logo : `${config.baseurl}/${logo}`
+    let logo = props.logo || config.value.defaults?.header?.logo
+    return logo.indexOf('http') === 0 ? logo : `${config.value.baseurl}/${logo}`
   })
-  const iconFilter = computed(() => props.iconFilter || config.defaults?.header?.iconFilter )
+  const iconFilter = computed(() => props.iconFilter || config.value.defaults?.header?.iconFilter )
   const color = computed(() => props.color || backgroundImage.value ? 'black' : 'green' )
-  const contact = computed(() => props.contact || config.defaults?.header?.contact )
-  const breadcrumbs = computed(() => props.breadcrumbs || config.defaults?.header?.breadcrumbs )
+  const contact = computed(() => props.contact || config.value.defaults?.header?.contact )
+  const breadcrumbs = computed(() => props.breadcrumbs || config.value.defaults?.header?.breadcrumbs )
 
   // watch(backgroundImage, (backgroundImage) => { console.log(`backgroundImage=${backgroundImage}`) })
 
@@ -84,7 +85,7 @@
       : backgroundImage.value
         ? '400px'
         : '100px'
-    if (config.defaults?.header?.class) window.config.defaults.header.class.split(' ').forEach((className:string) => host.classList.add(className))
+    if (config.value.defaults?.header?.class) config.value.defaults.header.class.split(' ').forEach((className:string) => host.classList.add(className))
     isSticky.value = host.classList.contains('sticky')
     if (isSticky.value) {
       let styleTop = parseInt(host.style.top.replace(/px/,''))
@@ -103,9 +104,9 @@
   onMounted(() => {
     nextTick(() => {
       let ul = (host.value.querySelector('ul') as HTMLUListElement)
-      if (!ul && (window as any).config?.defaults?.header?.nav) {
-        ul = document.createElement('ul');
-        (window as any).config?.defaults?.header?.nav.forEach((item:any) => {
+      if (!ul && config.value.defaults?.header?.nav) {
+        ul = document.createElement('ul')
+        config.value.defaults?.header?.nav.forEach((item:any) => {
           const li = document.createElement('li')
           const a = document.createElement('a')
           a.href = item.href

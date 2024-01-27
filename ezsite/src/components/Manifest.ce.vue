@@ -145,7 +145,6 @@
   onMounted(() => init())
 
   function init() {
-    console.log(toRaw(props.manifest))
     if (typeof props.manifest === 'object') {
       manifest.value = props.manifest
     } else {

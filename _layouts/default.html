@@ -3,44 +3,29 @@
 {%- seo -%}
 <link href="https://rsnyder.github.io/ezsite/ezsite/dist/img/favicon.ico" rel="icon" />
 <link href="https://rsnyder.github.io/ezsite/ezsite/dist/css/index.css" rel="stylesheet">
-<script>window.config = { 
-    baseurl: '{{ site.baseurl }}',
-    title: 'EzSite',
-    description: 'Website framework using Markdown, Github Pages, and custom web components.',
-    defaults: {
-        header: {
-            backgroundImage: 'wc:Mont_Blanc_from_Les_Arcs_1950.jpg',
-            logo: 'ezsite/logo.svg',
-            iconFilter: 'white',
-            contact: 'ron@snyderjr.com',
-            class: 'sticky',
-            breadcrumbs: true,
-            nav: [
-                { label: 'Home', href: '/' },
-                { label: 'About', href: '/about' }
-            ]
-        }
-    }
-}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>window.config = `
+    baseurl: {{ site.baseurl }}
+    title: EzSite
+    description: Website framework using Markdown, Github Pages, and custom web components.
+    defaults:
+      header:
+        backgroundImage: wc:Mont_Blanc_from_Les_Arcs_1950.jpg
+        logo: ezsite/logo.svg
+        iconFilter: white
+        contact: ron@snyderjr.com
+        class: sticky
+        breadcrumbs: true
+        nav:
+          - label: Home
+            href: /
+            icon: <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>
+          - label: About
+            href: /about
+            icon: <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+`</script>
 <script src="https://rsnyder.github.io/ezsite/ezsite/dist/js/index.js" type="module"></script>
 <main>
-    
-    <!--
-    <ez-header 
-        title="EzSite Example" 
-        background="wc:Mont_Blanc_from_Les_Arcs_1950.jpg" 
-        logo="https://upload.wikimedia.org/wikipedia/commons/8/82/Noun_Project_website_icon_3077870.svg" 
-        contact="ron@snyderjr.com" 
-        url="/" 
-        icon-filter="white"
-        breadcrumbs
-        class="sticky">
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-        </ul>
-    </ez-header>
-    -->
-
+    <ez-header></ez-header>
     {{ content }}
 </main>

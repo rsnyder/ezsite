@@ -1,4 +1,4 @@
-`ez-breadcrumbs .sticky`
+`ez-meta title="Title from Meta"`
 
 # Images
 

@@ -14,38 +14,6 @@ export const isGHP = /\.github\.io$/.test(location.hostname)
 
 const window = (globalThis as any).window as any
 
-// export function md2html(markdown: string) { return marked.parse(markdown) }
-
-/*
-export async function getConfig() {
-  let configExtras: any = {}
-  let baseurl = window.config?.baseurl !== undefined
-    ? window.config?.baseurl
-    : isGHP ? `/${location.pathname.split('/')[1]}` : ''
-  const configUrls = [
-    location.hostname === 'localhost' ? 'http://localhost:8080/ezsite/default_config.yml' : 'https://rsnyder.github.io/ezsite/ezsite/default_config.yml',
-    location.hostname === 'localhost' ? 'http://localhost:8080/config.yml' : `${baseurl}/config.yml`
-  ]
-  for (const configUrl of configUrls) {
-    let resp = await fetch(configUrl)
-    if (resp.ok) {
-      configExtras = {...configExtras, ...yaml.load(await resp.text())}
-    }
-  }
-  window.config = {
-    ...window.config,
-    ...configExtras,
-    isGHP, 
-    baseurl
-  }
-  if (isGHP) {
-    if (!window.config.owner) window.config.owner = location.hostname.split('.')[0]
-    if (!window.config.repo) window.config.repo = location.pathname.split('/')[1]
-  }
-  return window.config
-}
-*/
-
 export function setMeta() {
   let meta
   let header
@@ -61,7 +29,6 @@ export function setMeta() {
   
   let jldEl = document.querySelector('script[type="application/ld+json"]') as HTMLElement
   let seo = jldEl ? JSON.parse(jldEl.innerText) : {'@context':'https://schema.org', '@type':'WebSite', description:'', headline:'', name:'', url:''}
-  console.log('seo', seo)
   seo.url = location.href
 
   let title = meta?.getAttribute('title')
@@ -179,7 +146,7 @@ function parseCodeEl(codeEl:HTMLElement) {
   return parsed
 }
 
-function handleCodeEl(codeEl:HTMLElement) {
+function handleCodeEl(rootEl: HTMLElement, codeEl:HTMLElement) {
   if (codeEl.parentElement?.tagName === 'P' || codeEl.parentElement?.tagName === 'PRE') {
     let codeWrapper = (codeEl.parentElement?.tagName === 'P' 
       ? Array.from(codeEl.parentElement?.childNodes).map(c => c.nodeValue?.trim()).filter(x => x).join('')
@@ -211,7 +178,16 @@ function handleCodeEl(codeEl:HTMLElement) {
             ul.appendChild(li)
           }
         }
-        codeWrapper.replaceWith(ezComponent)
+        let componentType = parsed.tag.split('-').slice(1).join('-')
+        if (componentType === 'header' || componentType === 'footer') {
+          let existing = rootEl.querySelector(parsed.tag)
+          if (existing) {
+            existing.replaceWith(ezComponent)
+            codeWrapper.remove()
+          }
+          else codeWrapper.replaceWith(ezComponent)
+        }
+        else codeWrapper.replaceWith(ezComponent)
       } else if (parsed.class || parsed.style || parsed.id) {
         let target
         let priorEl = codeEl.previousElementSibling as HTMLElement
@@ -318,7 +294,7 @@ export function structureContent() {
   });
 
   (Array.from(restructured?.querySelectorAll('code') as NodeListOf<HTMLElement>) as HTMLElement[])
-  .forEach(codeEl => handleCodeEl(codeEl));
+  .forEach(codeEl => handleCodeEl(restructured, codeEl));
 
   restructured.querySelectorAll('section').forEach((section:HTMLElement) => {
     if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
@@ -411,6 +387,7 @@ export function structureContent() {
     // if (isGHP && window.config.repo && link.origin === location.origin && link.pathname.indexOf(`/${window.config.repo}/`) !== 0) anchorElem.href = `/${window.config.repo}${link.pathname}`
   })
 
+  /*
   Array.from(restructured.querySelectorAll('img'))
     .forEach((img: HTMLImageElement) => {
       if (img.parentElement?.classList.contains('card')) return
@@ -420,6 +397,7 @@ export function structureContent() {
       ezImage.setAttribute('left', '');
       (img.parentNode as HTMLElement).replaceWith(ezImage)
     })
+  */
 
   computeStickyOffsets(restructured)
 

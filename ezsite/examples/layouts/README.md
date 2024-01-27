@@ -11,3 +11,4 @@
 - [Juncture 1](juncture1)
 - [Sticky](sticky)
 - [Header](header)
+- [Footer](footer)
