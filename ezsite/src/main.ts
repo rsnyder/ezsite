@@ -48,15 +48,12 @@ function defineCustomElements() {
 	// customElements.define('ez-trigger', defineCustomElement(Trigger))
 }
 
-import { setMeta, structureContent, observeVisible } from './utils'
+import { observeVisible } from './utils'
 
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
 
 window.config = yaml.load(window.config)
-
-structureContent()
-setMeta()
 console.log(window.config)
 
 defineCustomElements()
