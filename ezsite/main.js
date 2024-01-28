@@ -388,7 +388,10 @@ function setMeta() {
   window.config = {...window.config, ...{meta: {title, description, robots, seo}}}
 }
 
-window.onload = () => {
+function init() {
   structureContent()
   setMeta()
 }
+
+init()
+// window.onload = () => { init() }
