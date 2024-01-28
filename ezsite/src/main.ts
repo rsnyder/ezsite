@@ -1,6 +1,5 @@
 import { defineCustomElement } from 'vue'
 import ('preline')
-import * as yaml from 'js-yaml'
 
 import '@shoelace-style/shoelace/dist/components/button/button.js'
 import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js'
@@ -53,9 +52,6 @@ import { observeVisible } from './utils'
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
 
-console.log(window.config)
-
-window.config = yaml.load(window.config)
 console.log(window.config)
 
 defineCustomElements()
