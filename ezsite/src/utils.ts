@@ -14,7 +14,6 @@ export const isGHP = /\.github\.io$/.test(location.hostname)
 
 const window = (globalThis as any).window as any
 
-function hasTimestamp(s:string) { return /\d{1,2}:\d{1,2}/.test(s) }
 
 function computeStickyOffsets(root:HTMLElement) {
   function topIsVisible(el:HTMLElement) {
