@@ -1,3 +1,7 @@
+@import 'github-markdown.css'; /* From https://github.com/sindresorhus/github-markdown-css */
+@import 'cards.css';
+@import 'shoelace-light.css';
+
 /* From https://github.com/sindresorhus/github-markdown-css */
 
 @media (prefers-color-scheme: dark) {
