@@ -1,5 +1,3 @@
-// window.config = yaml.load(window.config)
-
 function isNumeric(arg) { return !isNaN(arg) }
 function hasTimestamp(s) { return /\d{1,2}:\d{1,2}/.test(s) }
 

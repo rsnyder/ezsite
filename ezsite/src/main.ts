@@ -9,10 +9,10 @@ import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js'
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js'
 import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 
-import '@shoelace-style/shoelace/dist/themes/light.css'
-import './css/github-markdown.css' /* From https://github.com/sindresorhus/github-markdown-css */
-import './css/cards.css'
-import './css/default.css'
+// import '@shoelace-style/shoelace/dist/themes/light.css'
+// import './css/github-markdown.css' /* From https://github.com/sindresorhus/github-markdown-css */
+// import './css/cards.css'
+// import './css/default.css'
 
 import './assets/iiif.png'
 
