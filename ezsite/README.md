@@ -5,7 +5,7 @@
 HowTo's
 
 - [Layout](layout)
-- [Components](components)
+- [Components](dist)
 
 Examples
 
