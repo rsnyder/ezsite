@@ -12,3 +12,4 @@
 - [Sticky](sticky)
 - [Header](header)
 - [Footer](footer)
+- [Resume](resume)

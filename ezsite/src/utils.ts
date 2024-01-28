@@ -147,14 +147,40 @@ function parseCodeEl(codeEl:HTMLElement) {
 }
 
 function handleCodeEl(rootEl: HTMLElement, codeEl:HTMLElement) {
-  if (codeEl.parentElement?.tagName === 'P' || codeEl.parentElement?.tagName === 'PRE') {
+  // console.log(codeEl)
+  // console.log(codeEl.parentElement)
+  // console.log(codeEl.previousElementSibling)
+  
+  let parentTag = codeEl.parentElement?.tagName || ''
+  if (parentTag === 'P' || 
+      parentTag === 'PRE' ||
+      parentTag === 'LI' ||
+      /^H\d/.test(parentTag)) {
+  
+    /*
     let codeWrapper = (codeEl.parentElement?.tagName === 'P' 
       ? Array.from(codeEl.parentElement?.childNodes).map(c => c.nodeValue?.trim()).filter(x => x).join('')
         ? codeEl
         : codeEl.parentElement
       : codeEl.parentElement?.parentElement?.parentElement
     ) as HTMLElement
-    let parent = codeWrapper.parentElement as HTMLElement
+    */
+  
+    let codeWrapper
+    if (codeEl.previousElementSibling?.tagName === 'IMG') codeWrapper = codeEl as HTMLElement
+    else if (codeEl.parentElement?.tagName === 'P') {
+      let paraText = Array.from(codeEl.parentElement?.childNodes).map(c => c.nodeValue?.trim()).filter(x => x).join('')
+      if (!paraText) codeWrapper = codeEl.parentElement
+    } 
+    else if (codeEl.parentElement?.tagName === 'LI') codeWrapper = codeEl as HTMLElement
+    else if (/^H\d/.test(parentTag)) codeWrapper = codeEl as HTMLElement
+    else codeWrapper = codeEl.parentElement?.parentElement?.parentElement as HTMLElement
+  
+    // console.log(codeWrapper)
+
+    let parent = codeEl.parentElement?.tagName === 'LI'
+        ? codeEl.parentElement.parentElement as HTMLElement
+        : codeWrapper.parentElement as HTMLElement
     let codeLang = codeEl.parentElement?.tagName === 'PRE' 
       ? Array.from(parent.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'ezsite'
       : 'ezsite'
@@ -195,7 +221,7 @@ function handleCodeEl(rootEl: HTMLElement, codeEl:HTMLElement) {
           target = document.createElement('span')
           target.innerHTML = priorEl.innerHTML
           priorEl.replaceWith(target)
-        } else if (priorEl?.tagName === 'A') {
+        } else if (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG') {
           target = priorEl
         } else {
           target = parent

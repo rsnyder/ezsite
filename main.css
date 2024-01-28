@@ -1,6 +1,5 @@
-@import 'github-markdown.css'; /* From https://github.com/sindresorhus/github-markdown-css */
-@import 'cards.css';
-@import 'shoelace-light.css';
+@import 'https://rsnyder.github.io/ezsite/ezsite/css/github-markdown.css'; /* From https://github.com/sindresorhus/github-markdown-css */
+@import 'https://rsnyder.github.io/ezsite/ezsite/css/cards.css';
 
 body {
   margin: 0;
