@@ -53,6 +53,8 @@ import { observeVisible } from './utils'
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
 
+console.log(window.config)
+
 window.config = yaml.load(window.config)
 console.log(window.config)
 
