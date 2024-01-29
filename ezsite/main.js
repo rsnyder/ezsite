@@ -69,7 +69,7 @@ function parseCodeEl(codeEl) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  // console.log(codeEl)
+  console.log(codeEl)
   // console.log(codeEl.parentElement)
   // console.log(codeEl.previousElementSibling)
   
@@ -84,12 +84,13 @@ function handleCodeEl(rootEl, codeEl) {
     if (previousElTag === 'IMG' || previousElTag === 'A' || previousElTag === 'EM' || previousElTag === 'STRONG') codeWrapper = codeEl
     else if (parentTag === 'P') {
       let paraText = Array.from(codeEl.parentElement?.childNodes).map(c => c.nodeValue?.trim()).filter(x => x).join('')
-      if (!paraText) codeWrapper = codeEl.parentElement
+      codeWrapper = paraText ? codeEl : codeEl.parentElement
     } 
     else if (parentTag === 'LI') codeWrapper = codeEl
     else if (/^H\d/.test(parentTag)) codeWrapper = codeEl
     else codeWrapper = codeEl.parentElement?.parentElement?.parentElement
   
+    console.log(codeWrapper)
     if (!codeWrapper) return
 
     let parent = parentTag === 'LI'

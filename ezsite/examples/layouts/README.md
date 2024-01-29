@@ -13,3 +13,4 @@
 - [Header](header)
 - [Footer](footer)
 - [Resume](resume)
+- [Typography](typography)
