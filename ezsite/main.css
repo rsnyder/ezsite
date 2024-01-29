@@ -15,6 +15,7 @@ body {
 .markdown-body h1,
 .markdown-body h2 {
   border-bottom: none;
+  padding-bottom: 0;
 }
 
 .markdown-body li > p {
@@ -30,26 +31,15 @@ section {
   background-color: inherit;
 }
 
+/* reduce heading margins to compensate for spacing added by section display:flow-root */
 .markdown-body section h1,
 .markdown-body section h2,
 .markdown-body section h3,
 .markdown-body section h4,
 .markdown-body section h5,
 .markdown-body section h6 {
-  margin-bottom: 12px; 
-}
-
-/* reduce margin-top on headings to compensate for spacing added by section display:flow-root */
-.markdown-body section h1,
-.markdown-body section h2,
-.markdown-body section h3 {
-  margin-top: 16px; 
-}
-
-.markdown-body section h4,
-.markdown-body section h5,
-.markdown-body section h6 {
-  margin-top: 0; 
+  margin-top: 12px; 
+  margin-bottom: 12px;
 }
 
 ez-footer ul,
@@ -169,7 +159,11 @@ a.zoom::after {
 }
 
 @media print {
-  .pagebreak { page-break-before: always; }
+  .pagebreak { break-before: always; }
+}
+
+@media print {
+  ez-footer { display: none; }
 }
 
 .cards {
@@ -284,4 +278,8 @@ a.zoom::after {
 }
 
 .resume #objective p {
+}
+
+@media print {
+  .keep-together { break-inside: avoid; }
 }
