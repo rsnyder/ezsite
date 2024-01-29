@@ -30,14 +30,22 @@ section {
   background-color: inherit;
 }
 
+.markdown-body section h1,
+.markdown-body section h2,
+.markdown-body section h3,
+.markdown-body section h4,
+.markdown-body section h5,
+.markdown-body section h6 {
+  margin-bottom: 12px; 
+}
+
 /* reduce margin-top on headings to compensate for spacing added by section display:flow-root */
 .markdown-body section h1,
 .markdown-body section h2,
 .markdown-body section h3 {
-  margin-top: 12px; 
+  margin-top: 16px; 
 }
 
-.markdown-body section h3,
 .markdown-body section h4,
 .markdown-body section h5,
 .markdown-body section h6 {

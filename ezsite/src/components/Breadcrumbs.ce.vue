@@ -12,7 +12,7 @@
 
   onMounted(() => {
     let path = location.pathname
-    let baseurl = (window as any).config.baseurl
+    let baseurl = (window as any).config?.baseurl || ''
     crumbs.value = [ 
       ...[{ name: 'home', path: baseurl }],
       ...path.split('/')

@@ -93,6 +93,7 @@
       function toggleModal() {
         let modal = document.querySelector('ez-modal')
         let isOpen = modal.getAttribute('open') !== null
+        console.log(modal, isOpen)
         if (isOpen) modal.removeAttribute('open')
         else modal.setAttribute('open', '')
       }
