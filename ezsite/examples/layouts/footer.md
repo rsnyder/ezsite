@@ -9,7 +9,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ```
 ez-footer .sticky
 Arbitrary text
-[![Dumbarton Oaks](https://raw.githubusercontent.com/jstor-labs/plant-humanities/d862b5c/images/do-logo.svg)`:height:150px`](https://www.doaks.org/) 
+[![Dumbarton Oaks](https://raw.githubusercontent.com/plant-humanities/media/main/images/do-logo.svg) `:width:150px;height:100%`](https://www.doaks.org/) 
 Arbitrary text with attrs `.aclass`
 `.push` [Link with attrs](link1)
 [Link 2](link2) `:color:red`

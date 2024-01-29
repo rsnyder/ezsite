@@ -98,7 +98,7 @@ function handleCodeEl(rootEl, codeEl) {
     let codeLang = parentTag === 'PRE' 
       ? Array.from(parent.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'ezsite'
       : 'ezsite'
-      if (codeLang === 'ezsite') {
+    if (codeLang === 'ezsite') {
       let parsed = parseCodeEl(codeEl)
       if (parsed.tag) {
         let ezComponent = document.createElement(parsed.tag)
@@ -106,7 +106,7 @@ function handleCodeEl(rootEl, codeEl) {
         if (parsed.class) parsed.class.split(' ').forEach(c => ezComponent.classList.add(c))
         if (parsed.style) ezComponent.setAttribute('style', parsed.style)
         for (const [k,v] of Object.entries(parsed)) {
-          if (k === 'tag' || k === 'id' || k === 'class' || k === 'style') continue
+          if (k === 'tag' || k === 'id' || k === 'class' || k === 'style' || k === 'args') continue
           ezComponent.setAttribute(k, v === true ? '' : v)
         }
         if (parsed.args) {
@@ -114,7 +114,8 @@ function handleCodeEl(rootEl, codeEl) {
           ezComponent.appendChild(ul)
           for (const arg of parsed.args) {
             let li = document.createElement('li')
-            li.innerHTML = marked.parse(arg)
+            // li.innerHTML = marked.parse(arg)
+            li.innerHTML = arg
             ul.appendChild(li)
           }
         }
@@ -287,7 +288,9 @@ function structureContent() {
     }
   });
 
-  restructured.querySelectorAll('a').forEach(anchorElem => {
+  Array.from(restructured.querySelectorAll('a'))
+  .filter(anchorElem => anchorElem.href.indexOf('mailto:') < 0)
+  .forEach(anchorElem => {
     let link = new URL(anchorElem.href)
     let path = link.pathname.split('/').filter(p => p)
     if (path[0] === 'zoom') {

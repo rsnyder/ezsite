@@ -1,4 +1,3 @@
-import { marked } from 'marked'
 import { nextTick } from 'vue'
 import { Md5 } from 'ts-md5'
 // import * as yaml from 'js-yaml'

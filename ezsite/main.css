@@ -81,13 +81,6 @@ ez-footer.sticky {
   width: 50%
 }
 
-.avatar {
-  width: 100%;
-  height: auto;
-  border-radius: 50%;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
-
 .showactive .active {
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
@@ -246,4 +239,41 @@ a.zoom::after {
 
 .clamp5 {
   -webkit-line-clamp: 5
+}
+
+/*********** resume ***********/
+
+.resume > section:first-of-type { /* header */
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 1em;
+}
+
+.resume > section:first-of-type > section:nth-of-type(2) { /* contact links */
+  display: flex;
+  margin-left: auto;
+  gap: 1em;
+}
+
+.resume > section:first-of-type > section:nth-of-type(2) li {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.resume > section:first-of-type > section:nth-of-type(2) li img {
+  height: 24px;
+  width: 24px;
+}
+
+.resume > section:first-of-type > section:nth-of-type(2) > p > img { /* head shot */
+  max-width: 120px;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.resume #objective p {
 }

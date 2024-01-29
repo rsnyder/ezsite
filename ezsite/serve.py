@@ -109,7 +109,7 @@ html_template = html_template.replace('{{ site.mode }}', mode)
 html_template = html_template.replace('{{ site.github.owner }}', gh_owner)
 html_template = html_template.replace('{{ site.github.repo }}', gh_repo)
 html_template = html_template.replace('{{ site.github.branch }}', gh_branch)
-html_template = html_template.replace('{{ site.baseurl }}', '""')
+html_template = html_template.replace('{{ site.baseurl }}', '')
 html_template = html_template.replace('{{ site.components }}', components)
   
 def html_from_markdown(md, baseurl):
@@ -118,7 +118,7 @@ def html_from_markdown(md, baseurl):
       
   for link in soup.find_all('a'):
     href = link.get('href')
-    if href and not href.startswith('http') and not href.startswith('#') and not href.startswith('/'):
+    if href and not href.startswith('http') and not href.startswith('#') and not href.startswith('/') and not href.startswith('mailto:'):
       link['href'] = f'{baseurl}{href}'
   
   for img in soup.find_all('img'):
