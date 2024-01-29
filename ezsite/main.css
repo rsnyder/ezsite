@@ -165,7 +165,7 @@ a.zoom::after {
 
   .page-content {
     font-size: 1rem;
-    padding-bottom: 4em; 
+    padding-bottom: 4em !important; 
   }
 }
 
