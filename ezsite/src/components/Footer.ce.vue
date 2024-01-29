@@ -144,7 +144,6 @@
     console.log(`Generating PDF for ${location.href}`)
     modalText.value = 'Generating PDF...'
     isOpen.value = !isOpen.value
-    setTimeout(() => isOpen.value = false, 5000)
     let resp = await fetch(`https://ezsitepdf-drnxe7pzjq-uc.a.run.app/pdf?url=${location.href}`)
     if (resp.ok) {
       modalText.value = 'Downloading PDF...'
@@ -155,9 +154,10 @@
       aElement.href = href
       aElement.setAttribute('target', '_blank')
       aElement.click()
+      aElement.addEventListener
       URL.revokeObjectURL(href)
     }
-    isOpen.value = false
+    setTimeout(() => isOpen.value = false, 2000)
   }
 
 </script>
