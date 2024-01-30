@@ -427,10 +427,14 @@ function computeStickyOffsets(root) {
     return bcr.top >= 0 && bcr.top <= window.innerHeight
   }
 
+  /*
   let stickyElems = [
     ...Array.from(root.querySelectorAll('ez-header[sticky], ez-header[sticky], ez-breadcrumbs[sticky]')),
     ...Array.from(root.querySelectorAll('.sticky'))
   ]
+  */
+  let stickyElems = Array.from(root.querySelectorAll('.sticky'))
+
   .filter(stickyEl => {
     return topIsVisible(stickyEl)
   })
