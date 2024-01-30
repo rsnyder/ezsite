@@ -48,8 +48,6 @@ function defineCustomElements() {
 	// customElements.define('ez-trigger', defineCustomElement(Trigger))
 }
 
-import { observeVisible } from './utils'
-
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
 
@@ -57,4 +55,3 @@ console.log(`ezsite: version=${process.env.version}`)
 console.log(window.config)
 
 defineCustomElements()
-observeVisible()

@@ -64,6 +64,10 @@
 
   const url = ref(`https://ezsitepdf-drnxe7pzjq-uc.a.run.app/pdf?url=${location.href}`)
 
+  const props = defineProps({
+    class: { type: String }
+  })
+
   function getFooterItems() {
     function parseSlot() {
       return Array.from(host.value.querySelectorAll('li') as HTMLUListElement[])

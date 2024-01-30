@@ -55,7 +55,12 @@ function parseHeadline(s) {
     }
     else if (token[0] === '#') parsed['id'] = token.slice(1)
     else if (/^\w+-[-\w]*\w+$/.test(token)) parsed['tag'] = token
-    else parsed[token] = true
+    else if (token === 'script' || token === 'link') parsed['tag'] = token
+    else {
+      if (parsed.tag === 'script' && !parsed.src) parsed.src = token
+      else if (parsed.tag === 'link' && !parsed.href) parsed.href= token
+      else parsed[token] = true
+    }
     tokenIdx++
   }
   return parsed
@@ -69,7 +74,7 @@ function parseCodeEl(codeEl) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  console.log(codeEl)
+  // console.log(codeEl)
   // console.log(codeEl.parentElement)
   // console.log(codeEl.previousElementSibling)
   
@@ -90,29 +95,33 @@ function handleCodeEl(rootEl, codeEl) {
     else if (/^H\d/.test(parentTag)) codeWrapper = codeEl
     else codeWrapper = codeEl.parentElement?.parentElement?.parentElement
   
-    console.log(codeWrapper)
+    // console.log(codeWrapper)
     if (!codeWrapper) return
 
     let parent = parentTag === 'LI'
         ? codeEl.parentElement.parentElement
         : codeWrapper.parentElement
+
+    // console.log(parent)
+
     let codeLang = parentTag === 'PRE' 
       ? Array.from(parent.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'ezsite'
       : 'ezsite'
     if (codeLang === 'ezsite') {
       let parsed = parseCodeEl(codeEl)
+      // console.log(parsed)
       if (parsed.tag) {
-        let ezComponent = document.createElement(parsed.tag)
-        if (parsed.id) ezComponent.id = parsed.id
-        if (parsed.class) parsed.class.split(' ').forEach(c => ezComponent.classList.add(c))
-        if (parsed.style) ezComponent.setAttribute('style', parsed.style)
+        let newEl = document.createElement(parsed.tag)
+        if (parsed.id) newEl.id = parsed.id
+        if (parsed.class) parsed.class.split(' ').forEach(c => newEl.classList.add(c))
+        if (parsed.style) newEl.setAttribute('style', parsed.style)
         for (const [k,v] of Object.entries(parsed)) {
           if (k === 'tag' || k === 'id' || k === 'class' || k === 'style' || k === 'args') continue
-          ezComponent.setAttribute(k, v === true ? '' : v)
+          newEl.setAttribute(k, v === true ? '' : v)
         }
         if (parsed.args) {
           let ul = document.createElement('ul')
-          ezComponent.appendChild(ul)
+          newEl.appendChild(ul)
           for (const arg of parsed.args) {
             let li = document.createElement('li')
             // li.innerHTML = marked.parse(arg)
@@ -120,19 +129,28 @@ function handleCodeEl(rootEl, codeEl) {
             ul.appendChild(li)
           }
         }
-        let componentType = parsed.tag.split('-').slice(1).join('-')
-        if (componentType === 'header' || componentType === 'footer') {
-          let existing = rootEl.querySelector(parsed.tag)
-          if (existing) {
-            existing.replaceWith(ezComponent)
-            codeWrapper.remove()
+        if (parsed.tag === 'script') {
+          document.body.appendChild(newEl)
+          codeWrapper.remove()
+        } else if (parsed.tag === 'link') {
+          document.head.appendChild(newEl)
+          codeWrapper.remove()
+        } else {
+          let componentType = parsed.tag.split('-').slice(1).join('-')
+          if (componentType === 'header' || componentType === 'footer') {
+            let existing = rootEl.querySelector(parsed.tag)
+            if (existing) {
+              existing.replaceWith(newEl)
+              codeWrapper.remove()
+            }
+            else codeWrapper.replaceWith(newEl)
           }
-          else codeWrapper.replaceWith(ezComponent)
+          else codeWrapper.replaceWith(newEl)
         }
-        else codeWrapper.replaceWith(ezComponent)
       } else if (parsed.class || parsed.style || parsed.id) {
         let target
         let priorEl = codeEl.previousElementSibling
+        // if (parent.tagName !== 'P' && (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG')) {
         if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG') {
           target = document.createElement('span')
           target.innerHTML = priorEl.innerHTML
@@ -391,5 +409,114 @@ function setMeta() {
   window.config = {...window.config, ...{meta: {title, description, robots, seo}}}
 }
 
-structureContent()
-setMeta()
+function computeStickyOffsets(root) {
+
+  const elementIsVisibleInViewport = (el, partiallyVisible = false) => {
+    const { top, left, bottom, right } = el.getBoundingClientRect()
+    const { innerHeight, innerWidth } = window
+    return partiallyVisible
+      ? ((top > 0 && top < innerHeight) ||
+          (bottom > 0 && bottom < innerHeight)) &&
+          ((left > 0 && left < innerWidth) || (right > 0 && right < innerWidth))
+      : top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth
+  }
+
+  function topIsVisible(el) {
+    let bcr = el.getBoundingClientRect()
+    return bcr.top >= 0 && bcr.top <= window.innerHeight
+  }
+
+  let stickyElems = [
+    ...Array.from(root.querySelectorAll('ez-header[sticky], ez-header[sticky], ez-breadcrumbs[sticky]')),
+    ...Array.from(root.querySelectorAll('.sticky'))
+  ]
+  .filter(stickyEl => {
+    return topIsVisible(stickyEl)
+  })
+  .sort((a,b) => {
+      let aTop = a.getBoundingClientRect().top
+      let bTop = b.getBoundingClientRect().top
+      return aTop < bTop ? -1 : 1
+    })
+  
+  // console.log('computeStickyOffsets', stickyElems.length)
+  // stickyElems.forEach(stickyEl => console.log(stickyEl.getBoundingClientRect()) )
+  // stickyElems.forEach(stickyEl => console.log(stickyEl) )
+
+  // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl.getBoundingClientRect()) ))
+  // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl) ))
+
+  if (stickyElems.length === 1) {
+    // if (!stickyElems[0].style.top) stickyElems[0].style.top = '0px'
+  } else if (stickyElems.length > 1) {
+    // nextTick(() => {
+      for (let i = 1; i < stickyElems.length; i++) {
+        let bcr = stickyElems[i].getBoundingClientRect()
+        let left = bcr.x
+        let right = bcr.x + bcr.width
+        
+        for (let j = i-1; j >= 0; --j) {
+          let priorSticky = stickyElems[j]
+          let bcrPrior = priorSticky.getBoundingClientRect()
+          let leftPrior = bcrPrior.x
+          let rightPrior = bcrPrior.x + bcrPrior.width
+          if ((leftPrior <= right) && (rightPrior >= left)) {
+            let priorTop = parseInt(priorSticky.style.top.replace(/px/,'')) || 0
+            // console.log(priorSticky, priorTop)
+            // stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.y + bcrPrior.height)}px`
+            stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.height)}px`
+            break
+          }
+        }
+      }
+    //})
+  }
+}
+
+let activeParagraph
+
+let visibleParagraphs = []
+function observeVisible(callback = null) {
+
+  let topMargin = 0
+  Array.from(document.querySelectorAll('.sticky'))
+  .filter(sticklEl => sticklEl.getBoundingClientRect().x < 600)
+  .forEach(stickyEl => topMargin += stickyEl.getBoundingClientRect().height)
+
+  const observer = new IntersectionObserver((entries, observer) => {
+    let notVisible = entries.filter(entry => !entry.isIntersecting)
+    for (const entry of entries) { if (entry.isIntersecting && !visibleParagraphs.find(vp => vp.target === entry.target)) visibleParagraphs.push(entry) }
+
+    visibleParagraphs = visibleParagraphs
+      .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
+      .filter(entry => entry.target.getBoundingClientRect().x < 600)
+      .filter(entry => entry.target.classList.contains('sticky') ? false : true)
+
+    visibleParagraphs = visibleParagraphs
+      .sort((a,b) => {
+        let aTop = a.target.getBoundingClientRect().top
+        let bTop = b.target.getBoundingClientRect().top
+        return aTop < bTop ? -1 : 1
+      })
+
+    if (activeParagraph !== visibleParagraphs[0]?.target) {
+      activeParagraph = visibleParagraphs[0]?.target
+      // console.log('activeParagraph', activeParagraph)
+      document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
+      activeParagraph?.classList.add('active')
+      computeStickyOffsets(document.querySelector('main'))
+    }
+  }, { root: null, threshold: [1.0, .5], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
+
+  // target the elements to be observed
+  document.querySelectorAll('p').forEach((paragraph) => observer.observe(paragraph))
+}
+
+function init() {
+  structureContent()
+  setMeta()
+  observeVisible()
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { init() }) // Loading hasn't finished yet, wait for it
+else init()
