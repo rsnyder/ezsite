@@ -1,5 +1,7 @@
 `ez-header subtitle="Basic Layout"`
 
+`:color:red`
+
 # Basic Layout
 
 ## Section level 2
