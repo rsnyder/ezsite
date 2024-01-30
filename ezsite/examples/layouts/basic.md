@@ -1,7 +1,5 @@
 `ez-header subtitle="Basic Layout"`
 
-`:color:red`
-
 # Basic Layout
 
 ## Section level 2
@@ -16,6 +14,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 `.pagebreak`
 
 Lorem _ipsum dolor_`.test` sit amet, _consectetur adipiscing elit_ `.test`, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+`:color:red`
 
 _Lorem ipsum_ `:color:red` dolor sit amet, consectetur adipiscing elit `inline code block`, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 `:"border:1px solid blue"`
