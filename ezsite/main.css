@@ -71,9 +71,8 @@ ez-header {
 
 .mcol { /* multiple columns */
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
   gap: 1em;
+  grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
 }
 
 .sticky {
@@ -253,9 +252,8 @@ a.zoom::after {
 
 .resume > section:first-of-type { /* header */
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
   gap: 1em;
+  grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
 }
 
 .resume > section:first-of-type > section:nth-of-type(2) { /* contact links */
