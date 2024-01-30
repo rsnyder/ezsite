@@ -174,6 +174,7 @@ function structureContent() {
   let restructured = document.createElement('main')
   restructured.className = 'page-content markdown-body'
   restructured.setAttribute('aria-label', 'Content')
+  restructured.setAttribute('data-theme', 'light')
   let currentSection = restructured;
   let sectionParam
 
