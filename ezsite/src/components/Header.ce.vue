@@ -220,7 +220,7 @@ ez-breadcrumbs {
   grid-area: 3 / 1 / 4 / 2;
   background-color: inherit;
   color: white;
-  z-index: 2;
+  z-index: 1;
 }
 
 .branding {
