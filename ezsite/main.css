@@ -31,6 +31,19 @@
   margin: 0;
 }
 
+
+/*********** mobil;e ***********/
+
+@media only screen and (max-width: 480px) {
+  
+  .page-content {
+    font-size: 1.3rem;
+    width: calc(100% - 2rem);
+  }
+}
+
+/*********** end mobil;e ***********/
+
 section {
   position: relative;
   clear: both;
