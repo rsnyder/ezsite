@@ -116,16 +116,17 @@ ez-footer.sticky {
   bottom: 0;
 }
 
-.right {
-  float: right;
-  width: 50%;
-  margin: 0 0 1em 1em;
-}
-
 .left {
   float: left;
-  width: 50%;
-  margin: 0 1em 1em 0;
+}
+
+.right {
+  float: right;
+}
+
+.left, .right {
+  width: calc(100% - 1em);
+  margin-bottom: 1em;
 }
 
 .showactive .active {
