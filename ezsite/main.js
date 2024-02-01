@@ -76,7 +76,7 @@ function parseCodeEl(codeEl) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  // console.log(codeEl)
+  // (codeEl)
   // console.log(codeEl.parentElement)
   // console.log(codeEl.previousElementSibling)
   
@@ -144,8 +144,9 @@ function handleCodeEl(rootEl, codeEl) {
             if (existing) {
               existing.replaceWith(newEl)
               codeWrapper.remove()
+            } else {
+              codeWrapper.parentElement.replaceWith(newEl)
             }
-            else codeWrapper.replaceWith(newEl)
           }
           else codeWrapper.replaceWith(newEl)
         }
@@ -180,7 +181,6 @@ function structureContent() {
   restructured.setAttribute('data-theme', 'light')
   let currentSection = restructured;
   let sectionParam
-  let footer
 
   // Converts empty headings (changed to paragraphs by markdown converter) to headings with the correct level
   if (main)
@@ -233,15 +233,11 @@ function structureContent() {
       currentSection.setAttribute('data-id', computeDataId(currentSection))
 
     } else {
-      if (/^\w+-footer/i.test(el.tagName)) {
-        footer = el
-      } else {
-        el.className = 'segment'
-        let segId = `${currentSection.getAttribute('data-id')}.${currentSection.children.length}`
-        el.setAttribute('data-id', segId)
-        el.id = segId
-        if (el !== sectionParam) currentSection.innerHTML += el.outerHTML
-      }
+      el.className = 'segment'
+      let segId = `${currentSection.getAttribute('data-id')}.${currentSection.children.length}`
+      el.setAttribute('data-id', segId)
+      el.id = segId
+      if (el !== sectionParam) currentSection.innerHTML += el.outerHTML
     }
   })
 
@@ -353,6 +349,7 @@ function structureContent() {
   */
   
   restructured.style.paddingBottom = '100vh'
+  let footer = restructured.querySelector('ez-footer')
   if (footer) restructured.appendChild(footer)
   main?.replaceWith(restructured)
   
@@ -468,11 +465,11 @@ function computeStickyOffsets(root) {
     // if (!stickyElems[0].style.top) stickyElems[0].style.top = '0px'
   } else if (stickyElems.length > 1) {
     // nextTick(() => {
+      stickyElems[0].style.zIndex = stickyElems.length
       for (let i = 1; i < stickyElems.length; i++) {
         let bcr = stickyElems[i].getBoundingClientRect()
         let left = bcr.x
         let right = bcr.x + bcr.width
-        
         for (let j = i-1; j >= 0; --j) {
           let priorSticky = stickyElems[j]
           let bcrPrior = priorSticky.getBoundingClientRect()
@@ -483,6 +480,7 @@ function computeStickyOffsets(root) {
             // console.log(priorSticky, priorTop)
             // stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.y + bcrPrior.height)}px`
             stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.height)}px`
+            stickyElems[i].style.zIndex = stickyElems.length - i
             break
           }
         }
