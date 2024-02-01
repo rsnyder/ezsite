@@ -145,7 +145,7 @@ function handleCodeEl(rootEl, codeEl) {
               existing.replaceWith(newEl)
               codeWrapper.remove()
             } else {
-              codeWrapper.parentElement.replaceWith(newEl)
+              codeWrapper.replaceWith(newEl)
             }
           }
           else codeWrapper.replaceWith(newEl)
