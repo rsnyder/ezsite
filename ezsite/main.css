@@ -125,7 +125,7 @@ ez-footer.sticky {
 }
 
 .left, .right {
-  width: calc(100% - 1em);
+  width: calc(50% - 1em);
   margin-bottom: 1em;
 }
 
