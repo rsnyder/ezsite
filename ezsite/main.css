@@ -78,9 +78,19 @@ ez-navbar ul {
   display: none;
 }
 
+ez-image,
+ez-map {
+  margin-bottom: 1em;
+}
+
+ez-image img {
+  max-width: 100%;
+  height: auto;
+}
+
 ez-entity-infobox {
   position: relative;
-  z-index: 10;
+  /* z-index: 10; */
 }
 
 ez-header {
@@ -108,7 +118,14 @@ ez-footer.sticky {
 
 .right {
   float: right;
-  width: 50%
+  width: 50%;
+  margin: 0 0 1em 1em;
+}
+
+.left {
+  float: left;
+  width: 50%;
+  margin: 0 1em 1em 0;
 }
 
 .showactive .active {
