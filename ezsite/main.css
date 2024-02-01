@@ -118,14 +118,16 @@ ez-footer.sticky {
 
 .left {
   float: left;
+  padding-right: 1em;
 }
 
 .right {
   float: right;
+  padding-left: 1em;
 }
 
 .left, .right {
-  width: calc(50% - 1em);
+  width: 50%;
   margin-bottom: 1em;
 }
 
