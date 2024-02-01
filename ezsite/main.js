@@ -173,7 +173,7 @@ function handleCodeEl(rootEl, codeEl) {
 
 function structureContent() {
   let main = document.querySelector('main')
-  console.log(new DOMParser().parseFromString(main.outerHTML, 'text/html').firstChild.children[1].firstChild)
+  // console.log(new DOMParser().parseFromString(main.outerHTML, 'text/html').firstChild.children[1].firstChild)
   let restructured = document.createElement('main')
   restructured.className = 'page-content markdown-body'
   restructured.setAttribute('aria-label', 'Content')

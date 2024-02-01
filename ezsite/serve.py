@@ -139,6 +139,16 @@ def html_from_markdown(md, baseurl):
       new_code.string = code.string
       pre.append(new_code)
       code.parent.replace_with(top_div)
+      
+  for param in soup.find_all('param'):
+    node = param.parent
+    while node.next_sibling.name == 'param':
+      node = node.next_sibling
+    node.insert_after(param)
+  for para in soup.find_all('p'):
+    if para.renderContents().decode('utf-8').strip() == '':
+      para.decompose()
+      
   # logger.info(soup.prettify())
   return str(soup)
   
