@@ -80,7 +80,7 @@
   })
 
   watch(host, (host) => {
-    console.log(toRaw(props))
+    // console.log(toRaw(props))
     imageOptions.value = parseImageOptions(props.options || '')
     if (backgroundImage.value) getManifest(backgroundImage.value).then(_manifest => manifest.value = _manifest)
     if (background.value) background.value.style.height = props.height
@@ -114,6 +114,7 @@
           const a = document.createElement('a')
           a.href = item.href
           a.innerHTML = item.label
+          if (item.icon) a.innerHTML += item.icon
           li.appendChild(a)
           ul.appendChild(li)
         })
