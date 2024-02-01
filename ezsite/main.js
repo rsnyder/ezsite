@@ -1,3 +1,5 @@
+import { isJunctureV1, createJunctureV1App } from 'https://rsnyder.github.io/juncture/index.js'
+
 function isNumeric(arg) { return !isNaN(arg) }
 function hasTimestamp(s) { return /\d{1,2}:\d{1,2}/.test(s) }
 
@@ -229,6 +231,10 @@ function structureContent() {
       currentSection.setAttribute('data-id', computeDataId(currentSection))
 
     } else {
+      el.className = 'segment'
+      let segId = `${currentSection.getAttribute('data-id')}.${currentSection.children.length}`
+      el.setAttribute('data-id', segId)
+      el.id = segId
       if (el !== sectionParam) currentSection.innerHTML += el.outerHTML
     }
   })
@@ -517,10 +523,35 @@ function observeVisible(callback = null) {
   document.querySelectorAll('p').forEach((paragraph) => observer.observe(paragraph))
 }
 
+function loadDependency(dependency, callback) {
+  let e = document.createElement(dependency.tag)
+  Object.entries(dependency).forEach(([k, v]) => { if (k !== 'tag') e.setAttribute(k, v) })
+  e.addEventListener('load', callback)
+  if (dependency.tag === 'script') document.body.appendChild(e)
+  else document.head.appendChild(e)
+}
+
+function loadDependencies(dependencies, callback, i) {
+  i = i || 0
+  if (dependencies.length === 0) {
+    if (callback) callback()
+    else return
+  } else {
+    loadDependency(dependencies[i], () => {
+      if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
+      else if (callback) callback()
+    })
+  }
+}
+
 function init() {
+  window.config = {...window.config, ...{isJunctureV1}}
   structureContent()
   setMeta()
-  observeVisible()
+  console.log(window.config)
+  
+  if (isJunctureV1) createJunctureV1App()
+  else observeVisible()
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { init() }) // Loading hasn't finished yet, wait for it

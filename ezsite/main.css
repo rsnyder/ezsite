@@ -1,6 +1,7 @@
 @import 'css/github-markdown.css'; /* From https://github.com/sindresorhus/github-markdown-css */
 @import 'css/cards.css';
 @import 'css/shoelace-light.css';
+@import 'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900';
 
 *,
 *::before,
@@ -11,6 +12,7 @@
 * { margin: 0; }
 
 .page-content {
+  font-family: Roboto, sans-serif;
   font-size: 1.2rem;
   width: min(1200px, 100% - 4rem);
   margin-inline: auto;
@@ -30,7 +32,6 @@
 .page-content li > p {
   margin: 0;
 }
-
 
 /*********** mobil;e ***********/
 

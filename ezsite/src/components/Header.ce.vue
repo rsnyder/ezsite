@@ -9,12 +9,14 @@
           <img :src="logo" :class="`${iconFilter ? 'icon-' + iconFilter : ''}`" alt="logo"/>
         </a>
       </div>
+      
       <div class="branding">
         <div v-if="title" class="title">
           <a :href="`${config.baseurl}/`" v-html="title"></a>
         </div>
-        <div v-if="subtitle" class="subtitle" v-html="subtitle"></div>
+        <div v-if="subtitle" class="subtitle clamp1" v-html="subtitle"></div>
       </div>
+
       <div class="menu">
         <ez-menu v-if="navEl !== undefined" :contact="contact" v-html="navEl"></ez-menu>
       </div>
@@ -46,7 +48,7 @@
     let logo = props.logo || config.value.defaults?.header?.logo
     return logo.indexOf('http') === 0 ? logo : `${config.value.baseurl}/${logo}`
   })
-  const iconFilter = computed(() => props.iconFilter || config.value.defaults?.header?.iconFilter )
+  const iconFilter = computed(() => props.iconFilter === undefined ? config.value.defaults?.header?.iconFilter : props.iconFilter)
   const color = computed(() => props.color || backgroundImage.value ? 'black' : 'green' )
   const contact = computed(() => props.contact || config.value.defaults?.header?.contact )
   const breadcrumbs = computed(() => props.breadcrumbs || config.value.defaults?.header?.breadcrumbs )
@@ -78,6 +80,7 @@
   })
 
   watch(host, (host) => {
+    console.log(toRaw(props))
     imageOptions.value = parseImageOptions(props.options || '')
     if (backgroundImage.value) getManifest(backgroundImage.value).then(_manifest => manifest.value = _manifest)
     if (background.value) background.value.style.height = props.height
@@ -230,7 +233,7 @@ ez-breadcrumbs {
 }
 
 .title a {
-  font-size: 2.2em;
+  font-size: 1.5em;
   line-height: 1;
   font-weight: 500;
   text-decoration: none;
@@ -243,12 +246,21 @@ ez-breadcrumbs {
   font-weight: 400;
 }
 
+@media only screen and (max-width: 480px) {
+  .title a {
+    font-size: 1.3em;
+  }
+  .subtitle {
+    font-size: 1em;
+  }
+}
+
 .logo {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 100%;
+    /* width: 20%; */
+    height: 90%;
 }
 
 .logo a {
@@ -267,6 +279,13 @@ ez-breadcrumbs {
 
 .menu {
   margin-left: auto;
+}
+
+.clamp1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 }
 
 /******* Icon filters *******/

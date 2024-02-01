@@ -51,7 +51,4 @@ function defineCustomElements() {
 // @ts-ignore
 console.log(`ezsite: version=${process.env.version}`)
 
-// @ts-ignore
-console.log(window.config)
-
 defineCustomElements()

@@ -15,6 +15,7 @@ import argparse, json, os, re
 
 BASEDIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 LOCAL_WC = os.environ.get('LOCAL_WC', 'false').lower() == 'true'
+LOCAL_WC_PORT = os.environ.get('LOCAL_WC_PORT', '5173')
 
 from bs4 import BeautifulSoup
 import markdown
@@ -66,7 +67,7 @@ url = config.get('url', '')
 gh_owner = config.get('github', {}).get('owner', '')
 gh_repo = config.get('github', {}).get('repo', '')
 gh_branch = config.get('github', {}).get('branch', '')
-components = config.get('components', '').replace('/juncture/wc/dist/js/index.js', 'http://localhost:5173/src/main.ts') if LOCAL_WC else config.get('components', '')
+components = config.get('components', '').replace('/juncture/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts') if LOCAL_WC else config.get('components', '')
 
 jsonld_seo = {
   '@context': 'https://schema.org',
@@ -103,7 +104,7 @@ html_template = re.sub(r'^\s*{%- include header.html -%}', header, html_template
 html_template = re.sub(r'^\s*{%- include footer.html -%}', footer, html_template, flags=re.MULTILINE)
 
 html_template = html_template.replace('https://rsnyder.github.io/ezsite', '')
-html_template = html_template.replace('/ezsite/dist/js/index.js', 'http://localhost:5173/main.ts')
+html_template = html_template.replace('/ezsite/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
 html_template = html_template.replace('{%- seo -%}', seo)
 html_template = html_template.replace('{{ site.mode }}', mode)
 html_template = html_template.replace('{{ site.github.owner }}', gh_owner)
@@ -169,7 +170,7 @@ async def serve(path: Optional[str] = None):
   else:
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
-      content = content.replace('/ezsite/dist/js/index.js', 'http://localhost:5173/src/main.ts')
+      content = content.replace('/ezsite/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
   if ext is None: # markdown file
     content = html_from_markdown(content, baseurl=f'/{"/".join(path)}/' if len(path) > 0 else '/')
   media_type = media_types[ext] if ext in media_types else 'text/html'
@@ -183,11 +184,13 @@ if __name__ == '__main__':
   parser.add_argument('--reload', type=bool, default=True, help='Reload on change')
   parser.add_argument('--port', type=int, default=8080, help='HTTP port')
   parser.add_argument('--localwc', default=False, action='store_true', help='Use local web components')
+  parser.add_argument('--wcport', type=int, default=5173, help='Port used by local WC server')
 
   args = vars(parser.parse_args())
   
   os.environ['LOCAL_WC'] = str(args['localwc'])
+  os.environ['LOCAL_WC_PORT'] = str(args['wcport'])
 
-  logger.info(f'BASEDIR: {BASEDIR} LOCAL_WC: {os.environ["LOCAL_WC"]}')
+  logger.info(f'BASEDIR={BASEDIR} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]} ')
 
   uvicorn.run('serve:app', port=args['port'], log_level='info', reload=args['reload'])
