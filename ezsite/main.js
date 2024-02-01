@@ -180,6 +180,7 @@ function structureContent() {
   restructured.setAttribute('data-theme', 'light')
   let currentSection = restructured;
   let sectionParam
+  let footer
 
   // Converts empty headings (changed to paragraphs by markdown converter) to headings with the correct level
   if (main)
@@ -232,11 +233,15 @@ function structureContent() {
       currentSection.setAttribute('data-id', computeDataId(currentSection))
 
     } else {
-      el.className = 'segment'
-      let segId = `${currentSection.getAttribute('data-id')}.${currentSection.children.length}`
-      el.setAttribute('data-id', segId)
-      el.id = segId
-      if (el !== sectionParam) currentSection.innerHTML += el.outerHTML
+      if (/^\w+-footer/i.test(el.tagName)) {
+        footer = el
+      } else {
+        el.className = 'segment'
+        let segId = `${currentSection.getAttribute('data-id')}.${currentSection.children.length}`
+        el.setAttribute('data-id', segId)
+        el.id = segId
+        if (el !== sectionParam) currentSection.innerHTML += el.outerHTML
+      }
     }
   })
 
@@ -348,6 +353,7 @@ function structureContent() {
   */
   
   restructured.style.paddingBottom = '100vh'
+  if (footer) restructured.appendChild(footer)
   main?.replaceWith(restructured)
   
 }
