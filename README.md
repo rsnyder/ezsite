@@ -1,5 +1,3 @@
-# ezsite
-
-## Docs
+`ez-header`
 
 [docs](ezsite)

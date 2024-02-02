@@ -18,7 +18,7 @@
       </div>
 
       <div class="menu">
-        <ez-menu v-if="navEl !== undefined" :contact="contact" v-html="navEl"></ez-menu>
+        <ez-menu v-if="navEl !== undefined" :contact="contact" :pdf-download-enabled="pdfDownloadEnabled ? '' : null" v-html="navEl"></ez-menu>
       </div>
     </div>
     <ez-breadcrumbs v-if="breadcrumbs"></ez-breadcrumbs>
@@ -52,6 +52,7 @@
   const color = computed(() => props.color || backgroundImage.value ? 'black' : 'green' )
   const contact = computed(() => props.contact || config.value.defaults?.header?.contact )
   const breadcrumbs = computed(() => props.breadcrumbs || config.value.defaults?.header?.breadcrumbs )
+  const pdfDownloadEnabled = computed(() => props.pdfDownloadEnabled || config.value.defaults?.header?.pdfDownloadEnabled )
 
   // watch(backgroundImage, (backgroundImage) => { console.log(`backgroundImage=${backgroundImage}`) })
 
@@ -70,17 +71,18 @@
     color: { type: String },
     contact: { type: String },
     height: { type: Number },
+    iconFilter: { type: String },
     logo: { type: String },
     options: { type: String },
+    pdfDownloadEnabled: { type: Boolean, default: false },
     position: { type: String, default: 'center' },
     subtitle: { type: String },
     title: { type: String },
-    top: { type: Number, default: 0 },
-    iconFilter: { type: String }
+    top: { type: Number, default: 0 }
   })
 
   watch(host, (host) => {
-    // console.log(toRaw(props))
+    console.log(toRaw(props))
     imageOptions.value = parseImageOptions(props.options || '')
     if (backgroundImage.value) getManifest(backgroundImage.value).then(_manifest => manifest.value = _manifest)
     if (background.value) background.value.style.height = props.height
