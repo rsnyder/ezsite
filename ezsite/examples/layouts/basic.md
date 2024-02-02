@@ -1,4 +1,4 @@
-`ez-header subtitle="Basic Layout"`
+`ez-header subtitle="Basic Layout" pdf-download-enabled`
 
 # Basic Layout
 

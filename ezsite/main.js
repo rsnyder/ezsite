@@ -56,7 +56,7 @@ function parseHeadline(s) {
       else parsed[key] = [value]
     }
     else if (token[0] === '#') parsed['id'] = token.slice(1)
-    else if (/^\w+-[-\w]*\w+$/.test(token)) parsed['tag'] = token
+    else if (/^\w+-[-\w]*\w+$/.test(token) && !parsed.tag) parsed['tag'] = token
     else if (token === 'script' || token === 'link') parsed['tag'] = token
     else {
       if (parsed.tag === 'script' && !parsed.src) parsed.src = token
