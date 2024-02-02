@@ -41,6 +41,12 @@
     font-size: 1rem;
     width: calc(100% - 2rem);
   }
+  
+  ez-header {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+
 }
 
 /*********** end mobil;e ***********/
