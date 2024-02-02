@@ -302,8 +302,8 @@ ez-breadcrumbs {
     font-size: 1em;
   }
 
-  .logo {
-    height: 40%;
+  .logo img {
+    max-width: 40px;
   }
 
   ez-breadcrumbs {
