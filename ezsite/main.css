@@ -41,7 +41,7 @@
     font-size: 1rem;
     width: calc(100% - 2rem);
   }
-  
+
   ez-header {
     margin-left: -1rem;
     margin-right: -1rem;
@@ -86,7 +86,7 @@ ez-navbar ul {
 
 ez-image,
 ez-map {
-  margin-bottom: 1em;
+  margin-bottom: 2em;
 }
 
 ez-image img {
@@ -122,19 +122,23 @@ ez-footer.sticky {
   bottom: 0;
 }
 
-.left {
-  float: left;
-  padding-right: 1em;
-}
+@media only screen and (min-width: 480px) {
 
-.right {
-  float: right;
-  padding-left: 1em;
-}
+  .left {
+    float: left;
+    padding-right: 1em;
+  }
 
-.left, .right {
-  width: 50%;
-  margin-bottom: 1em;
+  .right {
+    float: right;
+    padding-left: 1em;
+  }
+
+  .left, .right {
+    width: 50%;
+    margin-bottom: 1em;
+  }
+
 }
 
 .showactive .active {
