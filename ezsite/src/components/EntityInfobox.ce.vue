@@ -30,7 +30,7 @@
 
   const label = computed(() => entity.value?.labels?.[props.language]?.value)
   const description = computed(() => entity.value?.descriptions?.[props.language]?.value)
-  const wikipediaLink = computed(() => entity.value && entity.value.sitelinks[`${props.language}wiki`].url)
+  const wikipediaLink = computed(() => entity.value && entity.value.sitelinks[`${props.language}wiki`]?.url)
 
   onMounted(() => { getEntity(qid.value) })
 

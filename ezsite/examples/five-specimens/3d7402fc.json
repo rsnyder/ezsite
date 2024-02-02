@@ -1,0 +1,23 @@
+[
+  {
+    "type": "Annotation",
+    "body": [
+      {
+        "type": "TextualBody",
+        "value": "Flower",
+        "purpose": "commenting"
+      }
+    ],
+    "target": {
+      "source": "https://4x4rr42s5yd4hr7mdrjqp3euqm0hnpoe.lambda-url.us-east-1.on.aws/iiif/2/3d7402fce56efe0374a038ec0f48348fc5aef523733b2e4eef9ecbe23d97ad2d",
+      "selector": {
+        "type": "FragmentSelector",
+        "conformsTo": "http://www.w3.org/TR/media-frags/",
+        "value": "xywh=pixel:769.6027221679688,728.3673095703125,237.60223388671875,812.969970703125"
+      },
+      "id": "3d7402fc"
+    },
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "id": "87ac4946"
+  }
+]

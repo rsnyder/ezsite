@@ -1,9 +1,10 @@
 <template>
     
   <div class="header" ref="root">
-    <div class="background" ref="background">
-    </div>
+    <div class="background" ref="background"></div>
+
     <div class="navbar" ref="navbar">
+      
       <div v-if="logo" class="logo">
         <a :href="`${config.baseurl}/`">
           <img :src="logo" :class="`${iconFilter ? 'icon-' + iconFilter : ''}`" alt="logo"/>
@@ -20,7 +21,9 @@
       <div class="menu">
         <ez-menu v-if="navEl !== undefined" :contact="contact" :pdf-download-enabled="pdfDownloadEnabled ? '' : null" v-html="navEl"></ez-menu>
       </div>
+
     </div>
+
     <ez-breadcrumbs v-if="breadcrumbs"></ez-breadcrumbs>
     <ez-manifest-popup v-if="manifest" :manifest="manifest"></ez-manifest-popup>
   </div>
@@ -82,7 +85,6 @@
   })
 
   watch(host, (host) => {
-    console.log(toRaw(props))
     imageOptions.value = parseImageOptions(props.options || '')
     if (backgroundImage.value) getManifest(backgroundImage.value).then(_manifest => manifest.value = _manifest)
     if (background.value) background.value.style.height = props.height
@@ -259,25 +261,20 @@ ez-breadcrumbs {
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* width: 20%; */
-    height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50%;
 }
 
 .logo a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
+  height: 100%;
 }
 
 .logo img {
-    height: 60%;
-    object-fit: contain;
-    vertical-align: middle;
+  object-fit: contain;
+  vertical-align: middle;
+  height: 100%;
 }
 
 .menu {

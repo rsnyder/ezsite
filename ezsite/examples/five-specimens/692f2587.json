@@ -1,0 +1,23 @@
+[
+  {
+    "type": "Annotation",
+    "body": [
+      {
+        "type": "TextualBody",
+        "value": "coordinates",
+        "purpose": "commenting"
+      }
+    ],
+    "target": {
+      "source": "https://4x4rr42s5yd4hr7mdrjqp3euqm0hnpoe.lambda-url.us-east-1.on.aws/iiif/2/692f258710d910cf0fcc6880c0be44eafd28d3881e06953ba16917c1aa77366a",
+      "selector": {
+        "type": "FragmentSelector",
+        "conformsTo": "http://www.w3.org/TR/media-frags/",
+        "value": "xywh=pixel:576.3651733398438,2424.283447265625,1163.0746459960938,110.61474609375"
+      },
+      "id": "692f2587"
+    },
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "id": "562f7195"
+  }
+]

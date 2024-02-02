@@ -18,7 +18,7 @@ export class HSTooltip extends Component {
     }
 
     init () {
-        this.root.addEventListener('click', e => {
+        this.root?.addEventListener('click', e => {
             const $targetEl = e.target
             const $tooltipEl = $targetEl.closest(this.selector)
             

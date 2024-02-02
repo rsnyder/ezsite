@@ -1,0 +1,23 @@
+[
+  {
+    "type": "Annotation",
+    "body": [
+      {
+        "type": "TextualBody",
+        "value": "tomato plant",
+        "purpose": "commenting"
+      }
+    ],
+    "target": {
+      "source": "https://4x4rr42s5yd4hr7mdrjqp3euqm0hnpoe.lambda-url.us-east-1.on.aws/iiif/2/5414469962bbbf8d112413ebd003e2b46ef1e497ed4b9b540aa4b34f4e626743",
+      "selector": {
+        "type": "FragmentSelector",
+        "conformsTo": "http://www.w3.org/TR/media-frags/",
+        "value": "xywh=pixel:257.727294921875,83.94241333007812,322.9166259765625,304.8401794433594"
+      },
+      "id": "54144699"
+    },
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "id": "24f95aff"
+  }
+]

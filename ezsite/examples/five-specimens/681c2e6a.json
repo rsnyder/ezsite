@@ -1,0 +1,23 @@
+[
+  {
+    "type": "Annotation",
+    "body": [
+      {
+        "type": "TextualBody",
+        "value": "Note on the use of the tree's seeds in making a mind-altering form of snuff",
+        "purpose": "commenting"
+      }
+    ],
+    "target": {
+      "source": "https://4x4rr42s5yd4hr7mdrjqp3euqm0hnpoe.lambda-url.us-east-1.on.aws/iiif/2/681c2e6a4281dc7bfdf0130fae7777acefabc5a922e6c0687fc121f05cee6cc8",
+      "selector": {
+        "type": "FragmentSelector",
+        "conformsTo": "http://www.w3.org/TR/media-frags/",
+        "value": "xywh=pixel:86.96782684326172,93.7840805053711,1009.9927444458008,669.1700210571289"
+      },
+      "id": "681c2e6a"
+    },
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "id": "73f8a24a"
+  }
+]

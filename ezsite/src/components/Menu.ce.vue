@@ -46,7 +46,6 @@
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
 
   watch(host, () => { 
-    console.log(toRaw(props))
     getMenuItems() 
   })
 
