@@ -181,6 +181,8 @@ function structureContent() {
   restructured.setAttribute('data-theme', 'light')
   let currentSection = restructured;
   let sectionParam
+  let tabGroup = 0
+  let tab = 0
 
   // Converts empty headings (changed to paragraphs by markdown converter) to headings with the correct level
   if (main)
@@ -281,6 +283,7 @@ function structureContent() {
       section.appendChild(wrapper)
     }
 
+    /*
     if (section.classList.contains('tabs')) {
       let tabGroup = document.createElement('sl-tab-group');
       Array.from(section.classList).forEach(cls => tabGroup.classList.add(cls))
@@ -302,6 +305,68 @@ function structureContent() {
       })
       section.replaceWith(tabGroup)
     }
+    */
+
+    /*
+    if (section.classList.contains('tabs')) {
+      section.querySelector(':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6')?.remove()
+      section.classList.remove('tabs')
+      section.classList.add('tab-wrap')
+      ++tabGroup
+      Array.from(section.querySelectorAll(':scope > section'))
+      .forEach((tabSection, idx) => {
+        ++tab
+        tabSection.className = 'tab__content'
+        // tabSection.removeAttribute('id')
+        
+        let label = document.createElement('label')
+        label.setAttribute('for', `tab${tab}`)
+        label.innerHTML = tabSection.querySelector('h1, h2, h3, h4, h5, h6')?.innerHTML
+        section.insertBefore(label, section.children.item(idx*2))
+
+        let input = document.createElement('input')
+        input.className = 'tab'
+        input.setAttribute('id', `tab${tab}`)
+        input.setAttribute('type', 'radio')
+        input.setAttribute('name', `tabGroup${tabGroup}`)
+        if (idx === 0) input.setAttribute('checked', '')
+        section.insertBefore(input, section.children.item(idx*2))
+        
+      })
+      console.log(section)
+    }
+    */
+    
+    if (section.classList.contains('tabs')) {
+      /* from https://codepen.io/alvarotrigo/pen/GRMbzBR */
+      ++tabGroup
+      let tabsWrap = document.createElement('section')
+      tabsWrap.className = 'tab-wrap'
+      Array.from(section.querySelectorAll(':scope > section'))
+      .forEach((tabSection, idx) => {
+        ++tab
+
+        let label = document.createElement('label')
+        label.setAttribute('for', `tab${tab}`)
+        label.innerHTML = tabSection.querySelector('h1, h2, h3, h4, h5, h6')?.innerHTML
+        tabsWrap.insertBefore(label, tabsWrap.children.item(idx*2))
+
+        let input = document.createElement('input')
+        input.className = 'tab'
+        input.setAttribute('id', `tab${tab}`)
+        input.setAttribute('type', 'radio')
+        input.setAttribute('name', `tabGroup${tabGroup}`)
+        if (idx === 0) input.setAttribute('checked', '')
+        tabsWrap.insertBefore(input, tabsWrap.children.item(idx*2))
+
+        tabSection.className = 'tab__content'
+        tabsWrap.appendChild(tabSection)
+        tabSection.querySelector('h1, h2, h3, h4, h5, h6')?.remove()
+        
+      })
+      section.appendChild(tabsWrap)
+    }
+
     if (section.classList.contains('mcol') && !section.classList.contains('wrapper')) {
       let wrapper = document.createElement('section')
       wrapper.className = 'mcol wrapper'

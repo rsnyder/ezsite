@@ -1,42 +1,38 @@
 `ez-breadcrumbs .sticky`
 
 # Tabs Layout
-`.mcol`
 
-## Column 1
+## Tabbed Section with Heading
+`.tabs :width:50%`
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+### Image 1
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+`ez-image src=wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg`
 
-## Column 2
-
-###
-`.sticky .tabs`
-
-#### Image
-
-An Image will go here.
-
-#### Map
+### Map 1
 
 A Map will go here.
 
-#### Description 
+### Description 1
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-###
-`.sticky .tabs`
 
-#### Image
+## 
+`.tabs`
 
-An Image will go here.
+### Markdown
 
-#### Map
+```markdown
+`ez-image src=wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg`
+```
 
-A Map will go here.
+### HTML
 
-#### Description 
+```html
+<ez-image src="wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg"></ez-image>
+```
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+### Rendered
+
+`ez-image src=wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg`

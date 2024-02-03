@@ -1,5 +1,6 @@
 @import 'css/github-markdown.css'; /* From https://github.com/sindresorhus/github-markdown-css */
 @import 'css/cards.css';
+@import 'css/tabs.css';
 @import 'css/shoelace-light.css';
 @import 'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900';
 
@@ -209,16 +210,18 @@ a.zoom::after {
     content: "🔎";
 }
 
+/*
 .tabs {
   position: relative;
   height: 600px;
 }
 
 .sticky.tabs {
-  position: -webkit-sticky; /* Safari */
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
 }
+*/
 
 .cards {
   display: grid;
