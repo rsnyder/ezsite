@@ -266,8 +266,15 @@ function structureContent() {
   .filter(p => /^{.*}$/.test(p.textContent.trim()))
   .forEach(attrs => {
     console.log(attrs)
-    console.log(parseHeadline(attrs.textContent.trim().slice(1,-1)))
-    p.remove()
+    console.log(attrs.parentElement)
+    console.log(attrs.previousElementSibling)
+    let target = attrs.previousElementSibling || attrs.parentElement
+    let parsed = parseHeadline(attrs.textContent.trim().slice(1,-1))
+    console.log(parsed, target)
+    if (parsed.id) target.id = parsed.id
+    if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
+    if (parsed.style) target.setAttribute('style', parsed.style)
+    attrs.remove()
   })
 
   Array.from(restructured?.querySelectorAll('code'))
