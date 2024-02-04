@@ -267,6 +267,7 @@ function structureContent() {
   .forEach(attrs => {
     let target = attrs.previousElementSibling
     while (target && target.tagName === 'P') target = target.previousElementSibling
+    let parsed = parseHeadline(attrs.textContent.trim().slice(1,-1))
     console.log(parsed, target)
     if (parsed.id) target.id = parsed.id
     if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
