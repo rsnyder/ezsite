@@ -266,7 +266,7 @@ function structureContent() {
   .filter(p => /^{.*}$/.test(p.textContent.trim()))
   .forEach(attrs => {
     let target = attrs.previousElementSibling
-    while (target && target.tagName === 'P') target = target.previousElementSibling
+    while (target?.tagName !== 'P') target = target.previousElementSibling
     let parsed = parseHeadline(attrs.textContent.trim().slice(1,-1))
     console.log(parsed, target)
     if (parsed.id) target.id = parsed.id
