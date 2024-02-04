@@ -74,3 +74,29 @@
   .clamp5 {
     -webkit-line-clamp: 5
   }
+
+  @media only screen and (max-width: 480px) {
+    
+    .cards {
+      grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
+      column-gap: 1em;
+      row-gap: 1/5em;
+    }
+
+    .card  {
+      font-size: 1em;
+      line-height: 1.2;
+      border: 1px solid #eee;
+      border-radius: 0.5em;
+    }
+
+    .card > img {
+      height: 150px;
+    }
+
+    .card > a {
+      font-size: 1.2em;
+      padding: 0.8rem .5rem .2rem;
+    }
+
+  }

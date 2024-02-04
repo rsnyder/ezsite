@@ -1,13 +1,15 @@
 <template>
 
-  <ul ref="footer" class="flex bg-slate-100 p-2 gap-3 mt-8 items-center w-full h-8">
+  <ul ref="footer" id="footer" class="flex bg-slate-100 p-2 gap-3 mt-8 items-center w-full h-8">
     <li v-for="li, idx in footerElems" :key="`li-${idx}`" v-html="li.innerHTML" :class="li.className" :style="li.getAttribute('style') || ''"></li>
+    <!--
     <li>
       <a :href="url" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Noun_Project_PDF_icon_117327_cc.svg" alt="PDF Icon"></a>
     </li>
     <li>
       <a href="javascript:;" @click="generatePDF"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f5/Cloud_Download_-_The_Noun_Project.svg" alt="Download Icon"></a>
     </li>
+    -->
   </ul>
 
   <!-- Generating PDF Dialog -->
@@ -172,11 +174,22 @@
 img,
 svg {
   height: 36px;
-  width: 36px;
+  /* width: 36px; */
 }
 
 .push {
   margin-left: auto;
+}
+
+@media only screen and (max-width: 480px) {
+  #footer {
+    font-size: 0.8em;
+  }
+  li {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .overlay {

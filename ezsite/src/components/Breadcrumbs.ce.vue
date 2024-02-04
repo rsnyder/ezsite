@@ -14,7 +14,7 @@
     let path = location.pathname
     let baseurl = (window as any).config?.baseurl || ''
     crumbs.value = [ 
-      ...[{ name: 'home', path: baseurl }],
+      // ...[{ name: 'home', path: baseurl }],
       ...path.split('/')
         .filter(pe => pe)
         .slice(baseurl?.split('/').filter(pe => pe).length)
