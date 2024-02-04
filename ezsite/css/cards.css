@@ -75,7 +75,7 @@
     -webkit-line-clamp: 5
   }
 
-  @media only screen and (max-width: 480px) {
+  @media only screen and (max-width: 375px) {
     
     .cards {
       grid-template-columns: repeat(auto-fill, minmax(150px,1fr));
