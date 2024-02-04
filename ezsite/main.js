@@ -269,9 +269,11 @@ function structureContent() {
     while (target?.tagName !== 'P') target = target.previousElementSibling
     let parsed = parseHeadline(attrs.textContent.trim().slice(1,-1))
     console.log(parsed, target)
+    target = target.parentElement
     if (parsed.id) target.id = parsed.id
     if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
     if (parsed.style) target.setAttribute('style', parsed.style)
+    console.log(target)
     attrs.remove()
   })
 
