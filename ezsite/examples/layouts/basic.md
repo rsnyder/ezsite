@@ -1,3 +1,5 @@
+`.showactive`
+
 `ez-header subtitle="Basic Layout" pdf-download-enabled`
 
 # Basic Layout

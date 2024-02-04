@@ -262,6 +262,14 @@ function structureContent() {
     }
   })
 
+  Array.from(restructured?.querySelectorAll('p'))
+  .filter(p => /^{.*}$/.test(p.textContent.trim()))
+  .forEach(attrs => {
+    console.log(attrs)
+    console.log(parseHeadline(attrs.textContent.trim().slice(1,-1)))
+    p.remove()
+  })
+
   Array.from(restructured?.querySelectorAll('code'))
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
 
@@ -554,40 +562,37 @@ function computeStickyOffsets(root) {
   }
 }
 
+
 let activeParagraph
 
-let visibleParagraphs = []
 function observeVisible(callback = null) {
 
-  let topMargin = 0
-  Array.from(document.querySelectorAll('.sticky'))
-  .filter(sticklEl => sticklEl.getBoundingClientRect().x < 600)
-  .forEach(stickyEl => topMargin += stickyEl.getBoundingClientRect().height)
+  let topMargin = Array.from(document.querySelectorAll('EZ-HEADER'))
+  .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
 
+  console.log(`observeVisible: topMargin=${topMargin}`)
+
+  const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {
-    let notVisible = entries.filter(entry => !entry.isIntersecting)
-    for (const entry of entries) { if (entry.isIntersecting && !visibleParagraphs.find(vp => vp.target === entry.target)) visibleParagraphs.push(entry) }
+    for (const entry of entries) {
+      let para = entry.target
+      let intersectionRatio = entry.intersectionRatio
+      let top = para.getBoundingClientRect().top
+      if (intersectionRatio > 0) visible[para.id] = {para, top, intersectionRatio}
+      else delete visible[para.id]
+    }
 
-    visibleParagraphs = visibleParagraphs
-      .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
-      .filter(entry => entry.target.getBoundingClientRect().x < 600)
-      .filter(entry => entry.target.classList.contains('sticky') ? false : true)
+    let sortedVisible = Object.values(visible).sort((a,b) => b.intersectionRatio - a.intersectionRatio || a.top - b.top)
+    // sortedVisible.forEach(v => console.log(v.para, v.intersectionRatio, v.top))
 
-    visibleParagraphs = visibleParagraphs
-      .sort((a,b) => {
-        let aTop = a.target.getBoundingClientRect().top
-        let bTop = b.target.getBoundingClientRect().top
-        return aTop < bTop ? -1 : 1
-      })
-
-    if (activeParagraph !== visibleParagraphs[0]?.target) {
-      activeParagraph = visibleParagraphs[0]?.target
+    if (activeParagraph !== sortedVisible[0]?.para) {
+      activeParagraph = sortedVisible[0]?.para
       // console.log('activeParagraph', activeParagraph)
       document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
       activeParagraph?.classList.add('active')
       computeStickyOffsets(document.querySelector('main'))
     }
-  }, { root: null, threshold: [1.0, .5], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
+  }, { root: null, threshold: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
 
   // target the elements to be observed
   document.querySelectorAll('p').forEach((paragraph) => observer.observe(paragraph))
@@ -621,7 +626,7 @@ function init() {
   console.log(window.config)
   
   if (isJunctureV1) createJunctureV1App()
-  else observeVisible()
+  else setTimeout(() => observeVisible(), 0)
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { init() }) // Loading hasn't finished yet, wait for it

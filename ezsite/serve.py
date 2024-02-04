@@ -152,7 +152,7 @@ def html_from_markdown(md, baseurl):
   # logger.info(soup.prettify())
   return str(soup)
   
-@app.get('/{path:path}')
+@app.get('{path:path}')
 async def serve(path: Optional[str] = None):
   path = [pe for pe in path.split('/') if pe != ''] if path else []
   ext = path[-1].split('.')[-1].lower() if len(path) > 0 and '.' in path[-1] else None
