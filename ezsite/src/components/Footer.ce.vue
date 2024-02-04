@@ -181,7 +181,7 @@ svg {
   margin-left: auto;
 }
 
-@media only screen and (max-width: 375px) {
+@media only screen and (max-width: 768px) {
   #footer {
     font-size: 0.8em;
   }

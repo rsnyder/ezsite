@@ -34,9 +34,9 @@
   margin: 0;
 }
 
-/*********** mobil;e ***********/
+/*********** mobile ***********/
 
-@media only screen and (max-width: 375px) {
+@media only screen and (max-width: 768px) {
   
   .page-content {
     font-size: 1rem;
@@ -50,7 +50,7 @@
 
 }
 
-/*********** end mobil;e ***********/
+/*********** end mobile ***********/
 
 section {
   position: relative;
@@ -123,7 +123,7 @@ ez-footer.sticky {
   bottom: 0;
 }
 
-@media only screen and (min-width: 375px) {
+@media only screen and (min-width: 768px) {
 
   .left {
     float: left;

@@ -287,7 +287,7 @@ ez-breadcrumbs {
 
 /******* Mobile *******/
 
-@media only screen and (max-width: 375px) {
+@media only screen and (max-width: 768px) {
   
   .navbar {
     gap: 0.75em;
