@@ -265,11 +265,8 @@ function structureContent() {
   Array.from(restructured?.querySelectorAll('p'))
   .filter(p => /^{.*}$/.test(p.textContent.trim()))
   .forEach(attrs => {
-    console.log(attrs)
-    console.log(attrs.parentElement)
-    console.log(attrs.previousElementSibling)
-    let target = attrs.previousElementSibling || attrs.parentElement
-    let parsed = parseHeadline(attrs.textContent.trim().slice(1,-1))
+    let target = attrs.previousElementSibling
+    while (target && target.tagName === 'P') target = target.previousElementSibling
     console.log(parsed, target)
     if (parsed.id) target.id = parsed.id
     if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
