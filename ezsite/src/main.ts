@@ -8,7 +8,6 @@ import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js'
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js'
 import '@shoelace-style/shoelace/dist/components/tab-group/tab-group.js'
 import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js'
-import '@shoelace-style/shoelace/dist/components/range/range.js'
 import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 
 // import '@shoelace-style/shoelace/dist/themes/light.css'
@@ -27,7 +26,6 @@ import Header from './components/Header.ce.vue'
 import Image from './components/Image.ce.vue'
 import Manifest from './components/Manifest.ce.vue'
 import ManifestPopup from './components/ManifestPopup.ce.vue'
-import Map from './components/Map.ce.vue'
 import Menu from './components/Menu.ce.vue'
 import Meta from './components/Meta.ce.vue'
 import Modal from './components/Modal.ce.vue'
@@ -44,7 +42,6 @@ function defineCustomElements() {
 	customElements.define('ez-image', defineCustomElement(Image))
 	customElements.define('ez-manifest', defineCustomElement(Manifest))
 	customElements.define('ez-manifest-popup', defineCustomElement(ManifestPopup))
-	customElements.define('ez-map', defineCustomElement(Map))
 	customElements.define('ez-menu', defineCustomElement(Menu))
 	customElements.define('ez-meta', defineCustomElement(Meta))
 	customElements.define('ez-modal', defineCustomElement(Modal))

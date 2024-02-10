@@ -44,7 +44,7 @@
   const navEl = ref<string>()
 
   const config = ref<any>(window.config || {})
-  // watch(config, (config) => { console.log('watch.config', config) })
+  watch(config, (config) => { console.log('watch.config', config) })
 
   const title = computed(() => props.title || config.value.meta?.title )
   const backgroundImage = computed(() => props.background || config.value.defaults?.header?.backgroundImage )
@@ -89,7 +89,6 @@
 
   watch(host, (host) => {
     config.value = window.config || {}
-    console.log(toRaw(props))
     imageOptions.value = parseImageOptions(props.options || '')
     if (backgroundImage.value) getManifest(backgroundImage.value).then(_manifest => manifest.value = _manifest)
     if (background.value) background.value.style.height = props.height
@@ -166,7 +165,6 @@
   //convert hex to rgb
   function toRGBA(color:string, alpha:number = 1.0) {
     let hex = color[0] === '#' ? color : colors[color.toLowerCase()]
-    console.log('toRGBA', color, alpha, hex)
     if (hex.length === 4) {
       let r = hex.slice(1,2)
       let g = hex.slice(2,3)

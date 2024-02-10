@@ -8,34 +8,6 @@ export function isURL(str:string) { return /^https*:\/\//.test(str) }
 export function isQid(s:string) { return /^Q\d+$/.test(s) }
 export function isCoords(s:string) { return /^[+-]?\d+(.\d*|\d*),{1}[+-]?\d+(.\d*|\d*)$/.test(s) }
 export function isNumeric(arg:any) { return !isNaN(arg) }
-export function camelToKebab(input:string) { return input.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}
-export function kebabToCamel(input:string) { return input.replace(/-([a-z])/g, function (g) {return g[1].toUpperCase()})}
-
-function _value(langObj: any, language='en') {
-  return typeof langObj === 'object'
-    ? langObj[language] || langObj.none || langObj[Object.keys(langObj).sort()[0]]
-    : langObj
-}
-
-export function getMetadata(manifest:any, language:string = 'en'): any[] {
-  let metadata:any[] = []
-  if (manifest.metadata) {
-    manifest.metadata.forEach((md:any) => {
-      metadata.push({label: _value(md.label, language)[0], value: _value(md.value, language)})
-    })
-  }
-  return metadata
-}
-
-export function metadataAsObj(manifest:any, language:string = 'en'): any {
-  return Object.fromEntries(getMetadata(manifest, language).map(md => [md.label, md.value]))
-}
-
-export function isMobile() {
-  // console.log(`isMobile: ontouchstart=${'ontouchstart' in document.documentElement} mobi=${/mobi/i.test(navigator.userAgent)}`)
-  let _isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
-  return _isMobile
-}
 
 export const isGHP = /\.github\.io$/.test(location.hostname)
 

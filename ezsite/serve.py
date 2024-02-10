@@ -104,7 +104,7 @@ html_template = re.sub(r'^\s*{%- include header.html -%}', header, html_template
 html_template = re.sub(r'^\s*{%- include footer.html -%}', footer, html_template, flags=re.MULTILINE)
 
 html_template = html_template.replace('https://rsnyder.github.io/ezsite', '')
-html_template = html_template.replace('/ezsite/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
+if LOCAL_WC: html_template = html_template.replace('/ezsite/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
 html_template = html_template.replace('{%- seo -%}', seo)
 html_template = html_template.replace('{{ site.mode }}', mode)
 html_template = html_template.replace('{{ site.github.owner }}', gh_owner)
@@ -142,7 +142,7 @@ def html_from_markdown(md, baseurl):
       
   for param in soup.find_all('param'):
     node = param.parent
-    while node.next_sibling.name == 'param':
+    while node.next_sibling and node.next_sibling.name == 'param':
       node = node.next_sibling
     node.insert_after(param)
   for para in soup.find_all('p'):

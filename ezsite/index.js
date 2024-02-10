@@ -1,4 +1,4 @@
-import { isJunctureV1, createJunctureV1App } from 'https://rsnyder.github.io/juncture/index.js'
+import { isJunctureV1, createJunctureV1App } from './juncture/index.js'
 
 function isNumeric(arg) { return !isNaN(arg) }
 function hasTimestamp(s) { return /\d{1,2}:\d{1,2}/.test(s) }
@@ -174,7 +174,9 @@ function handleCodeEl(rootEl, codeEl) {
 
 function structureContent() {
   let main = document.querySelector('main')
-  // console.log(new DOMParser().parseFromString(main.outerHTML, 'text/html').firstChild.children[1].firstChild)
+  // let inputHTML = main.outerHTML
+  // setTimeout(() => console.log('structureContent.input', new DOMParser().parseFromString(inputHTML, 'text/html').firstChild.children[1].firstChild), 0)
+
   let restructured = document.createElement('main')
   restructured.className = 'page-content markdown-body'
   restructured.setAttribute('aria-label', 'Content')
@@ -234,11 +236,13 @@ function structureContent() {
       parent?.appendChild(currentSection)
       currentSection.setAttribute('data-id', computeDataId(currentSection))
 
-    } else {
-      el.className = 'segment'
-      let segId = `${currentSection.getAttribute('data-id')}.${currentSection.children.length}`
-      el.setAttribute('data-id', segId)
-      el.id = segId
+    } else  {
+      if (el.tagName !== 'PARAM') {
+        el.className = 'segment'
+        let segId = `${currentSection.getAttribute('data-id')}.${currentSection.children.length}`
+        el.setAttribute('data-id', segId)
+        el.id = segId
+      }
       if (el !== sectionParam) currentSection.innerHTML += el.outerHTML
     }
   })
@@ -268,12 +272,10 @@ function structureContent() {
     let target = attrs.previousElementSibling
     while (target?.tagName !== 'P') target = target.previousElementSibling
     let parsed = parseHeadline(attrs.textContent.trim().slice(1,-1))
-    console.log(parsed, target)
     // target = target.parentElement
     if (parsed.id) target.id = parsed.id
     if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
     if (parsed.style) target.setAttribute('style', parsed.style)
-    console.log(target)
     attrs.remove()
   })
 
@@ -431,6 +433,10 @@ function structureContent() {
   restructured.style.paddingBottom = '100vh'
   let footer = restructured.querySelector('ez-footer')
   if (footer) restructured.appendChild(footer)
+
+  // let restructuredHTML = restructured.outerHTML
+  // setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
+
   main?.replaceWith(restructured)
   
 }
@@ -577,7 +583,7 @@ function observeVisible(callback = null) {
   let topMargin = Array.from(document.querySelectorAll('EZ-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
 
-  console.log(`observeVisible: topMargin=${topMargin}`)
+  // console.log(`observeVisible: topMargin=${topMargin}`)
 
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {
@@ -627,6 +633,7 @@ function loadDependencies(dependencies, callback, i) {
 }
 
 function init() {
+  // console.log('init', new DOMParser().parseFromString(document.querySelector('main').outerHTML, 'text/html').firstChild.children[1].firstChild)
   window.config = {...window.config, ...{isJunctureV1}}
   structureContent()
   setMeta()

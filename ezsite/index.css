@@ -12,12 +12,24 @@
 
 * { margin: 0; }
 
+@keyframes fadeInAnimation {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+main {
+  animation: fadeInAnimation ease .3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
 .page-content {
   font-family: Roboto, sans-serif;
   font-size: 1.2rem;
   width: min(1200px, 100% - 4rem);
   margin-inline: auto;
   background-color: #fff;
+
 }
 
 .page-content > * + * {
