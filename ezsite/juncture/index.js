@@ -4,7 +4,7 @@ let scriptBasePath = Array.from(document.querySelectorAll('script'))
   .filter(script => /\/ezsite\/index\.js$/.test(script.src))
   .map(scriptEl => {
     console.log(new URL(scriptEl.src))
-    let path = new URL(scriptEl.src).pathname.split('/').slice(0, -1).join('/')
+    let path = new URL(scriptEl.src).pathname.split('/').slice(0, -2).join('/')
     console.log(path)
     return path
   })?.[0] || ''
