@@ -1,5 +1,5 @@
 
-document.querySelectorAll('script').forEach(scriptEl => {
+document.querySelectorAll('script').filter(script => script.src).forEach(scriptEl => {
   console.log(new URL(scriptEl.src))
 })
 
