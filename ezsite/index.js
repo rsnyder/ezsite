@@ -581,16 +581,16 @@ function observeVisible(callback = null) {
 
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {
+    
     for (const entry of entries) {
       let para = entry.target
       let intersectionRatio = entry.intersectionRatio
-      let top = para.getBoundingClientRect().top
-      if (intersectionRatio > 0) visible[para.id] = {para, top, intersectionRatio}
+      if (intersectionRatio > 0) visible[para.id] = {para, intersectionRatio}
       else delete visible[para.id]
     }
 
-    let sortedVisible = Object.values(visible).sort((a,b) => b.intersectionRatio - a.intersectionRatio || a.top - b.top)
-    // sortedVisible.forEach(v => console.log(v.para, v.intersectionRatio, v.top))
+    let sortedVisible = Object.values(visible)
+      .sort((a,b) => b.intersectionRatio - a.intersectionRatio || a.para.getBoundingClientRect().top - b.para.getBoundingClientRect().top)
 
     if (activeParagraph !== sortedVisible[0]?.para) {
       activeParagraph = sortedVisible[0]?.para

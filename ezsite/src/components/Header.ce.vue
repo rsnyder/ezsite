@@ -44,7 +44,7 @@
   const navEl = ref<string>()
 
   const config = ref<any>(window.config || {})
-  watch(config, (config) => { console.log('watch.config', config) })
+  // watch(config, (config) => { console.log('watch.config', config) })
 
   const title = computed(() => props.title || config.value.meta?.title )
   const backgroundImage = computed(() => props.background || config.value.defaults?.header?.backgroundImage )

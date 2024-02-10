@@ -7,6 +7,7 @@
     <title>EZPage</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
     <style>
+      * { box-sizing: border-box; }
       html {
         font-family: Roboto, sans-serif;
       }
@@ -31,20 +32,21 @@
 
     <main>
 
-        <ez-header title="EzSite Example" 
-                   background="wc:Mont_Blanc_from_Les_Arcs_1950.jpg"
-                   logo="https://upload.wikimedia.org/wikipedia/commons/8/82/Noun_Project_website_icon_3077870.svg" 
-                   contact="ron@snyderjr.com" 
-                   url="/" 
-                   icon-filter="white"
-                   breadcrumbs
-                   class="sticky"
-        >
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-          </ul>
-        </ez-header>
+      <!--
+      <ez-header title="EzSite Example" 
+                  background="wc:Mont_Blanc_from_Les_Arcs_1950.jpg"
+                  logo="https://upload.wikimedia.org/wikipedia/commons/8/82/Noun_Project_website_icon_3077870.svg" 
+                  contact="ron@snyderjr.com" 
+                  url="/" 
+                  icon-filter="white"
+                  breadcrumbs
+                  class="sticky"
+      >
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+        </ul>
+      </ez-header>
 
       <h2 class="font-bold text-2xl mt-4">Menu</h2>
       <section class="bg-slate-100 rounded m-2 p-2">
@@ -53,14 +55,31 @@
             <li>
               <a href="/">
                 Home
-                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>
               </a>
             </li>
             <li><a href="/about">About</a></li>
           </ul>
         </ez-menu>
       </section>
+      -->
+      <h2 class="font-bold text-2xl mt-4">Map</h2>
+      <section style="width:50%;margin:auto;">
+        <ez-map center="32.32422,-80.96553" zoom="15">
+          <ul>
+            <li>Q83813 layer="Savannah" prefer-geojson disabled</li>
+            <li>Q47716 layer="Charleston" prefer-geojson disabled</li>
+            <li>Q813376 layer="Beaufort" prefer-geojson disabled</li>
+            <li>Q3243593 layer="Bluffton" prefer-geojson disabled</li>
+            <li>Q1001134 layer="Hilton Head Island" prefer-geojson disabled</li>
+            <li>https://raw.githubusercontent.com/rsnyder/media/main/geojson/Sun_City,_Hilton_Head.geojson layer="Sun City" wc:Dell_Webb_Sun_City_Hilton_Head.jpg fillColor=red color=red weight=2 fillOpacity=0.1 disabled</li>
+            <li>allmaps=dcbf95935e8119cd layer="Sun City North Map"</li>
+            <li>32.32347,-80.97122 "1121 Sunfish Way, Bluffton, SC 29909" layer="Home Site" zoom=16</li>
+          </ul>
+        </ez-map>
+      </section>
 
+      <!--
       <h2 class="font-bold text-2xl mt-4">Modal</h2>
       <section class="bg-slate-100 rounded m-2 p-2">
         <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded" onclick="toggleModal()">Show Modal</button>
@@ -82,6 +101,7 @@
       <section class="bg-slate-100 rounded m-2 p-2">
         The <ez-entity-infobox qid="Q6960545">Vainakh tower architecture</ez-entity-infobox>, also called Nakh architecture, is a characteristic feature of ancient and medieval architecture of <ez-entity-infobox qid="Q5187">Chechnya</ez-entity-infobox> and <ez-entity-infobox qid="Q5219">Ingushetia</ez-entity-infobox>.
       </section>
+      -->
 
     </main>
 
