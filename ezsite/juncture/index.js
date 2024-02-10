@@ -2,8 +2,10 @@
 let scriptBasePath = Array.from(document.querySelectorAll('script'))
   .filter(script => script.src)
   .filter(script => /\/ezsite\/index\.js$/.test(script.src))
-  .map(scriptEl => new URL(scriptEl.src).pathname.split('/').slice(0, -2).join('/'))
-  ?.[0] || ''
+  .map(scriptEl => `/${new URL(scriptEl.src).pathname.split('/').slice(0, -2).join('/')}`)
+  ?.[0] || '/'
+
+console.log('scriptBasePath', scriptBasePath)
 
 const junctureDependencies = [
   // {tag: 'link', rel: 'stylesheet', href: `${config.baseurl}juncture/index.css`},
@@ -14,7 +16,7 @@ const junctureDependencies = [
   {tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js'},
   {tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.umd.min.js'},
   {tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js'},
-  {tag: 'script', src: `${scriptBasePath}/ezsite/juncture/v2/dist/js/index.js`, type: 'module'}
+  {tag: 'script', src: `${scriptBasePath}ezsite/juncture/v2/dist/js/index.js`, type: 'module'}
 ]
 
 const isJunctureV1 = Array.from(document.querySelectorAll('param'))

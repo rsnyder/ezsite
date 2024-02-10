@@ -120,10 +120,12 @@ const availableViewers = [
 let scriptBasePath = Array.from(document.querySelectorAll('script'))
   .filter(script => script.src)
   .filter(script => /\/ezsite\/index\.js$/.test(script.src))
-  .map(scriptEl => new URL(scriptEl.src).pathname.split('/').slice(0, -2).join('/'))
-  ?.[0] || ''
+  .map(scriptEl => `/${new URL(scriptEl.src).pathname.split('/').slice(0, -2).join('/')}`)
+  ?.[0] || '/'
 
-const componentsPath = `${scriptBasePath}/ezsite/juncture/v1`
+console.log('scriptBasePath', scriptBasePath)
+
+const componentsPath = `${scriptBasePath}ezsite/juncture/v1`
 const componentPrefix = 've1-'
 
 const contentSource = {
