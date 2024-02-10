@@ -2,12 +2,8 @@
 let scriptBasePath = Array.from(document.querySelectorAll('script'))
   .filter(script => script.src)
   .filter(script => /\/ezsite\/index\.js$/.test(script.src))
-  .map(scriptEl => {
-    console.log(new URL(scriptEl.src))
-    let path = new URL(scriptEl.src).pathname.split('/').slice(0, -2).join('/')
-    console.log(path)
-    return path
-  })?.[0] || ''
+  .map(scriptEl => new URL(scriptEl.src).pathname.split('/').slice(0, -2).join('/'))
+  ?.[0] || ''
 
 const junctureDependencies = [
   // {tag: 'link', rel: 'stylesheet', href: `${config.baseurl}juncture/index.css`},
