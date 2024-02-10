@@ -1,3 +1,4 @@
+
 const junctureDependencies = [
   // {tag: 'link', rel: 'stylesheet', href: `${config.baseurl}juncture/index.css`},
   {tag: 'link', rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'},
@@ -7,7 +8,7 @@ const junctureDependencies = [
   {tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js'},
   {tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.umd.min.js'},
   {tag: 'script', src: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js'},
-  {tag: 'script', src: '../juncture/v2/dist/js/index.js', type: 'module'}
+  {tag: 'script', src: `${config.baseurl}/ezsite/juncture/v2/dist/js/index.js`, type: 'module'}
 ]
 
 const isJunctureV1 = Array.from(document.querySelectorAll('param'))
