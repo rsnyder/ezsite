@@ -1,11 +1,12 @@
 
-document.querySelectorAll('script').filter(script => script.src).forEach(scriptEl => {
+console.log('document.currentScript', document.currentScript)
+
+Array.from(document.querySelectorAll('script')).filter(script => script.src).forEach(scriptEl => {
   console.log(new URL(scriptEl.src))
 })
 
-console.log('document.currentScript', document.currentScript)
-
 const scriptBase = document.currentScript.src.split('/').slice(0, -1).join('/')
+console.log('scriptBase', scriptBase)
 
 const junctureDependencies = [
   // {tag: 'link', rel: 'stylesheet', href: `${config.baseurl}juncture/index.css`},
