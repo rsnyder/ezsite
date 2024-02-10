@@ -3,6 +3,10 @@ document.querySelectorAll('script').filter(script => script.src).forEach(scriptE
   console.log(new URL(scriptEl.src))
 })
 
+console.log('document.currentScript', document.currentScript)
+
+const scriptBase = document.currentScript.src.split('/').slice(0, -1).join('/')
+
 const junctureDependencies = [
   // {tag: 'link', rel: 'stylesheet', href: `${config.baseurl}juncture/index.css`},
   {tag: 'link', rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'},
