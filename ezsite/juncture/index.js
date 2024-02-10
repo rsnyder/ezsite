@@ -1,5 +1,7 @@
 
-console.log(location)
+document.querySelectorAll('script').forEach(scriptEl => {
+  console.log(new URL(scriptEl.src))
+})
 
 const junctureDependencies = [
   // {tag: 'link', rel: 'stylesheet', href: `${config.baseurl}juncture/index.css`},
