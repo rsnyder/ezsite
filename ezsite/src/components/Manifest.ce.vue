@@ -8,7 +8,7 @@
       <div v-if="parsed?.summary" class="summary" v-html="parsed?.summary"></div>
       <a v-if="parsed?.rights" :href="parsed?.rights" v-html="licenseBadge"/>
       <div class="links">
-        <img src="/ezsite/dist/img/iiif.png" class="iiif" alt="IIIF manifest icon"
+        <img src="https://rsnyder.github.io/ezsite/ezsite/dist/img/iiif.png" class="iiif" alt="IIIF manifest icon"
           @click="copyTextToClipboard(manifest.id)" 
         />
       </div>

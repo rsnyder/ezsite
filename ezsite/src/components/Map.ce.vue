@@ -6,7 +6,6 @@
         <div id="map" ref="mapEl">
         </div>
         <div v-if="caption" id="caption" v-html="caption"></div>
-        <sl-range ref="range" @sl-change="onOpacityChange" :value="opacity" min="0" max="100"></sl-range>
       </div>
     </div>
     
@@ -26,8 +25,6 @@
     
       import 'leaflet.smoothwheelzoom'
       import { WarpedMapLayer } from '@allmaps/leaflet'
-
-      import type SLRange from '@shoelace-style/shoelace/dist/components/range/range.js'
 
       import { isQid, getEntity, getManifest, kebabToCamel, metadataAsObj, isMobile } from '../utils'
 
@@ -217,7 +214,6 @@
       const root = ref<HTMLElement | null>(null)
       const host = computed(() => (root.value?.getRootNode() as any)?.host as HTMLElement)
       const mapEl = ref<HTMLElement | null>(null)
-      const range = ref<SLRange | null>(null)
 
       const mapAspectRatio = ref<number>(1.0)
 
@@ -227,13 +223,8 @@
       const layerObjs = ref<any[]>([])
       const layerControl = ref<L.Control.Layers>()
       
-      const tileLayers = ref<any[]>()
+      const warpedMapLayers = ref<any[]>()
       const geoJSONs = ref<any>()
-
-      const opacity = ref(30)
-      function onOpacityChange() {
-        tileLayers.value?.filter(layer => layer.type === 'allmaps').forEach((layer:any) => layer.layer.setOpacity((range.value?.value || 100) / 100))
-      }
     
       // const geoJsonLayers = ref<L.LayerGroup[]>()
     
@@ -253,7 +244,7 @@
     
       watch(layerObjs, async () => {
         let _layerObjs = await Promise.all(layerObjs.value)
-        // console.log(toRaw(_layerObjs))
+        console.log(toRaw(_layerObjs))
     
         let geojsonUrls = _layerObjs
           .filter(item => item.geojson && item.preferGeojson)
@@ -317,24 +308,26 @@
     
         // console.log(geojsonsByLayer)
     
-
-        tileLayers.value = _layerObjs
+        geoJSONs.value = geojsonsByLayer
+        
+        warpedMapLayers.value = _layerObjs
           .filter(ls => ls.allmaps)
           .map(ls => {
+            // @ts-ignore
             let layer = new WarpedMapLayer(`https://annotations.allmaps.org/images/${ls.allmaps}`)
             return {
               name: ls.layer || 'Image layer',
               type: 'allmaps',
               disabled: ls.disabled,
+              opacity: ls.opacity || 100,
               layer
             }
         })
 
-        geoJSONs.value = geojsonsByLayer
       })
     
-      watch(tileLayers, () => updateMap())
       watch(geoJSONs, () => updateMap())
+      watch(warpedMapLayers, () => updateMap())
       watch(map, () => updateMap())
     
       function init() {
@@ -343,13 +336,12 @@
         getLayerStrings()
         listenForSlotChanges()
     
-
         initMap()
         addInteractionHandlers()
       }
     
       async function initMap() {
-        console.log(toRaw(props))
+        // console.log(toRaw(props))
         zoom.value = props.zoom
 
         let center: L.LatLng
@@ -377,7 +369,7 @@
           // mapEl?.replaceWith(newMapEl)
         }
 
-        console.log(`initMap: center=${center} zoom=${zoom.value}`)
+        // console.log(`initMap: center=${center} zoom=${zoom.value}`)
         if (!mapEl.value) return
         if (isMobile()) L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling)
         mapEl.value.style.cursor = 'default'
@@ -534,20 +526,28 @@
     
       let mapUpdated = false
       function updateMap() {
-        if (map.value && geoJSONs.value && tileLayers.value && !mapUpdated) {
+        
+        if (map.value && geoJSONs.value && warpedMapLayers.value && !mapUpdated) {
           mapUpdated = true
           let geoJsonLayers = Object.keys(geoJSONs.value || {})
-          let numTileLayers = tileLayers.value ? tileLayers.value.length : 0
+          let numWarpedMapLayers = warpedMapLayers.value ? warpedMapLayers.value.length : 0
     
-          // console.log(`updateMap: geoJsonLayers=${geoJsonLayers.length} tileLayers=${numTileLayers}`)
+          // console.log(`updateMap: geoJsonLayers=${geoJsonLayers.length} warpedMapLayers=${numWarpedMapLayers}`)
     
           if (!layerControl.value && (
               (geoJsonLayers.length > 1 || geoJsonLayers.length === 1 && geoJsonLayers[0] !== 'Locations') ||
-              numTileLayers > 0
+              numWarpedMapLayers > 0
             )) {
             layerControl.value = L.control.layers(Object.fromEntries([]), {}).addTo(map.value)
           }
     
+          let opacityLayers: any = {}
+          warpedMapLayers.value?.forEach(item => {
+            if (layerControl.value) layerControl.value.addOverlay(item.layer, item.name)
+            if (!item.disabled) map.value?.addLayer(item.layer)
+            opacityLayers[item.name] = item.layer
+          })
+          
           Object.keys(geoJSONs.value || {}).forEach(layerName => {
             let layerGroup: any = new L.LayerGroup()
             let isDisabled = false
@@ -561,28 +561,33 @@
             }
             if (layerControl.value) layerControl.value.addOverlay(layerGroup, layerName)
           })
-    
-          let opacityLayers: any = {}
-          tileLayers.value?.forEach(item => {
-            if (layerControl.value) layerControl.value.addOverlay(item.layer, item.name)
-            if (!item.disabled) map.value?.addLayer(item.layer)
-            opacityLayers[item.name] = item.layer
-          })
-          tileLayers.value?.filter(layer => layer.type === 'allmaps').forEach((layer:any) => layer.layer.setOpacity((range.value?.value || 100) / 100))
 
-          console.log('opacityLayers', opacityLayers)
           if (Object.keys(opacityLayers).length > 0) {
-            (L.control as any).opacity(opacityLayers, {
-              label: null,
-              collapsed: true,
-              position: 'topright' // topleft or topright or bottomleft or bottomright
-            }).addTo(map.value)
+            let opacityControl =
+              (L.control as any).opacity(opacityLayers, {
+                label: null,
+                collapsed: true,
+                position: 'topright' // topleft or topright or bottomleft or bottomright
+              })
+            opacityControl.addTo(map.value)
+            Array.from(opacityControl.getContainer().querySelectorAll('.leaflet-control-layers-overlays label'))
+              .forEach((overlay:any) => {
+                let label = overlay.children[0].textContent.trim()
+                let warpedMapLayer
+                warpedMapLayers.value?.forEach(item => {
+                  if (item.name === label) warpedMapLayer = item
+                })
+                if (warpedMapLayer) {
+                  let startingOpacity = warpedMapLayer.opacity
+                  let rangeControl = overlay.children[1].children[0]
+                  rangeControl.value = startingOpacity
+                  warpedMapLayer.layer.setOpacity(startingOpacity / 100)
+                  rangeControl.addEventListener('input', () => warpedMapLayer.layer.setOpacity(parseInt(rangeControl.value)/100))
+                }
+              })
           }
 
-          // Object.values(opacityLayers)[0].setOpacity(0.5)
-      
-        }
-    
+        }    
       }
     
       function toGeoJSON(locations:any[]):any {

@@ -735,6 +735,10 @@ video {
   clear: none;
 }
 
+.m-1 {
+  margin: 0.25rem;
+}
+
 .m-2 {
   margin: 0.5rem;
 }
@@ -901,6 +905,10 @@ video {
 
 .hidden {
   display: none;
+}
+
+.h-1 {
+  height: 0.25rem;
 }
 
 .h-10 {
@@ -1146,6 +1154,11 @@ video {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
+}
+
+.columns-1 {
+  -moz-columns: 1;
+       columns: 1;
 }
 
 .break-before-auto {
@@ -2066,6 +2079,10 @@ video {
      object-fit: scale-down;
 }
 
+.p-1 {
+  padding: 0.25rem;
+}
+
 .p-2 {
   padding: 0.5rem;
 }
@@ -2678,6 +2695,10 @@ video {
 
 .\[a-zA-Z0-9\:\\\\-\\\\\._\$\] {
   a-z-a--z0-9: \\-\\. $;
+}
+
+.\[a-zA-Z0-9\:_-\] {
+  a-z-a--z0-9: -;
 }
 
 .\[a-zA-Z\:_\] {

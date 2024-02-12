@@ -26,6 +26,7 @@ import Header from './components/Header.ce.vue'
 import Image from './components/Image.ce.vue'
 import Manifest from './components/Manifest.ce.vue'
 import ManifestPopup from './components/ManifestPopup.ce.vue'
+import Map from './components/Map.ce.vue'
 import Menu from './components/Menu.ce.vue'
 import Meta from './components/Meta.ce.vue'
 import Modal from './components/Modal.ce.vue'
@@ -42,6 +43,7 @@ function defineCustomElements() {
 	customElements.define('ez-image', defineCustomElement(Image))
 	customElements.define('ez-manifest', defineCustomElement(Manifest))
 	customElements.define('ez-manifest-popup', defineCustomElement(ManifestPopup))
+	customElements.define('ez-map', defineCustomElement(Map))
 	customElements.define('ez-menu', defineCustomElement(Menu))
 	customElements.define('ez-meta', defineCustomElement(Meta))
 	customElements.define('ez-modal', defineCustomElement(Modal))
