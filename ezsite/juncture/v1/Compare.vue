@@ -32,7 +32,7 @@ module.exports = {
     viewerIcon: 'fas fa-images',
     dependencies: [
       'https://cdn.jsdelivr.net/npm/openseadragon@2.4/build/openseadragon/openseadragon.min.js',
-      '/juncture/v1/openseadragon-curtain-sync.js'
+      `${window.config.scriptBasePath}/ezsite/juncture/v1/openseadragon-curtain-sync.js`
     ],
     viewer: null,
     manifests: null

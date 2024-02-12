@@ -582,7 +582,11 @@
                   let rangeControl = overlay.children[1].children[0]
                   rangeControl.value = startingOpacity
                   warpedMapLayer.layer.setOpacity(startingOpacity / 100)
-                  rangeControl.addEventListener('input', () => warpedMapLayer.layer.setOpacity(parseInt(rangeControl.value)/100))
+                  rangeControl.addEventListener('input', (evt:Event) => {
+                    evt.preventDefault()
+                    evt.stopPropagation()
+                    warpedMapLayer.layer.setOpacity(parseInt(rangeControl.value)/100)
+                  })
                 }
               })
           }
