@@ -31,7 +31,7 @@ export default defineConfig(({mode})=> {
           index: './index.html',
         },
         output: {
-          dir: '../dist',
+          dir: '../wc',
           assetFileNames: (assetInfo) => {
             let extType = assetInfo.name?.split('.').at(1)
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType || '')) extType = 'img';

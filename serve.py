@@ -67,7 +67,6 @@ url = config.get('url', '')
 gh_owner = config.get('github', {}).get('owner', '')
 gh_repo = config.get('github', {}).get('repo', '')
 gh_branch = config.get('github', {}).get('branch', '')
-components = config.get('components', '').replace('/juncture/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts') if LOCAL_WC else config.get('components', '')
 
 jsonld_seo = {
   '@context': 'https://schema.org',
@@ -104,14 +103,13 @@ html_template = re.sub(r'^\s*{%- include header.html -%}', header, html_template
 html_template = re.sub(r'^\s*{%- include footer.html -%}', footer, html_template, flags=re.MULTILINE)
 
 html_template = html_template.replace('https://rsnyder.github.io/ezsite', '')
-if LOCAL_WC: html_template = html_template.replace('/ezsite/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
+if LOCAL_WC: html_template = html_template.replace('/wc/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
 html_template = html_template.replace('{%- seo -%}', seo)
 html_template = html_template.replace('{{ site.mode }}', mode)
 html_template = html_template.replace('{{ site.github.owner }}', gh_owner)
 html_template = html_template.replace('{{ site.github.repo }}', gh_repo)
 html_template = html_template.replace('{{ site.github.branch }}', gh_branch)
 html_template = html_template.replace('{{ site.baseurl }}', '')
-html_template = html_template.replace('{{ site.components }}', components)
   
 def html_from_markdown(md, baseurl):
   html = html_template.replace('{{ content }}', markdown.markdown(md, extensions=['extra', 'toc']))
@@ -180,7 +178,7 @@ async def serve(path: Optional[str] = None):
   else:
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
-      content = content.replace('/ezsite/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
+      content = content.replace('/wc/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
   if ext is None: # markdown file
     content = html_from_markdown(content, baseurl=f'/{"/".join(path)}/' if len(path) > 0 else '/')
   media_type = media_types[ext] if ext in media_types else 'text/html'
