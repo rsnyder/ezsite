@@ -15,8 +15,6 @@ import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 // import './css/cards.css'
 // import './css/default.css'
 
-import './assets/iiif.png'
-
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
