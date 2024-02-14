@@ -49,7 +49,7 @@ module.exports = {
       let essayElem = document.getElementById('essay')
       essayElem.querySelectorAll('.seg-link').forEach(el => el.addEventListener('click', () => navigator.clipboard.writeText(el.dataset.anchor)))
       Array.from(essayElem.querySelectorAll('.collapsible')).forEach(el =>el.addEventListener('click', this.toggleExpandCollapse))
-      // this.tagEntities(essayElem)
+      this.tagEntities(essayElem)
       // this.$emit('set-entities', this.entities)
       this.$nextTick(() => {
         this.addPopups(this.entities)
@@ -206,8 +206,8 @@ module.exports = {
     },
     // Finds words/phrases in content paragraphs that match labels or aliases for entities in scope
     // Matched text is wrapped with a span tag for reacting to hover and click actions
-    /*
     tagEntities(root) {
+      /*
       Array.from(root.querySelectorAll('.segment p')).forEach(para => {
         let paraHTML = para.innerHTML
         this.paramsInScope(para, this.params)
@@ -233,6 +233,7 @@ module.exports = {
           })
         para.innerHTML = paraHTML
       })
+      */
       Array.from(root.querySelectorAll('p span')).forEach(span => {
         if (span.attributes.eid) {
           let entityInfobox = document.createElement('ve-entity-infobox')
@@ -242,7 +243,6 @@ module.exports = {
         }
       })
     }
-    */
   },
   watch: {
     html: {
