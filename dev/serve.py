@@ -16,6 +16,7 @@ import argparse, json, os, re
 BASEDIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 LOCAL_WC = os.environ.get('LOCAL_WC', 'false').lower() == 'true'
 LOCAL_WC_PORT = os.environ.get('LOCAL_WC_PORT', '5173')
+CONTENT_ROOT = os.environ.get('CONTENT_ROOT', BASEDIR)
 
 from bs4 import BeautifulSoup
 import markdown
@@ -57,60 +58,20 @@ media_types = {
   'yaml': 'application/x-yaml'
 }
 
-config = yaml.load(open(f'{BASEDIR}/_config.yml', 'r'), Loader=yaml.FullLoader) if os.path.exists(f'{BASEDIR}/_config.yml') else {}
-logger.debug(json.dumps(config, indent=2))
-
-mode = config.get('mode', 'default')
-title = config.get('title', 'Juncture')
-description = config.get('description', '')
-url = config.get('url', '')
-gh_owner = config.get('github', {}).get('owner', '')
-gh_repo = config.get('github', {}).get('repo', '')
-gh_branch = config.get('github', {}).get('branch', '')
-
-jsonld_seo = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  'description': description,
-  'headline': title,
-  'name': title,
-  'url': url
-}
-
-seo = f'''
-  <title>{title}</title>
-  <meta name="generator" content="Jekyll v3.9.3" />
-  <meta property="og:title" content="{title}" />
-  <meta property="og:locale" content="en_US" />
-  <meta name="description" content="{description}" />
-  <meta property="og:description" content="{description}" />
-  <link rel="canonical" href="{url}" />
-  <meta property="og:url" content="{url}" />
-  <meta property="og:site_name" content="{title}" />
-  <meta property="og:type" content="website" />
-  <script type="application/ld+json">
-  {json.dumps(jsonld_seo, indent=2)}
-  </script>
-'''
-
 not_found_page = open(f'{BASEDIR}/404.html', 'r').read() if os.path.exists(f'{BASEDIR}/404.html') else ''
 header = open(f'{BASEDIR}/_includes/header.html', 'r').read() if os.path.exists(f'{BASEDIR}/_includes/header.html') else ''
 footer = open(f'{BASEDIR}/_includes/footer.html', 'r').read() if os.path.exists(f'{BASEDIR}/_includes/footer.html') else ''
 favicon = open(f'{BASEDIR}/favicon.ico', 'rb').read() if os.path.exists(f'{BASEDIR}/favicon.ico') else None
 
-html_template = open(f'{BASEDIR}/_layouts/default.html', 'r').read().replace('/essays', 'http://localhost:8080/')
+html_template = open(f'{CONTENT_ROOT}/_layouts/default.html', 'r').read().replace('/essays', 'http://localhost:8080/')
 html_template = re.sub(r'^\s*{%- include header.html -%}', header, html_template, flags=re.MULTILINE)
 html_template = re.sub(r'^\s*{%- include footer.html -%}', footer, html_template, flags=re.MULTILINE)
 
 html_template = html_template.replace('https://rsnyder.github.io/ezsite', '')
 if LOCAL_WC: html_template = html_template.replace('/wc/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
-html_template = html_template.replace('{%- seo -%}', seo)
-html_template = html_template.replace('{{ site.mode }}', mode)
-html_template = html_template.replace('{{ site.github.owner }}', gh_owner)
-html_template = html_template.replace('{{ site.github.repo }}', gh_repo)
-html_template = html_template.replace('{{ site.github.branch }}', gh_branch)
 html_template = html_template.replace('{{ site.baseurl }}', '')
-  
+html_template = html_template.replace('{%- seo -%}', '')
+
 def html_from_markdown(md, baseurl):
   html = html_template.replace('{{ content }}', markdown.markdown(md, extensions=['extra', 'toc']))
   soup = BeautifulSoup(html, 'html5lib')
@@ -155,22 +116,26 @@ async def serve(path: Optional[str] = None):
   path = [pe for pe in path.split('/') if pe != ''] if path else []
   ext = path[-1].split('.')[-1].lower() if len(path) > 0 and '.' in path[-1] else None
 
-  if ext:
+  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['index.css', 'index.js', 'favicon.ico', 'images', 'juncture', 'src', 'wc']:
     local_file_path = f'{BASEDIR}/{"/".join(path)}'
+
+  elif ext:
+    local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}'
     if not os.path.exists(local_file_path):
       return Response(status_code=404, content=not_found_page, media_type='text/html')
   else: 
-    local_file_path = f'{BASEDIR}/{"/".join(path)}/index.html'
+    local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}/index.html'
     if os.path.exists(local_file_path):
       ext = 'html'
     else:
-      local_file_path = f'{BASEDIR}/{"/".join(path)}' if ext else f'{BASEDIR}/{"/".join(path)}/README.md'
+      local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}' if ext else f'{CONTENT_ROOT}/{"/".join(path)}/README.md'
       if os.path.exists(local_file_path):
         pass
-      elif os.path.exists(f'{BASEDIR}/{"/".join(path)}.md'):
-        local_file_path = f'{BASEDIR}/{"/".join(path)}.md'
+      elif os.path.exists(f'{CONTENT_ROOT}/{"/".join(path)}.md'):
+        local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}.md'
       else:
         return Response(status_code=404, content=not_found_page, media_type='text/html')
+  
   if ext == 'ico':
     content = favicon
   elif ext in ['jpg', 'jpeg', 'png', 'svg']:
@@ -183,7 +148,7 @@ async def serve(path: Optional[str] = None):
     content = html_from_markdown(content, baseurl=f'/{"/".join(path)}/' if len(path) > 0 else '/')
   media_type = media_types[ext] if ext in media_types else 'text/html'
 
-  logger.info(f'path: {path} ext: {ext} local_file_path: {local_file_path}')
+  logger.debug(f'path: {path} ext: {ext} local_file_path: {local_file_path}')
   return Response(status_code=200, content=content, media_type=media_type)
 
 if __name__ == '__main__':
@@ -193,12 +158,14 @@ if __name__ == '__main__':
   parser.add_argument('--port', type=int, default=8080, help='HTTP port')
   parser.add_argument('--localwc', default=False, action='store_true', help='Use local web components')
   parser.add_argument('--wcport', type=int, default=5173, help='Port used by local WC server')
+  parser.add_argument('--content', default=BASEDIR, help='Content root directory')
 
   args = vars(parser.parse_args())
   
   os.environ['LOCAL_WC'] = str(args['localwc'])
   os.environ['LOCAL_WC_PORT'] = str(args['wcport'])
+  os.environ['CONTENT_ROOT'] = os.path.abspath(str(args['content']))
 
-  logger.info(f'BASEDIR={BASEDIR} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]} ')
+  logger.info(f'BASEDIR={BASEDIR} CONTENT_ROOT={os.environ["CONTENT_ROOT"]} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]} ')
 
   uvicorn.run('serve:app', port=args['port'], log_level='info', reload=args['reload'])
