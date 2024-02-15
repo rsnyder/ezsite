@@ -18,7 +18,8 @@
         <div v-if="subtitle" class="subtitle clamp1" v-html="subtitle"></div>
       </div>
 
-      <div class="menu">
+      <div class="search-and-menu">
+        <ez-site-search v-if="props.searchDomain" :search-domain="props.searchDomain" :search-cx="props.searchCx" :search-key="props.searchKey"></ez-site-search>
         <ez-menu v-if="navEl !== undefined" :contact="contact" :pdf-download-enabled="pdfDownloadEnabled ? '' : null" v-html="navEl"></ez-menu>
       </div>
 
@@ -83,6 +84,9 @@
     pdfDownloadEnabled: { type: Boolean, default: false },
     position: { type: String, default: 'center' },
     subtitle: { type: String },
+    searchDomain: { type: String },
+    searchCx: { type: String },
+    searchKey: { type: String },
     title: { type: String },
     top: { type: Number, default: 0 }
   })
@@ -272,8 +276,11 @@ ez-breadcrumbs {
   height: 100%;
 }
 
-.menu {
+.search-and-menu {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1em;
 }
 
 .clamp1 {

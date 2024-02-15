@@ -28,6 +28,7 @@ import Map from './components/Map.ce.vue'
 import Menu from './components/Menu.ce.vue'
 import Meta from './components/Meta.ce.vue'
 import Modal from './components/Modal.ce.vue'
+import SiteSearch from './components/SiteSearch.ce.vue'
 // import Trigger from './components/Trigger.ce.vue'
 
 
@@ -45,6 +46,7 @@ function defineCustomElements() {
 	customElements.define('ez-menu', defineCustomElement(Menu))
 	customElements.define('ez-meta', defineCustomElement(Meta))
 	customElements.define('ez-modal', defineCustomElement(Modal))
+	customElements.define('ez-site-search', defineCustomElement(SiteSearch))
 	// customElements.define('ez-trigger', defineCustomElement(Trigger))
 }
 
