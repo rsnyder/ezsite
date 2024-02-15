@@ -128,7 +128,10 @@ async def serve(path: Optional[str] = None):
     if os.path.exists(local_file_path):
       ext = 'html'
     else:
-      local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}' if ext else f'{CONTENT_ROOT}/{"/".join(path)}/README.md'
+      for mdIndex in ['index.md', 'README.md']:
+        if os.path.exists(f'{CONTENT_ROOT}/{"/".join(path)}/{mdIndex}'):
+          break
+      local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}' if ext else f'{CONTENT_ROOT}/{"/".join(path)}/{mdIndex}'
       if os.path.exists(local_file_path):
         pass
       elif os.path.exists(f'{CONTENT_ROOT}/{"/".join(path)}.md'):

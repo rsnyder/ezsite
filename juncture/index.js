@@ -1,3 +1,4 @@
+window.config = window.config || {}
 window.config.scriptBasePath = Array.from(document.querySelectorAll('script'))
 .filter(script => script.src)
 .filter(script => /\/ezsite\/index\.js$/.test(script.src))

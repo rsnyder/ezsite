@@ -1,4 +1,5 @@
 import { isJunctureV1, createJunctureV1App } from './juncture/index.js'
+import { parse, stringify } from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
 function isNumeric(arg) { return !isNaN(arg) }
 function hasTimestamp(s) { return /\d{1,2}:\d{1,2}/.test(s) }
@@ -634,7 +635,7 @@ function loadDependencies(dependencies, callback, i) {
 
 function init() {
   // console.log('init', new DOMParser().parseFromString(document.querySelector('main').outerHTML, 'text/html').firstChild.children[1].firstChild)
-  window.config = {...window.config, ...{isJunctureV1}}
+  window.config = {...parse(window.options || ''), ...(window.config || {}), ...{isJunctureV1}}
   structureContent()
   setMeta()
   console.log(window.config)
