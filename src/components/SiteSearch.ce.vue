@@ -97,7 +97,7 @@
         totalResults.value = parseInt(results.searchInformation.totalResults)
         let items = results.items.map((item:any) => {
           let link = new URL(item.link)
-          item.link = `${location.origin}${link.pathname}`
+          item.link = `${location.origin}${(window as any).config?.baseurl || ''}${link.pathname}`
           return item
         })
         searchResults.value = query !== currentQuery.value ? items : [...searchResults.value, ...items]
