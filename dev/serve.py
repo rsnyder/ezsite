@@ -15,6 +15,7 @@ import argparse, json, os, re
 
 BASEDIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 LOCAL_WC = os.environ.get('LOCAL_WC', 'false').lower() == 'true'
+LOCAL_WC_JUNCTURE = os.environ.get('LOCAL_WC_JUNCTURE', 'false').lower() == 'true'
 LOCAL_WC_PORT = os.environ.get('LOCAL_WC_PORT', '5173')
 CONTENT_ROOT = os.environ.get('CONTENT_ROOT', BASEDIR)
 
@@ -58,17 +59,14 @@ media_types = {
   'yaml': 'application/x-yaml'
 }
 
-not_found_page = open(f'{BASEDIR}/404.html', 'r').read() if os.path.exists(f'{BASEDIR}/404.html') else ''
-header = open(f'{BASEDIR}/_includes/header.html', 'r').read() if os.path.exists(f'{BASEDIR}/_includes/header.html') else ''
-footer = open(f'{BASEDIR}/_includes/footer.html', 'r').read() if os.path.exists(f'{BASEDIR}/_includes/footer.html') else ''
 favicon = open(f'{BASEDIR}/favicon.ico', 'rb').read() if os.path.exists(f'{BASEDIR}/favicon.ico') else None
 
 html_template = open(f'{CONTENT_ROOT}/_layouts/default.html', 'r').read().replace('/essays', 'http://localhost:8080/')
-html_template = re.sub(r'^\s*{%- include header.html -%}', header, html_template, flags=re.MULTILINE)
-html_template = re.sub(r'^\s*{%- include footer.html -%}', footer, html_template, flags=re.MULTILINE)
+html_template = re.sub(r'https:\/\/.+\/ezsite\/', '/', html_template)
 
 html_template = html_template.replace('https://rsnyder.github.io/ezsite', '')
 if LOCAL_WC: html_template = html_template.replace('/wc/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
+if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/juncture/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
 html_template = html_template.replace('{{ site.baseurl }}', '')
 html_template = html_template.replace('{%- seo -%}', '')
 
@@ -122,7 +120,7 @@ async def serve(path: Optional[str] = None):
   elif ext:
     local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}'
     if not os.path.exists(local_file_path):
-      return Response(status_code=404, content=not_found_page, media_type='text/html')
+      return Response(status_code=404, content=f'Page "{path}" not found at {local_file_path}', media_type='text/html')
   else: 
     local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}/index.html'
     if os.path.exists(local_file_path):
@@ -137,7 +135,7 @@ async def serve(path: Optional[str] = None):
       elif os.path.exists(f'{CONTENT_ROOT}/{"/".join(path)}.md'):
         local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}.md'
       else:
-        return Response(status_code=404, content=not_found_page, media_type='text/html')
+        return Response(status_code=404, content=f'Page "{path}" not found at {local_file_path}', media_type='text/html')
   
   if ext == 'ico':
     content = favicon
@@ -160,15 +158,17 @@ if __name__ == '__main__':
   parser.add_argument('--reload', type=bool, default=True, help='Reload on change')
   parser.add_argument('--port', type=int, default=8080, help='HTTP port')
   parser.add_argument('--localwc', default=False, action='store_true', help='Use local web components')
+  parser.add_argument('--localwc-juncture', default=False, action='store_true', help='Use local Juncture web components')
   parser.add_argument('--wcport', type=int, default=5173, help='Port used by local WC server')
   parser.add_argument('--content', default=BASEDIR, help='Content root directory')
 
   args = vars(parser.parse_args())
   
   os.environ['LOCAL_WC'] = str(args['localwc'])
+  os.environ['LOCAL_WC_JUNCTURE'] = str(args['localwc_juncture'])
   os.environ['LOCAL_WC_PORT'] = str(args['wcport'])
   os.environ['CONTENT_ROOT'] = os.path.abspath(str(args['content']))
 
-  logger.info(f'BASEDIR={BASEDIR} CONTENT_ROOT={os.environ["CONTENT_ROOT"]} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]} ')
+  logger.info(f'BASEDIR={BASEDIR} CONTENT_ROOT={os.environ["CONTENT_ROOT"]} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_JUNCTURE={os.environ["LOCAL_WC_JUNCTURE"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]} ')
 
   uvicorn.run('serve:app', port=args['port'], log_level='info', reload=args['reload'])

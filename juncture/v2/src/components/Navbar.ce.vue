@@ -79,13 +79,13 @@
     if (props.background) host.value.style.backgroundColor = props.background
     if (props.offset) shadow.value.style.marginTop = `-${props.offset}px`
     if (props.sticky) {
-      host.value.classList.add('sticky')
+      //host.value.classList.add('sticky')
       host.value.style.position = 'sticky'
       // host.value.style.top = '0'
       // if (props.alpha) host.value.style.background = `rgba(0, 0, 0, ${props.alpha})`
-      host.value.style.background = '#444A1E'
-      host.value.style.opacity = '100'
-      host.value.style.marginTop = `-${props.offset}px`
+      //host.value.style.background = '#444A1E'
+      //host.value.style.opacity = '100'
+      //host.value.style.marginTop = `-${props.offset}px`
     }
     if (props.label) {
       let titleEl = document.querySelector('title')

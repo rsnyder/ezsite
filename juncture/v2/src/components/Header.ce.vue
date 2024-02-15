@@ -70,7 +70,7 @@
   // const navEl = ref<string>()
   const entities = ref<string[]>([])
   const entity = ref<any>()
-  const backgroundColor = ref<string>('#444A1E')
+  const backgroundColor = ref<string>()
   const backgroundImage = ref<string>()
 
   const navEl = ref<HTMLUListElement>()
@@ -88,11 +88,11 @@
       backgroundImage.value = props.background
       height.value = props.height || heroHeight
     } else {
-      backgroundColor.value = props.background || '#444'
+      // backgroundColor.value = props.background || '#444'
     }
     if (props.label && props.label !== 'static') label.value = props.label
     // if (navbar.value) navbar.value.style.height = `${props.height || navbarHeight}px`
-    if (props.sticky) host.value.classList.add('sticky')
+    // if (props.sticky) host.value.classList.add('sticky')
     // navEl.value = (host.value.querySelector('ul') as HTMLUListElement)?.innerHTML
   }
 

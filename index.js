@@ -77,7 +77,7 @@ function parseCodeEl(codeEl) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  // (codeEl)
+  // console.log(codeEl)
   // console.log(codeEl.parentElement)
   // console.log(codeEl.previousElementSibling)
   
@@ -203,6 +203,30 @@ function structureContent() {
       }
     })
 
+  /* For compatibility with Juncture V2 */
+  Array.from(main?.querySelectorAll('p'))
+  .filter(p => /^\.\w+-\w+\S/.test(p.textContent.trim()))
+  .forEach(p => {
+    let codeEl = document.createElement('code')
+    // console.log(p.innerHTML.trim().slice(1))
+    let replacementText = p.innerHTML.trim().slice(1).replace(/\n\s*-\s+/g, '\n')
+    // console.log(replacementText)
+    codeEl.textContent = replacementText
+    p.textContent = ''
+    p.appendChild(codeEl)
+  })
+
+  /* For compatibility with Juncture V2 */
+  Array.from(main?.querySelectorAll('param'))
+  .filter(param => Array.from(param.attributes).filter(attr => attr.name.indexOf('ve-') === 0).length === 0)
+  .forEach(param => {
+    let priorEl = param.previousElementSibling
+    param.classList.forEach(c => priorEl.classList.add(c))
+    if (param.id) priorEl.id = param.id
+    if (param.getAttribute('style')) priorEl.setAttribute('style', param.getAttribute('style'))
+    param.remove()
+  })
+
   Array.from(main?.children || []).forEach(el => {
     if (el.tagName[0] === 'H' && isNumeric(el.tagName.slice(1))) {
       let heading = el
@@ -273,7 +297,6 @@ function structureContent() {
     let target = attrs.previousElementSibling
     while (target?.tagName !== 'P') target = target.previousElementSibling
     let parsed = parseHeadline(attrs.textContent.trim().slice(1,-1))
-    // target = target.parentElement
     if (parsed.id) target.id = parsed.id
     if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
     if (parsed.style) target.setAttribute('style', parsed.style)
@@ -432,8 +455,19 @@ function structureContent() {
   */
   
   restructured.style.paddingBottom = '100vh'
-  let footer = restructured.querySelector('ez-footer')
-  if (footer) restructured.appendChild(footer)
+  let footer = restructured.querySelector('ez-footer, ve-footer')
+  if (footer) {
+    Array.from(footer.querySelectorAll('li'))
+    .filter(li => /^\s*{.*}$/.test(li.textContent.trim()))
+    .forEach(li => {
+      let parsed = parseHeadline(li.textContent.trim().slice(1,-1))
+      if (parsed.id) li.id = parsed.id
+      if (parsed.class) parsed.class.split(' ').forEach(c => li.classList.add(c))
+      if (parsed.style) li.setAttribute('style', parsed.style)
+      li.textContent = ''
+    })
+    restructured.appendChild(footer)
+  }
 
   // let restructuredHTML = restructured.outerHTML
   // setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
