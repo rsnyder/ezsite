@@ -195,6 +195,7 @@
     border-radius: 6px;
     padding: 3px 10px;
     font-size: 1rem;
+    color: black;
   }
 
   .search-submit {
